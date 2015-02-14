@@ -1,0 +1,83 @@
+
+@font-face {
+	font-family: 'Source Sans Pro';
+	src: url('SourceSansPro-Light.ttf');
+	font-weight: 300;
+}
+
+html, body {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+}
+
+body {
+	font-family: 'Source Sans Pro', sans-serif;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+nav {
+	display: inline-block;
+	position: fixed;
+	top: 1em;
+	left: 1em;
+	z-index: 100;
+}
+
+nav a {
+	display: inline-block;
+	padding: 0;
+	margin: 0 0.5em;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+nav a img {
+	height: 1.5em;
+}
+
+body>div#main {
+	height: 80%;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+body>div#main section {
+	display: inline-block;
+	position: relative;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	overflow-x: auto;
+	overflow-y: scroll;
+	white-space: nowrap;
+	transition: left 0.25s linear, width 0.125s linear;
+}
+
+body>div#main section h1 {
+	color: rgba(0, 0, 0, 0.875);
+	width: 100%;
+	padding: 0.5em 0;
+	margin: 0;
+	text-align: center;
+	font-size: 5em;
+	font-weight: 300;
+}
+
+body>div#palette {
+	height: 20%;
+	overflow-x: hidden;
+	overflow-y: auto;
+	background-color: rgba(0, 0, 0, 0.75);
+}
+
+body>div#palette h1 {
+	color: rgba(255, 255, 255, 0.875);
+	width: 100%;
+	padding: 0.5em 0;
+	margin: 0;
+	text-align: center;
+	font-size: 3.5em;
+	font-weight: 300;
+}
