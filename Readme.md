@@ -15,7 +15,7 @@ Server to Client
     'CID': int
 }
 ```
-
+---
 #### Prepare for next match  ####
 Client to Server
 ```javascript
@@ -31,7 +31,7 @@ Server to Client
     'teamNumber': int
 }
 ```
-
+---
 #### Ready for start ####
 Client to Server
 ```javascript
@@ -47,8 +47,7 @@ Server to Client
     'started': true
 }
 ```
-
-
+---
 #### Contribution ####
 Client to Server
 ```javascript
@@ -67,7 +66,7 @@ Server to Client
     'updates': JSON
 }
 ```
-
+---
 #### Waz up? ####
 Client to Server
 ```javascript
