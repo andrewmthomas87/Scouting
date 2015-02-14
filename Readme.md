@@ -1,17 +1,3 @@
-####  ####
-Client to Server
-```javascript
-{
-
-}
-```
-Server to Client
-```javascript
-{
-
-}
-```
-
 # FRC Scouting App 2015 #
 ### JSON Messages ###
 ---
