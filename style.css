@@ -167,7 +167,6 @@ body>div#main section {
 
 body>div#main section>div {
 	display: inline-block;
-	clear: both;
 	height: calc(100% - 0.5em);
 	border-bottom: 0.5em solid #555;
 	font-size: 3em;
