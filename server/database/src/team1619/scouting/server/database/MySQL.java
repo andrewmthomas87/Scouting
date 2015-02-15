@@ -49,7 +49,7 @@ public class MySQL {
         stmt.close();
     }
 
-    protected static void addContribution(int teamNumber, int matchNumber, String mode, String object, int SID, int matchTime) throws SQLException {
+    public static void addContribution(int teamNumber, int matchNumber, String mode, String object, int SID, int matchTime) throws SQLException {
         PreparedStatement stmt = conn
                 .prepareStatement("insert into contributions (teamNumber, matchNumber, mode, object, SID, matchTime) values (?,?,?,?,?,?)");
         stmt.setInt(1, teamNumber);
@@ -62,7 +62,7 @@ public class MySQL {
         stmt.close();
     }
 
-    protected static void addRobotEvent(int teamNumber, int matchNumber, String eventType, int matchTime, String comments) throws SQLException {
+    public static void addRobotEvent(int teamNumber, int matchNumber, String eventType, int matchTime, String comments) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("insert into robotEvents (teamNumber, matchNumber, eventType, eventTime, comments) values (?,?,?,?,?)");
         stmt.setInt(1, teamNumber);
         stmt.setInt(2, matchNumber);
@@ -74,7 +74,7 @@ public class MySQL {
     }
 
 
-    protected static int checkSID(int matchNumber, int SID) throws SQLException {
+    public static int checkSID(int matchNumber, int SID) throws SQLException {
         Statement stmt = conn.createStatement();
         ResultSet resultSet = stmt.executeQuery("select SID from stacks where matchNumber=" + matchNumber + " && SID=" + SID);
         ResultSet nextSID = stmt.executeQuery("select max(SID) as maxSID from stacks");
