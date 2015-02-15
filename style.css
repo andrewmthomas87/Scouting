@@ -1,8 +1,8 @@
 
 @font-face {
 	font-family: 'Source Sans Pro';
-	src: url('SourceSansPro-Light.ttf');
-	font-weight: 300;
+	src: url('SourceSansPro-Regular.ttf');
+	font-weight: 400;
 }
 
 html, body {
@@ -27,6 +27,7 @@ nav {
 
 nav a {
 	display: inline-block;
+	height: 1.5em;
 	padding: 0;
 	margin: 0 0.5em;
 	text-decoration: none;
@@ -34,8 +35,39 @@ nav a {
 	cursor: pointer;
 }
 
-nav a img {
-	height: 1.5em;
+nav a#global-view, nav a#local-view {
+	width: 1.5em;
+	background-color: #16a085;
+}
+
+nav a#global-view.active, nav a#local-view.active {
+	background-color: #1abc9c;
+}
+
+nav a#split-view {
+	width: 0.25em;
+	border-left: 0.75em solid #16a085;
+	border-right: 0.75em solid #16a085;
+}
+
+nav a#split-view.active {
+	border-left: 0.75em solid #1abc9c;
+	border-right: 0.75em solid #1abc9c;
+}
+
+h1#header {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	color: #1abc9c;
+	padding: 0.0625em 0;
+	margin: 0;
+	font-size: 3em;
+	font-weight: 400;
+	text-align: center;
+	z-index: 99;
 }
 
 div.bin {
@@ -74,7 +106,7 @@ div.tote:after {
 	left: 0.5em;
 	color: #222;
 	font-size: 0.3em;
-	font-weight: 800;
+	font-weight: 400;
 	z-index: 100;
 }
 
@@ -94,7 +126,7 @@ div.chute-tote:after {
 	left: 0.5em;
 	color: #222;
 	font-size: 0.3em;
-	font-weight: 800;
+	font-weight: 400;
 	z-index: 100;
 }
 
@@ -115,7 +147,7 @@ div.scoring-platform {
 }
 
 body>div#main {
-	height: calc(100% - 9.15em);
+	height: calc(100% - 9em);
 	overflow: hidden;
 	white-space: nowrap;
 }
@@ -133,25 +165,33 @@ body>div#main section {
 	transition: left 0.25s linear, width 0.25s linear;
 }
 
-body>div#main section h1 {
-	color: #222;
-	padding: 0.125em 0;
-	margin: 0;
-	font-size: 2em;
-	font-weight: 300;
-	text-align: center;
-}
-
 body>div#main section>div {
-	position: relative;
 	display: inline-block;
-	width: 2em;
-	height: calc(100% - 2em);
-	padding: 0 0.5em;
+	height: calc(100% - 0.5em);
+	border-bottom: 0.5em solid #555;
 	font-size: 3em;
 }
 
-body>div#main section>div>div {
+body>div#main section>div:hover, body>div#main section>div.active {
+	background-color: #ecf0f1;
+	border-bottom: 0.5em solid #777;
+}
+
+body>div#main section>div.spacer {
+	width: 1em;
+	transition: width 0.125s ease;
+}
+
+body>div#main section>div.spacer:hover, body>div#main section>div.spacer.active {
+	width: 2em;
+}
+
+body>div#main section>div.stack {
+	position: relative;
+	width: 2em;
+}
+
+body>div#main section>div.stack>div {
 	position: absolute;
 	bottom: 0;
 	left: 0;
@@ -163,7 +203,6 @@ body>div#palette {
 	overflow-x: auto;
 	overflow-y: hidden;
 	background-color: #222;
-	border-top: 0.05em solid #555;
 	font-size: 3em;
 	text-align: center;
 }
