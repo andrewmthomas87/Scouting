@@ -167,12 +167,13 @@ body>div#main section {
 
 body>div#main section>div {
 	display: inline-block;
+	clear: both;
 	height: calc(100% - 0.5em);
 	border-bottom: 0.5em solid #555;
 	font-size: 3em;
 }
 
-body>div#main section>div:hover, body>div#main section>div.active {
+body>div#main section>div.active {
 	background-color: #ecf0f1;
 	border-bottom: 0.5em solid #777;
 }
@@ -182,7 +183,7 @@ body>div#main section>div.spacer {
 	transition: width 0.125s ease;
 }
 
-body>div#main section>div.spacer:hover, body>div#main section>div.spacer.active {
+body>div#main section>div.spacer.active {
 	width: 2em;
 }
 
