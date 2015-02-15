@@ -1,3 +1,5 @@
+package team1619.scouting.server.database;
+
 import java.sql.*;
 
 public class MySQL {

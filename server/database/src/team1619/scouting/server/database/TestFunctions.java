@@ -1,3 +1,5 @@
+package team1619.scouting.server.database;
+
 import java.sql.SQLException;
 
 public class TestFunctions {
@@ -16,10 +18,10 @@ public class TestFunctions {
 
 
             MySQL.connect();
-//            MySQL.initialize();
-//            MySQL.deleteTables();
-//            MySQL.addContribution(teamNumber, matchNumber, mode, object, SID, matchTime);
-//            MySQL.addRobotEvent(teamNumber, matchNumber, eventType, matchTime, comments);
+//            team1619.scouting.server.database.MySQL.initialize();
+//            team1619.scouting.server.database.MySQL.deleteTables();
+//            team1619.scouting.server.database.MySQL.addContribution(teamNumber, matchNumber, mode, object, SID, matchTime);
+//            team1619.scouting.server.database.MySQL.addRobotEvent(teamNumber, matchNumber, eventType, matchTime, comments);
             System.out.print(MySQL.checkSID(314, 1617));
             MySQL.close();
 
