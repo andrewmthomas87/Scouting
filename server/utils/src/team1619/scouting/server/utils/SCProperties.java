@@ -9,7 +9,7 @@ import java.util.Properties;
  * 
  * Created by tolkin on 2/15/2015.
  */
-public class SCProperties implements SCSubsystem
+public class SCProperties
 {
     private Properties fProperties;
     
@@ -17,14 +17,12 @@ public class SCProperties implements SCSubsystem
     
     private static SCProperties sProperties;
     
-    @Override
-    public void startup() throws InstantiationException
+    public static void startup() throws InstantiationException
     {
         sProperties = new SCProperties();
     }
     
-    @Override
-    public void shutdown()
+    public static void shutdown()
     {
         // do nothing
     }

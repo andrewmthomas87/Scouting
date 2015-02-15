@@ -3,6 +3,7 @@ package team1619.scouting.server.utils;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
@@ -12,14 +13,21 @@ import java.util.Scanner;
  * * 
  * Created by tolkin on 2/15/2015.
  */
-public class SCLogger implements SCSubsystem
+public class SCLogger
 {
+    private enum SCLogLevels
+    {
+        INFO, ERROR, WARNING, DEBUG
+    };
+    
     // the parameter in the log name will be replaced with the date and time the
     // log file was created
     private static final String LOG_NAME = "scout_log_%s.txt";
     
     // the file that holds the log
     private final FileWriter fLog;
+    
+    private final SimpleDateFormat fLogTimeFormat;
     
     // the singleton logger object
     private static SCLogger sLogger;
@@ -43,12 +51,11 @@ public class SCLogger implements SCSubsystem
         return sLogger;
     }
 
-    @Override
-    public void startup() throws InstantiationException
+    public static void startup() throws InstantiationException
     {
         try
         {
-            sLogger = new SCLogger( SCProperties.getProperty( "log.directory" ) );
+            sLogger = new SCLogger();
         }
         catch ( IOException ex )
         {
@@ -56,8 +63,7 @@ public class SCLogger implements SCSubsystem
         }
     }
     
-    @Override
-    public void shutdown()
+    public static void shutdown()
     {
         sLogger.close();
     }
@@ -65,16 +71,16 @@ public class SCLogger implements SCSubsystem
     /**
      * Constructs a logger by creating the logger file.
      * 
-     * @param directory the directory in which the log files will be created
-     *                
      * @throws InstantiationException if directory invalid or unable to create
      * @throws IOException if unable to create the log file
      */
-    private SCLogger( String directory )
-            throws InstantiationException, IOException
+    private SCLogger() throws InstantiationException, IOException
     {
+        String directory = SCProperties.getProperty( "log.directory" );
         File dir = new File( directory );
-        
+
+        fLogTimeFormat = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+
         if ( !dir.exists() )
         {
             // directory doesn't exist
@@ -124,6 +130,83 @@ public class SCLogger implements SCSubsystem
         catch ( IOException ex )
         {
             // ignore exception on close
+        }
+    }
+
+    /**
+     * Writes a message at the info level to the log.
+     * 
+     * @param msg the message to write
+     * @param args the arguments to the message
+     *  
+     * @throws SCIOException if there is a problem writing to the log
+     */
+    public void info( String msg, Object ... args ) throws SCIOException
+    {
+        logWrite( SCLogLevels.INFO.toString(), msg, args );
+    }
+
+    /**
+     * Writes a message at the warning level to the log.
+     *
+     * @param msg the message to write
+     * @param args the arguments to the message
+     *
+     * @throws SCIOException if there is a problem writing to the log
+     */
+    public void warning( String msg, Object ... args ) throws SCIOException
+    {
+        logWrite( SCLogLevels.WARNING.toString(), msg, args );
+    }
+
+    /**
+     * Writes a message at the error level to the log.
+     *
+     * @param msg the message to write
+     * @param args the arguments to the message
+     *
+     * @throws SCIOException if there is a problem writing to the log
+     */
+    public void error( String msg, Object ... args ) throws SCIOException
+    {
+        logWrite( SCLogLevels.ERROR.toString(), msg, args );
+    }
+
+    /**
+     * Writes a message at the debug level to the log.
+     *
+     * @param msg the message to write
+     * @param args the arguments to the message
+     *
+     * @throws SCIOException if there is a problem writing to the log
+     */
+    public void debug( String msg, Object ... args ) throws SCIOException
+    {
+        logWrite( SCLogLevels.DEBUG.toString(), msg, args );
+    }
+
+    /**
+     * Prints a stack dump to the logger.
+     *
+     * @param t the exception
+     */
+    public void printStackTrace( Throwable t )
+    {
+        PrintWriter out = new PrintWriter( fLog );
+        t.printStackTrace( out );
+    }
+
+    private void logWrite( String level, String msg, Object ... args ) throws SCIOException
+    {
+        try
+        {
+            String formattedString = String.format( "%s [%s]: %s\n", fLogTimeFormat.format( new Date() ), level, msg );
+            
+            fLog.write( String.format( formattedString, args ) );
+        }
+        catch ( IOException ex )
+        {
+            throw new SCIOException( ex );
         }
     }
 }
