@@ -10,29 +10,17 @@
 
 	<body>
 		<nav>
-			<a id='global-view'>
-				<img src='images/section-view.png'>
-			</a><!--
-			--><a id='local-view'>
-				<img src='images/section-view.png'>
-			</a><!--
-			--><a id='split-view'>
-				<img src='images/split-view.png'>
-			</a>
+			<a id='global-view' class='active'></a><!--
+			--><a id='local-view'></a><!--
+			--><a id='split-view'></a>
 		</nav>
+		<h1 id='header'>Global</h1>
 		<div id='main'>
 			<section id='global'>
-				<h1>Global</h1>
-				<div>
-					<div>
-						<div class='tote'></div>
-						<div class='tote'></div>
-						<div class='chute-tote'></div>
-					</div>
-				</div>
+				<div class='spacer'></div>
 			</section><!--
 			--><section id='local'>
-				<h1>Local</h1>
+				<div class='spacer'></div>
 			</section>
 		</div><!--
 		--><div id='palette'>
@@ -60,6 +48,12 @@
 			</div>
 		</div>
 		<script src='js/jquery-1.11.2.js'></script>
+		<script>
+			var iosDragDropShim = {
+				enableEnterLeave: true
+			}
+		</script>
+		<script src='js/ios-drag-drop.js'></script>
 		<script src='js/app.js'></script>
 	</body>
 
