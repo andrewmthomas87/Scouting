@@ -30,6 +30,7 @@ nav a {
 	padding: 0;
 	margin: 0 0.5em;
 	text-decoration: none;
+	opacity: 0.9375;
 	cursor: pointer;
 }
 
@@ -37,8 +38,84 @@ nav a img {
 	height: 1.5em;
 }
 
+div.bin {
+	width: 1em;
+	height: 1.45em;
+	margin: 0 0.5em;
+	background-color: #666;
+	border-top: 0.05em solid #777;
+}
+
+div.litter {
+	width: 0.125em;
+	height: 1.95em;
+	margin: 0 0.9375em;
+	background-color: #2ecc71;
+	border-top: 0.05em solid #27ae60;
+}
+
+div.litter.binned {
+	height: 0.45em;
+}
+
+div.tote {
+	position: relative;
+	width: 2em;
+	height: 0.95em;
+	margin: 0;
+	background-color: #999;
+	border-top: 0.05em solid #777;
+}
+
+div.tote:after {
+	content: 'F';
+	position: absolute;
+	top: 0;
+	left: 0.5em;
+	color: #222;
+	font-size: 0.3em;
+	font-weight: 800;
+	z-index: 100;
+}
+
+div.chute-tote {
+	position: relative;
+	width: 2em;
+	height: 0.95em;
+	margin: 0;
+	background-color: #999;
+	border-top: 0.05em solid #777;
+}
+
+div.chute-tote:after {
+	content: 'C';
+	position: absolute;
+	top: 0;
+	left: 0.5em;
+	color: #222;
+	font-size: 0.3em;
+	font-weight: 800;
+	z-index: 100;
+}
+
+div.yellow-tote {
+	width: 2em;
+	height: 0.95em;
+	margin: 0;
+	background-color: #f1c40f;
+	border-top: 0.05em solid #f39c12;
+}
+
+div.scoring-platform {
+	width: 2em;
+	height: 0.062em;
+	margin: 0;
+	background-color: #3498db;
+	border-top: 0.05em solid #2980b9;
+}
+
 body>div#main {
-	height: 80%;
+	height: calc(100% - 9.15em);
 	overflow: hidden;
 	white-space: nowrap;
 }
@@ -49,35 +126,51 @@ body>div#main section {
 	left: 0;
 	width: 100%;
 	height: 100%;
+	text-align: center;
 	overflow-x: auto;
-	overflow-y: scroll;
+	overflow-y: hidden;
 	white-space: nowrap;
-	transition: left 0.25s linear, width 0.125s linear;
+	transition: left 0.25s linear, width 0.25s linear;
 }
 
 body>div#main section h1 {
-	color: rgba(0, 0, 0, 0.875);
-	width: 100%;
-	padding: 0.5em 0;
+	color: #222;
+	padding: 0.125em 0;
 	margin: 0;
-	text-align: center;
-	font-size: 5em;
+	font-size: 2em;
 	font-weight: 300;
+	text-align: center;
+}
+
+body>div#main section>div {
+	position: relative;
+	display: inline-block;
+	width: 2em;
+	height: calc(100% - 2em);
+	padding: 0 0.5em;
+	font-size: 3em;
+}
+
+body>div#main section>div>div {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
 }
 
 body>div#palette {
-	height: 20%;
-	overflow-x: hidden;
-	overflow-y: auto;
-	background-color: rgba(0, 0, 0, 0.75);
+	height: 3em;
+	overflow-x: auto;
+	overflow-y: hidden;
+	background-color: #222;
+	border-top: 0.05em solid #555;
+	font-size: 3em;
+	text-align: center;
 }
 
-body>div#palette h1 {
-	color: rgba(255, 255, 255, 0.875);
-	width: 100%;
-	padding: 0.5em 0;
-	margin: 0;
-	text-align: center;
-	font-size: 3.5em;
-	font-weight: 300;
+body>div#palette>div {
+	display: inline-block;
+	width: 2em;
+	max-height: 2em;
+	padding: 0.5em;
 }
