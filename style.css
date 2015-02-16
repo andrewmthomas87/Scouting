@@ -196,6 +196,7 @@ body>div#main section>div.stack>div {
 	bottom: 0;
 	left: 0;
 	right: 0;
+	pointer-events: none;
 }
 
 body>div#palette {
