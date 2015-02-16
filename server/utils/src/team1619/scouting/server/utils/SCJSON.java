@@ -202,14 +202,16 @@ public class SCJSON extends HashMap<String, Object>
         {
             char c = fBuffer.charAt( fPos );
             StringBuilder buf = new StringBuilder();
-            buf.append( c );
             
-            fPos++;
-            while ( fPos < fBuffer.length() && Character.isJavaIdentifierPart( c ) )
+            do
             {
                 buf.append( c );
                 fPos++;
+                c = fBuffer.charAt( fPos );
             }
+            while ( fPos < fBuffer.length() && Character.isJavaIdentifierPart( c ) );
+
+            fPos--;
             
             return buf.toString();
         }
@@ -223,13 +225,16 @@ public class SCJSON extends HashMap<String, Object>
         {
             char c = fBuffer.charAt( fPos );
             StringBuilder buf = new StringBuilder();
-            buf.append( c );
             
-            fPos++;
-            while ( fPos < fBuffer.length() && ( Character.isDigit( c ) || c == '.' ) )
+            do
             {
                 buf.append( c );
+                fPos++;
+                c = fBuffer.charAt( fPos );
             }
+            while ( fPos < fBuffer.length() && ( Character.isDigit( c ) || c == '.' ) );
+
+            fPos--;
             
             return Double.valueOf( buf.toString() );
         }

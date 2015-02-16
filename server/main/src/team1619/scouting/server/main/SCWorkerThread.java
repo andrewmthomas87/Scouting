@@ -112,6 +112,9 @@ public class SCWorkerThread extends Thread
                 in.read( buf );
                 
                 SCJSON json = SCJSON.parse( new String( buf ) );
+                
+                // now, based on the "type" field in the object, we create a specific
+                // instance of the message and then execute that message.
             }
             else
             {
