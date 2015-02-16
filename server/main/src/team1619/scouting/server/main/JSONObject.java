@@ -10,7 +10,7 @@ public class JSONObject {
 
     private int MID;
     private String scoutName;
-    private int CID;
+    private int CID = -1;
     private int matchNumber;
     private int teamNumber;
     private int SID;
@@ -31,12 +31,19 @@ public class JSONObject {
         this.scoutName = scoutName;
     }
 
-    protected void setCID(int CID) {
-        this.CID = CID;
+    protected int getCID() {
+        for (int i = -1; i < 5; i++) {
+            if (i == CID) {
+                break;
+            }
+        }
+        CID++;
+        return CID;
     }
 
-    protected void setMatchNumber(int matchNumber) {
-        this.matchNumber = matchNumber;
+    protected int getMatchNumber() {
+        matchNumber ++;
+        return matchNumber % 6;
     }
 
     protected void setTeamNumber(int teamNumber) {
