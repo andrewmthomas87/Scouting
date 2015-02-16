@@ -6,6 +6,7 @@ import team1619.scouting.server.database.MySQL;
 /**
  * Created by avimoskoff on 2/15/15.
  */
+
 public class JSONObject {
 
     private int MID;
@@ -13,9 +14,9 @@ public class JSONObject {
     private int CID = -1;
     private int matchNumber;
     private int teamNumber;
-    private int SID = 0;
-    private String object;
-    private String objectState;
+    public int SID = 0;
+    public String object;
+    public String objectState;
     private int time;
     private boolean auton;
 
@@ -77,4 +78,14 @@ public class JSONObject {
         MySQL.addContribution(teamNumber, matchNumber, objectState, object, SID, time);
     }
 
+    protected WazUpReturn wazUp() {
+        return new WazUpReturn(SID, object, objectState);
+    }
 }
+
+class WazUpReturn {
+    public WazUpReturn(int SID, String object, String objectState) {
+    }
+}
+
+
