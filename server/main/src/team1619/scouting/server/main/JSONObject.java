@@ -13,7 +13,7 @@ public class JSONObject {
     private int CID = -1;
     private int matchNumber;
     private int teamNumber;
-    private int SID;
+    private int SID = 0;
     private String object;
     private String objectState;
     private int time;
@@ -50,8 +50,14 @@ public class JSONObject {
         this.teamNumber = teamNumber;
     }
 
-    protected void setSID(int matchNumber, int SID) throws SQLException {
-        this.SID = MySQL.checkSID(matchNumber, SID);
+    protected int setSID(int SID) {
+        if (SID == -1) {
+            this.SID ++;
+            return this.SID;
+        }
+        else {
+            return SID;
+        }
     }
 
     protected void setObject(String object) {

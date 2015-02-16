@@ -1,5 +1,7 @@
 package team1619.scouting.server.main;
 
+import java.sql.SQLException;
+
 /**
  * Created by avimoskoff on 2/15/15.
  */
@@ -8,7 +10,15 @@ public class JSONObjectInit {
 
     static int MID;
     static int CID;
+    static int SID;
+    static int time;
     static int teamNumber;
+
+    static boolean started = false;
+    static boolean auton = true;
+
+    static String objects;
+
     static String scoutName;
 
     static JSONObject client0 = new JSONObject();
@@ -64,6 +74,32 @@ public class JSONObjectInit {
                 }
                 break;
             case 2:
+                started = true;
+                break;
+            case 3:
+                switch(CID) {
+                    case 0:
+                        client0.setSID(SID);
+                        client0.setObject(objects);
+                        client0.setTime(time);
+                        client0.setAuton(auton);
+                        try {
+                            client0.enterContribution();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case 1:
+                        client1.setSID(SID);
+                        client1.setObject(objects);
+                        client1.setTime(time);
+                        client1.setAuton(auton);
+                        try {
+                            client1.enterContribution();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        break;
 
                 }
         }
