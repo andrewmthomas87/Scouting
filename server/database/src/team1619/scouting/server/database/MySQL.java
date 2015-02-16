@@ -5,6 +5,8 @@ import java.sql.*;
 public class MySQL {
 
     protected static Connection conn;
+    private static int newMatchNumber;
+
     private static String[] tables = new String[]{
             // eventType: D = disabled, E = enabled (after disabled), F = fell over, C = comments
             "create table robotEvents (teamNumber int, matchNumber int, eventType char(1), matchTime int, comments varchar(1024))",
