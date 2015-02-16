@@ -1,5 +1,6 @@
 package team1619.scouting.server.main;
 
+import team1619.scouting.server.utils.SCJSON;
 import team1619.scouting.server.utils.SCLogger;
 
 import java.io.BufferedReader;
@@ -93,7 +94,8 @@ public class SCWorkerThread extends Thread
             String line = in.readLine();
             while ( line != null && !line.isEmpty() )
             {
-                System.out.println( line );
+                // read from the input until we get the Content-Length header so that
+                // we know the size of the JSON payload
 
                 if ( line.startsWith( "Content-Length" ) )
                 {
@@ -103,14 +105,22 @@ public class SCWorkerThread extends Thread
                 line = in.readLine();
             }
             
+            // we should be pointing at the body at this point
             if ( bodyLength > 0 )
             {
                 char[] buf = new char[ bodyLength ];
                 in.read( buf );
-                System.out.println( buf );
+                
+                SCJSON json = SCJSON.parse( new String( buf ) );
+            }
+            else
+            {
+                SCLogger.getLogger().warning( "The request had no body." );
             }
                 
             requestStream.close();
+            
+            fInboundSocket.close();
         }
         catch ( Throwable t )
         {
