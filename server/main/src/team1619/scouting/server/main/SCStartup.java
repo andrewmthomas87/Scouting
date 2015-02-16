@@ -35,7 +35,7 @@ public class SCStartup
             Thread listener = new SCListener( SCThreadPool.getPool() );
             listener.start();
 
-            listener.wait();
+            listener.join();
         }
         catch ( Throwable t )
         {

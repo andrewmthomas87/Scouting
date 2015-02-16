@@ -2,6 +2,9 @@ package team1619.scouting.server.main;
 
 import team1619.scouting.server.utils.SCLogger;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.Socket;
 
 /**
@@ -59,6 +62,8 @@ public class SCWorkerThread extends Thread
         fListener      = listener;
         fPool          = pool;
         
+        SCLogger.getLogger().debug( "Assigning work to thread %s", getName() );
+        
         synchronized ( fWaitFlag )
         {
             // ok, we have work to do, so let this thread now run
@@ -71,6 +76,47 @@ public class SCWorkerThread extends Thread
      */
     private void executeWork()
     {
+        SCLogger.getLogger().debug( "Starting work on thread %s", getName() );
+        
+        try
+        {
+            // reads the input channel
+            InputStream requestStream = fInboundSocket.getInputStream();
+            
+            // for now, just write the request to the console
+            BufferedReader in = new BufferedReader( new InputStreamReader( requestStream ) );
+            
+            System.out.println( "Writing input to screen" );
+            
+            int bodyLength = 0;
+            
+            String line = in.readLine();
+            while ( line != null && !line.isEmpty() )
+            {
+                System.out.println( line );
+
+                if ( line.startsWith( "Content-Length" ) )
+                {
+                    bodyLength = Integer.parseInt( line.substring( line.indexOf( ':' ) + 2 ) );
+                }
+
+                line = in.readLine();
+            }
+            
+            if ( bodyLength > 0 )
+            {
+                char[] buf = new char[ bodyLength ];
+                in.read( buf );
+                System.out.println( buf );
+            }
+                
+            requestStream.close();
+        }
+        catch ( Throwable t )
+        {
+            SCLogger.getLogger().error( "Exception while executing work: %s", t.getMessage() );
+            SCLogger.getLogger().printStackTrace( t );
+        }
         
         // when the work is done, signal the pool to reclaim this thread
         fPool.signalDone( this );

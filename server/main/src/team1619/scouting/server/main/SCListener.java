@@ -34,7 +34,11 @@ public class SCListener extends Thread
 
             while ( !fExit )
             {
+                SCLogger.getLogger().debug( "Waiting for next inbound..." );
+                
                 Socket inbound = serverSocket.accept();
+                
+                SCLogger.getLogger().debug( "Getting inbound request from %s", inbound.getInetAddress() );
                 
                 fPool.assignThread( inbound, this );
             }

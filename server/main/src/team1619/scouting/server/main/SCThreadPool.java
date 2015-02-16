@@ -33,12 +33,16 @@ public class SCThreadPool
     {
         fPoolSize = Integer.parseInt( SCProperties.getProperty( "network.threads.pool.size" ) );
         
+        SCLogger.getLogger().debug( "Creating pool of size %d", fPoolSize );
+        
         fAvailablePool = new LinkedList<>(); 
         fInUsePool     = new HashSet<>();
         
         for ( int i = 0; i < fPoolSize; i++ )
         {
-            fAvailablePool.add( new SCWorkerThread() );
+            SCWorkerThread worker = new SCWorkerThread();
+            fAvailablePool.add( worker );
+            worker.start();
         }
     }
     

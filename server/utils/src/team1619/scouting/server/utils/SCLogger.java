@@ -18,7 +18,7 @@ public class SCLogger
     private enum SCLogLevels
     {
         INFO, ERROR, WARNING, DEBUG
-    };
+    }
     
     // the parameter in the log name will be replaced with the date and time the
     // log file was created
@@ -200,9 +200,15 @@ public class SCLogger
     {
         try
         {
-            String formattedString = String.format( "%s [%s]: %s\n", fLogTimeFormat.format( new Date() ), level, msg );
+            String formattedString = String.format( "%s <%s> [%s]: %s\n",
+                                                    fLogTimeFormat.format( new Date() ),
+                                                    Thread.currentThread().getName(),
+                                                    level,
+                                                    msg );
             
             fLog.write( String.format( formattedString, args ) );
+            
+            fLog.flush();
         }
         catch ( IOException ex )
         {
