@@ -1,6 +1,8 @@
 package team1619.scouting.server.main;
 
-import java.sql.SQLException;
+import team1619.scouting.server.database.MySQL;
+
+import java.sql.*;
 
 /**
  * Created by avimoskoff on 2/16/15.
@@ -14,5 +16,5 @@ abstract class SCMessage {
     int getClientID() {
         return fClientID;
     }
-    abstract void processMessage() throws SQLException;
+    abstract void processMessage(Connection conn) throws SQLException;
 }

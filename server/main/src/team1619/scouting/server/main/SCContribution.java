@@ -2,7 +2,8 @@ package team1619.scouting.server.main;
 
 import team1619.scouting.server.database.MySQL;
 import team1619.scouting.server.utils.SCJSON;
-
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
@@ -34,8 +35,7 @@ public class SCContribution extends SCMessage {
         fMatchNumber = (int) data.get("matchNumber");
     }
 
-    @Override
-    void processMessage() throws SQLException{
-        MySQL.addContribution(fTeamNumber, fMatchNumber, fMode, fObjects, fSID, fTime);
+    void processMessage(Connection conn) throws SQLException{
+        MySQL.addContribution(conn, fTeamNumber, fMatchNumber, fMode, fObjects, fSID, fTime);
     }
 }

@@ -1,12 +1,17 @@
 package team1619.scouting.server.main;
 
+import team1619.scouting.server.database.MySQL;
 import team1619.scouting.server.utils.SCJSON;
 import team1619.scouting.server.utils.SCLogger;
+import team1619.scouting.server.utils.SCProperties;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
  * A worker thread processes an inbound connection.
@@ -20,6 +25,7 @@ public class SCWorkerThread extends Thread
     private Socket fInboundSocket;
     private SCListener fListener;
     private SCThreadPool fPool;
+    private Connection conn;
     
     public SCWorkerThread()
     {
@@ -34,6 +40,11 @@ public class SCWorkerThread extends Thread
      */
     public void run()
     {
+        try {
+            MySQL.connect(conn);
+        } catch(SQLException e) {
+            SCLogger.getLogger().warning("failed to connect to database");
+        }
         while ( true )
         {
             synchronized ( fWaitFlag )
@@ -47,7 +58,12 @@ public class SCWorkerThread extends Thread
                     SCLogger.getLogger().warning( "Thread was interrupted and will now exit." );
                 }
             }
-            executeWork();
+            executeWork(conn);
+        }
+        try {
+            MySQL.close(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -75,7 +91,7 @@ public class SCWorkerThread extends Thread
     /**
      * Executes the work of this thread.
      */
-    private void executeWork()
+    private void executeWork(Connection conn)
     {
         SCLogger.getLogger().debug( "Starting work on thread %s", getName() );
         
