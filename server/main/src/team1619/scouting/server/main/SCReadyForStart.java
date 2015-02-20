@@ -6,17 +6,16 @@ import java.sql.SQLException;
 /**
  * Created by avimoskoff on 2/19/15.
  */
+public class SCReadyForStart extends SCMessage {
 
-public class SCLogin extends SCMessage {
+    private boolean fStarted;
 
-    private String fScoutName;
-    private int fClientID;
-
-    public SCLogin(String scoutName) {
-        fScoutName = scoutName;
+    public SCReadyForStart(boolean started) {
+        fStarted = started;
     }
 
     @Override
     void processMessage(Connection conn) throws SQLException {
+
     }
 }
