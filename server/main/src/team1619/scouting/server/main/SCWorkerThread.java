@@ -25,7 +25,7 @@ public class SCWorkerThread extends Thread
     private Socket fInboundSocket;
     private SCListener fListener;
     private SCThreadPool fPool;
-    private Connection conn;
+    public Connection conn;
     
     public SCWorkerThread()
     {
@@ -61,7 +61,7 @@ public class SCWorkerThread extends Thread
             executeWork(conn);
         }
         try {
-            MySQL.close(conn);
+            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

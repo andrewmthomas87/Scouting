@@ -3,7 +3,6 @@ package team1619.scouting.server.main;
 import team1619.scouting.server.database.MySQL;
 import team1619.scouting.server.utils.SCJSON;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
