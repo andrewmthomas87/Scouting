@@ -70,6 +70,26 @@ h1#header {
 	z-index: 99;
 }
 
+a#trash {
+	display: none;
+	position: fixed;
+	top: 5em;
+	left: calc(50% - 2.5em);
+	right: calc(50% - 2.5em);
+	width: 5em;
+	height: 5em;
+	background-image: url('trash.png');
+	background-position: center;
+	background-size: cover;
+	background-repeat: no-repeat;
+	z-index: 100;
+	cursor: pointer;
+}
+
+a#trash.active {
+	background-image: url('trash-active.png');
+}
+
 div.bin {
 	width: 1em;
 	height: 1.45em;
@@ -86,7 +106,12 @@ div.litter {
 	border-top: 0.05em solid #27ae60;
 }
 
-div.litter.binned {
+div.litter-binned {
+	width: 0.125em;
+	height: 1.95em;
+	margin: 0 0.9375em;
+	background-color: #2ecc71;
+	border-top: 0.05em solid #27ae60;
 	height: 0.45em;
 }
 
