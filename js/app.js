@@ -1,6 +1,8 @@
 
 var currentView = 0;
 
+var dragOver = 0;
+
 $(document).ready(function() {
 	$('nav a#global-view').click(function() {
 		if (currentView != 0) {
@@ -80,11 +82,11 @@ $(document).ready(function() {
 		if (objects.indexOf('litter,') < 0 && objects.indexOf('scoring-platform') < 0) {
 			event.stopPropagation();
 			objects = objects.split(',');
-			var stack = $('<div></div>');
+			var stack = $('<div draggable="true"></div>');
 			for (i = 0; i < objects.length - 1; i++) {
 				stack.append('<div class="' + objects[i] + '"></div>');
 			}
-			var stackContainer = $('<div class="stack" draggable="true"></div>');
+			var stackContainer = $('<div class="stack"></div>');
 			stackContainer.append(stack);
 			var spacer = $('<div class="spacer"></div>');
 			$(this).after(spacer);
@@ -92,32 +94,15 @@ $(document).ready(function() {
 			$('div.selection').remove();
 		}
 		$(this).removeClass('active');
+		$('a#trash').removeClass('active');
+		$('a#trash').fadeOut(125);
 	});
 
 	// STACK EVENTS
 
-	$('div#main section').delegate('div.stack', 'dragstart', function(event) {
-		var objects = '';
-		$(this).find('div div').each(function() {
-			objects += $(this).attr('class') + ',';
-		});
-		event.originalEvent.dataTransfer.setData('objects', objects);
-		event.originalEvent.dataTransfer.setDragImage($(this).find('>div')[0], $(this).width() / 2, $(this).find('>div').height() / 2);
-		$(this).addClass('selection');
-		$(this).next('div.spacer').addClass('selection');
-		$('div.selection').hide(125);
-		$('a#trash').fadeIn(125);
-	});
-	$('div#main section').delegate('div.stack', 'dragend', function(event) {
-		if (event.originalEvent.dataTransfer.dropEffect == 'none' || !event.isPropagationStopped()) {
-			$('div.selection').show(125);
-			$('div.selection').removeClass('selection');
-		}
-		$('a#trash').removeClass('active');
-		$('a#trash').fadeOut(125);
-	});
 	$('div#main section').delegate('div.stack', 'dragenter', function(event) {
 		event.originalEvent.preventDefault();
+		dragOver++;
 		$(this).addClass('active');
 	});
 	$('div#main section').delegate('div.stack', 'dragover', function(event) {
@@ -125,7 +110,10 @@ $(document).ready(function() {
 	});
 	$('div#main section').delegate('div.stack', 'dragleave', function(event) {
 		event.originalEvent.preventDefault();
-		$(this).removeClass('active');
+		dragOver--;
+		if (!dragOver) {
+			$(this).removeClass('active');
+		}
 	});
 	$('div#main section').delegate('div.stack', 'drop', function(event) {
 		event.originalEvent.preventDefault();
@@ -174,6 +162,45 @@ $(document).ready(function() {
 			event.stopPropagation();
 		}
 		$(this).removeClass('active');
+		$('a#trash').removeClass('active');
+		$('a#trash').fadeOut(125);
+	});
+
+
+	// Stack container events
+
+	$('div#main section').delegate('div.stack>div', 'dragstart', function(event) {
+		var objects = '';
+		$(this).find('div').each(function() {
+			objects += $(this).attr('class') + ',';
+		});
+		event.originalEvent.dataTransfer.setData('objects', objects);
+		$(this).parent().addClass('selection');
+		$(this).parent().next('div.spacer').addClass('selection');
+		$('div.selection').hide(125);
+		$('a#trash').fadeIn(125);
+	});
+	$('div#main section').delegate('div.stack>div', 'dragend', function(event) {
+		$('a#trash').removeClass('active');
+		$('a#trash').fadeOut(125);
+		if (event.originalEvent.dataTransfer.dropEffect == 'none' || !event.isPropagationStopped()) {
+			$('div.selection').show(125);
+			$('div.selection').removeClass('selection');
+		}
+	});
+	$('div#main section').delegate('div.stack>div', 'dragenter', function(event) {
+		event.originalEvent.preventDefault();
+		dragOver++;
+	});
+	$('div#main section').delegate('div.stack>div', 'dragover', function(event) {
+		event.originalEvent.preventDefault();
+	});
+	$('div#main section').delegate('div.stack>div', 'dragleave', function(event) {
+		event.originalEvent.preventDefault();
+		dragOver--;
+		if (!dragOver) {
+			$(this).parent().removeClass('active');
+		}
 	});
 
 
