@@ -178,6 +178,7 @@ $(document).ready(function() {
 		$('a#trash').fadeIn(125);
 	});
 	$('div#main section').delegate('div.stack>div', 'dragend', function(event) {
+		alert('Drag ended');
 		$('a#trash').removeClass('active');
 		$('a#trash').fadeOut(125);
 		if (event.originalEvent.dataTransfer.dropEffect == 'none' || !event.isPropagationStopped()) {
