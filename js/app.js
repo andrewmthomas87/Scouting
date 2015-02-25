@@ -55,11 +55,7 @@ $(document).ready(function() {
 	// PALETTE DIV EVENTS
 
 	$('div#palette>div').on('dragstart', function(event) {
-		var objects = '';
-		$(this).find('div').each(function() {
-			objects += $(this).attr('class') + ',';
-		});
-		event.originalEvent.dataTransfer.setData('objects', objects);
+		event.originalEvent.dataTransfer.setData('objects', $(this).find('div').attr('class') + ',');
 	});
 
 
@@ -161,6 +157,7 @@ $(document).ready(function() {
 			$('div.selection').remove();
 			event.stopPropagation();
 		}
+		dragOver--;
 		$(this).removeClass('active');
 		$('a#trash').removeClass('active');
 		$('a#trash').fadeOut(125);
