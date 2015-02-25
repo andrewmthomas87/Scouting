@@ -1,7 +1,7 @@
 
 var currentView = 0;
 
-var dragOver = 0;
+var drag = 0;
 
 $(document).ready(function() {
 	$('nav a#global-view').click(function() {
@@ -97,19 +97,27 @@ $(document).ready(function() {
 	// STACK EVENTS
 
 	$('div#main section').delegate('div.stack', 'dragenter', function(event) {
+		drag++;
+		if (drag > 0) {
+			$(this).addClass('active');
+		}
+		else {
+			$(this).removeClass('active');
+		}
 		event.originalEvent.preventDefault();
-		dragOver++;
-		$(this).addClass('active');
 	});
 	$('div#main section').delegate('div.stack', 'dragover', function(event) {
 		event.originalEvent.preventDefault();
 	});
 	$('div#main section').delegate('div.stack', 'dragleave', function(event) {
-		event.originalEvent.preventDefault();
-		dragOver--;
-		if (!dragOver) {
+		drag--;
+		if (drag > 0) {
+			$(this).addClass('active');
+		}
+		else {
 			$(this).removeClass('active');
 		}
+		event.originalEvent.preventDefault();
 	});
 	$('div#main section').delegate('div.stack', 'drop', function(event) {
 		event.originalEvent.preventDefault();
@@ -157,10 +165,10 @@ $(document).ready(function() {
 			$('div.selection').remove();
 			event.stopPropagation();
 		}
-		dragOver--;
 		$(this).removeClass('active');
 		$('a#trash').removeClass('active');
 		$('a#trash').fadeOut(125);
+		drag = 0;
 	});
 
 
@@ -178,29 +186,22 @@ $(document).ready(function() {
 		$('a#trash').fadeIn(125);
 	});
 	$('div#main section').delegate('div.stack>div', 'dragend', function(event) {
-		alert('Drag ended');
 		$('a#trash').removeClass('active');
 		$('a#trash').fadeOut(125);
-		if (event.originalEvent.dataTransfer.dropEffect == 'none' || !event.isPropagationStopped()) {
-			dragOver = 0;
-			$('div.active').removeClass('active');
-			$('div.selection').show(125);
-			$('div.selection').removeClass('selection');
-		}
+		$('div.selection').show(125);
+		$('div.selection').removeClass('selection');
+		$('div.active').removeClass('active');
 	});
 	$('div#main section').delegate('div.stack>div', 'dragenter', function(event) {
+		drag++;
 		event.originalEvent.preventDefault();
-		dragOver++;
 	});
 	$('div#main section').delegate('div.stack>div', 'dragover', function(event) {
 		event.originalEvent.preventDefault();
 	});
 	$('div#main section').delegate('div.stack>div', 'dragleave', function(event) {
+		drag--;
 		event.originalEvent.preventDefault();
-		dragOver--;
-		if (!dragOver) {
-			$(this).parent().removeClass('active');
-		}
 	});
 
 
