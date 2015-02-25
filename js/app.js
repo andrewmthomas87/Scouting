@@ -181,6 +181,8 @@ $(document).ready(function() {
 		$('a#trash').removeClass('active');
 		$('a#trash').fadeOut(125);
 		if (event.originalEvent.dataTransfer.dropEffect == 'none' || !event.isPropagationStopped()) {
+			dragOver = 0;
+			$('div.active').removeClass('active');
 			$('div.selection').show(125);
 			$('div.selection').removeClass('selection');
 		}
