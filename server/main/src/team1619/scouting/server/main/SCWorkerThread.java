@@ -3,14 +3,12 @@ package team1619.scouting.server.main;
 import team1619.scouting.server.database.MySQL;
 import team1619.scouting.server.utils.SCJSON;
 import team1619.scouting.server.utils.SCLogger;
-import team1619.scouting.server.utils.SCProperties;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
@@ -38,32 +36,29 @@ public class SCWorkerThread extends Thread
     /**
      * This just waits until there is work to do. 
      */
-    public void run()
-    {
+    @Override
+    public void run() {
         try {
             MySQL.connect(conn);
-        } catch(SQLException e) {
-            SCLogger.getLogger().warning("failed to connect to database");
-        }
-        while ( true )
-        {
-            synchronized ( fWaitFlag )
-            {
-                try
-                {
-                    fWaitFlag.wait();
+            while (true) {
+                synchronized (fWaitFlag) {
+                    try {
+                        fWaitFlag.wait();
+                    } catch (InterruptedException ex) {
+                        SCLogger.getLogger().warning("Thread was interrupted and will now exit.");
+                    }
                 }
-                catch ( InterruptedException ex )
-                {
-                    SCLogger.getLogger().warning( "Thread was interrupted and will now exit." );
-                }
+                executeWork(conn);
             }
-            executeWork(conn);
-        }
-        try {
-            conn.close();
-        } catch (SQLException e) {
+        } catch(SQLException e) {
             e.printStackTrace();
+        }
+        finally {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                SCLogger.getLogger().warning("unable to close");
+            }
         }
     }
 
