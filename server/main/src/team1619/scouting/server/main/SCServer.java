@@ -1,5 +1,6 @@
 package team1619.scouting.server.main;
 
+import team1619.scouting.server.database.MySQL;
 import team1619.scouting.server.utils.SCLogger;
 import team1619.scouting.server.utils.SCProperties;
 
@@ -17,20 +18,31 @@ import team1619.scouting.server.utils.SCProperties;
  * 
  * Created by tolkin on 2/15/2015.
  */
-public class SCStartup
+public class SCServer
 {
     /**
      * Starts the scouting server.  The server will look in the local directory
      * for scout.properties for the properties file.
      * 
-     * @param args unused
+     * @param args command-line arguments
+     * --initialize : this will create the tables in the database
      */
     public static void main( String[] args )
     {
         startupSubsystems();
-        
+
         try
         {
+            if ( args.length > 0 )
+            {
+                if ( "--initialize".equals( args[ 0 ] ) )
+                {
+                    MySQL db = MySQL.connect();
+                    db.initialize();
+                    db.close();
+                }
+            }
+
             // start the main listener on its own thread
             Thread listener = new SCListener( SCThreadPool.getPool() );
             listener.start();

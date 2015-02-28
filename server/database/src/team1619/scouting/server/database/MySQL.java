@@ -1,5 +1,6 @@
 package team1619.scouting.server.database;
 
+import team1619.scouting.server.utils.SCLogger;
 import team1619.scouting.server.utils.SCProperties;
 
 import java.sql.Connection;
@@ -35,7 +36,8 @@ public class MySQL
     private static String[] killTables = new String[]{
             "drop table robotEvents", "drop table stacks", "drop table contributions"};
 
-    protected void deleteTables() throws SQLException {
+    public void deleteTables() throws SQLException
+    {
         Statement stmt = fConnection.createStatement();
 
         for (String kill : killTables) {
@@ -55,18 +57,28 @@ public class MySQL
 
     private void establishConnection() throws SQLException
     {
-        String dbURL      = SCProperties.getProperty( "db.url" );
-        String dbUser     = SCProperties.getProperty( "db.user" );
-        String dbPassword = SCProperties.getProperty( "db.password" );
+        try
+        {
+            String dbURL = SCProperties.getProperty( "db.url" );
+            String dbUser = SCProperties.getProperty( "db.user" );
+            String dbPassword = SCProperties.getProperty( "db.password" );
 
-        fConnection = DriverManager.getConnection("jdbc:mysql:" + dbURL, dbUser, dbPassword );
+            fConnection = DriverManager.getConnection( "jdbc:mysql:" + dbURL, dbUser, dbPassword );
+        }
+        catch ( SQLException ex )
+        {
+            SCLogger.getLogger().error( "Problem establishing connection: %s", ex.getMessage() );
+            throw ex;
+        }
     }
 
-    public void close() throws SQLException {
+    public void close() throws SQLException
+    {
         fConnection.close();
     }
 
-    protected void initialize() throws SQLException {
+    public void initialize() throws SQLException
+    {
         Statement stmt = fConnection.createStatement();
         for (String table : tables) {
             stmt.execute(table);

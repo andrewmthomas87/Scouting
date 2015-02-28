@@ -6,7 +6,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
@@ -20,6 +22,8 @@ public class SCClientQueue
     private String fScoutName;
 
     private Queue<SCJSON> fQueue;
+
+    private static SimpleDateFormat sDateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss zzz" );
 
     public SCClientQueue( int clientId )
     {
@@ -82,7 +86,11 @@ public class SCClientQueue
 
             BufferedWriter writer = new BufferedWriter( new OutputStreamWriter( out ) );
 
+            writeHTTPResponseHeaders( writer, serializedMessages.length() );
+
             writer.write( serializedMessages );
+
+            writer.flush();
 
             fQueue.clear();
         }
@@ -134,7 +142,7 @@ public class SCClientQueue
 
         for ( Map.Entry<String, Object> entry : map.entrySet() )
         {
-            buf.append( entry.getKey() ).append( " : " );
+            buf.append('"').append( entry.getKey() ).append( "\" : " );
 
             Object val = entry.getValue();
 
@@ -146,9 +154,13 @@ public class SCClientQueue
             {
                 addArray( buf, (Collection<SCJSON>)val );
             }
-            else
+            else if ( val instanceof Number )
             {
                 buf.append( val.toString() );
+            }
+            else
+            {
+                buf.append( '"' ).append( val.toString() ).append( '"' );
             }
 
             if ( !first )
@@ -161,5 +173,27 @@ public class SCClientQueue
             }
         }
         buf.append( "}" );
+    }
+
+    /**
+     * Outputs the HTTP headers (minimal).
+     *
+     * @param out the output stream
+     * @param contentLength the number of octets in the JSON output being written in the body
+     *
+     * @throws IOException problem writing
+     */
+    private void writeHTTPResponseHeaders( BufferedWriter out, int contentLength ) throws IOException
+    {
+        out.write( "HTTP/1.1 200 OK\n" );
+
+        String date = sDateFormat.format( new Date() );
+        out.write( "Date: " + date + "\n" );
+
+        out.write( "Content-Type: application/json; charset=UTF-8\n" );
+        out.write( "Content-Length: " + contentLength + "\n" );
+
+        // need to write a blank line to separate headers from body
+        out.write( "\n" );
     }
 }

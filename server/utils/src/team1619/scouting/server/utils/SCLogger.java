@@ -94,7 +94,7 @@ public class SCLogger
             if ( answer.startsWith( "y" ) || answer.startsWith( "Y" ) )
             {
                 // create the directory
-                if ( !dir.mkdir() )
+                if ( !dir.mkdirs() )
                 {
                     System.out.println( "Unable to create the logging directory." );
                     throw new InstantiationException( "unable to create logging directory" );

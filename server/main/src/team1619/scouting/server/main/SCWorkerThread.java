@@ -28,6 +28,7 @@ public class SCWorkerThread extends Thread
         sMessageTable.put( "ready", SCReadyForStart.class );
         sMessageTable.put( "prepare", SCPrepareNextMatch.class );
         sMessageTable.put( "login", SCLogin.class );
+        sMessageTable.put( "contribution", SCContribution.class );   // TODO: check the type name
     }
 
     private final Object fWaitFlag;
@@ -124,8 +125,6 @@ public class SCWorkerThread extends Thread
             // for now, just write the request to the console
             BufferedReader in = new BufferedReader( new InputStreamReader( requestStream ) );
 
-            System.out.println( "Writing input to screen" );
-
             int bodyLength = 0;
 
             String line = in.readLine();
@@ -153,6 +152,8 @@ public class SCWorkerThread extends Thread
                 // now, based on the "type" field in the object, we create a specific
                 // instance of the message and then execute that message.
                 String messageType = (String)json.get( "type" );
+
+                SCLogger.getLogger().debug( "Received message type '%s'", messageType );
 
                 if ( "shutdown".equals( messageType ) )
                 {

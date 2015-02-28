@@ -45,17 +45,26 @@ public class SCListener extends Thread
                 
                 fPool.assignThread( inbound, this );
             }
-            
-            fServerSocket.close();
         }
         catch ( SocketException ex )
         {
-            SCLogger.getLogger().warning( "Recevied socket exception: %s", ex.getMessage() );
+            SCLogger.getLogger().warning( "Received socket exception: %s", ex.getMessage() );
         }
         catch ( Throwable t )
         {
             SCLogger.getLogger().error( "Problem listing for requests: %s", t.getMessage() );
             SCLogger.getLogger().printStackTrace( t );
+        }
+
+        SCLogger.getLogger().info( "Shutting down system." );
+
+        try
+        {
+            fServerSocket.close();
+        }
+        catch ( IOException ex )
+        {
+            // do nothing
         }
     }
 
