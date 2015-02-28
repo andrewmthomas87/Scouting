@@ -1,22 +1,37 @@
 package team1619.scouting.server.main;
 
-import java.sql.Connection;
+import team1619.scouting.server.database.MySQL;
+import team1619.scouting.server.utils.SCJSON;
+
 import java.sql.SQLException;
 
 /**
- * Created by avimoskoff on 2/19/15.
+ * Login message:
+ * scoutName: name of the scout
+ *
+ * This message assigns a new client id
  */
 
-public class SCLogin extends SCMessage {
-
-    private String fScoutName;
-    private int fClientID;
-
-    public SCLogin(String scoutName) {
-        fScoutName = scoutName;
+public class SCLogin extends SCMessage
+{
+    public SCLogin()
+    {
     }
 
     @Override
-    void processMessage(Connection conn) throws SQLException {
+    void processMessage( MySQL connection, SCJSON message ) throws SQLException
+    {
+        // assign a client id and create a queue for this client
+        SCClientQueue clientQueue = SCOutbound.setupClient();
+
+        clientQueue.setScoutName( (String)message.get( "scoutName" ) );
+
+        setClientID( clientQueue.getClientId() );
+
+        // json object that holds the assigned client id
+        SCJSON outboundMessage = new SCJSON();
+        outboundMessage.put( "CID", getClientID() );
+
+        clientQueue.writeToClient( outboundMessage );
     }
 }

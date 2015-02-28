@@ -1,20 +1,27 @@
 package team1619.scouting.server.main;
 
 import team1619.scouting.server.database.MySQL;
+import team1619.scouting.server.utils.SCJSON;
 
-import java.sql.*;
+import java.sql.SQLException;
 
 /**
  * Created by avimoskoff on 2/16/15.
  */
 
-abstract class SCMessage {
-    private int fClientID;
-    void setClientID(int clientID) {
+abstract class SCMessage
+{
+    private Integer fClientID;
+
+    void setClientID( Integer clientID )
+    {
         fClientID = clientID;
     }
-    int getClientID() {
+
+    Integer getClientID()
+    {
         return fClientID;
     }
-    abstract void processMessage(Connection conn) throws SQLException;
+
+    abstract void processMessage( MySQL conn, SCJSON message ) throws SQLException;
 }

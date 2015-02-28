@@ -351,7 +351,7 @@ public class SCJSON extends HashMap<String, Object>
         }
     }
     
-    private SCJSON()
+    public SCJSON()
     {
     }
 

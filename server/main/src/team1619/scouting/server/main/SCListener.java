@@ -3,8 +3,10 @@ package team1619.scouting.server.main;
 import team1619.scouting.server.utils.SCLogger;
 import team1619.scouting.server.utils.SCProperties;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 /**
  * This is the main listener thread.  It will open the TCP socket and listen for
@@ -17,6 +19,7 @@ public class SCListener extends Thread
     private int fPort;
     private SCThreadPool fPool;
     private Boolean fExit;
+    private ServerSocket fServerSocket;
     
     public SCListener( SCThreadPool pool )
     {
@@ -30,20 +33,24 @@ public class SCListener extends Thread
     {
         try
         {
-            ServerSocket serverSocket = new ServerSocket( fPort );
+            fServerSocket = new ServerSocket( fPort );
 
             while ( !fExit )
             {
                 SCLogger.getLogger().debug( "Waiting for next inbound..." );
                 
-                Socket inbound = serverSocket.accept();
+                Socket inbound = fServerSocket.accept();
                 
                 SCLogger.getLogger().debug( "Getting inbound request from %s", inbound.getInetAddress() );
                 
                 fPool.assignThread( inbound, this );
             }
             
-            serverSocket.close();
+            fServerSocket.close();
+        }
+        catch ( SocketException ex )
+        {
+            SCLogger.getLogger().warning( "Recevied socket exception: %s", ex.getMessage() );
         }
         catch ( Throwable t )
         {
@@ -57,6 +64,15 @@ public class SCListener extends Thread
      */
     public void setExit()
     {
-        fExit = true;
+        try
+        {
+            fExit = true;
+
+            fServerSocket.close();
+        }
+        catch ( IOException ex )
+        {
+            // ignore exception on close
+        }
     }
 }

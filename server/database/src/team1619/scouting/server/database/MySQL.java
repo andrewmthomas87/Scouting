@@ -1,10 +1,18 @@
 package team1619.scouting.server.database;
 
-import java.sql.*;
 import team1619.scouting.server.utils.SCProperties;
 
-public class MySQL {
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
+public class MySQL
+{
+
+    private Connection fConnection;
 
     private static int newMatchNumber;
 
@@ -27,33 +35,47 @@ public class MySQL {
     private static String[] killTables = new String[]{
             "drop table robotEvents", "drop table stacks", "drop table contributions"};
 
-    protected static void deleteTables(Connection conn) throws SQLException {
-        Statement stmt = conn.createStatement();
+    protected void deleteTables() throws SQLException {
+        Statement stmt = fConnection.createStatement();
+
         for (String kill : killTables) {
             stmt.execute(kill);
         }
         stmt.close();
     }
 
-    public static void connect(Connection conn) throws SQLException {
-        conn = DriverManager.getConnection("jdbc:mysql://localhost/scout",
-                SCProperties.getProperty("user"), SCProperties.getProperty("password"));
+    public static MySQL connect() throws SQLException
+    {
+        MySQL connection = new MySQL();
+
+        connection.establishConnection();
+
+        return connection;
     }
 
-    public static void close(Connection conn) throws SQLException {
-        conn.close();
+    private void establishConnection() throws SQLException
+    {
+        String dbURL      = SCProperties.getProperty( "db.url" );
+        String dbUser     = SCProperties.getProperty( "db.user" );
+        String dbPassword = SCProperties.getProperty( "db.password" );
+
+        fConnection = DriverManager.getConnection("jdbc:mysql:" + dbURL, dbUser, dbPassword );
     }
 
-    protected static void initialize(Connection conn) throws SQLException {
-        Statement stmt = conn.createStatement();
+    public void close() throws SQLException {
+        fConnection.close();
+    }
+
+    protected void initialize() throws SQLException {
+        Statement stmt = fConnection.createStatement();
         for (String table : tables) {
             stmt.execute(table);
         }
         stmt.close();
     }
 
-    public static void addContribution(Connection conn, int teamNumber, int matchNumber, String mode, String object, int SID, int matchTime) throws SQLException {
-        PreparedStatement stmt = conn
+    public void addContribution(int teamNumber, int matchNumber, String mode, String object, int SID, int matchTime) throws SQLException {
+        PreparedStatement stmt = fConnection
                 .prepareStatement("insert into contributions (teamNumber, matchNumber, mode, object, SID, matchTime) values (?,?,?,?,?,?)");
         stmt.setInt(1, teamNumber);
         stmt.setInt(2, matchNumber);
@@ -65,8 +87,8 @@ public class MySQL {
         stmt.close();
     }
 
-    public static void addRobotEvent(Connection conn, int teamNumber, int matchNumber, String eventType, int matchTime, String comments) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("insert into robotEvents (teamNumber, matchNumber, eventType, eventTime, comments) values (?,?,?,?,?)");
+    public void addRobotEvent(int teamNumber, int matchNumber, String eventType, int matchTime, String comments) throws SQLException {
+        PreparedStatement stmt = fConnection.prepareStatement("insert into robotEvents (teamNumber, matchNumber, eventType, eventTime, comments) values (?,?,?,?,?)");
         stmt.setInt(1, teamNumber);
         stmt.setInt(2, matchNumber);
         stmt.setString(3, eventType);
@@ -77,15 +99,15 @@ public class MySQL {
     }
 
 
-    public static int checkSID(Connection conn, int matchNumber, int SID) throws SQLException {
-        Statement stmt = conn.createStatement();
+    public int checkSID(int matchNumber, int SID) throws SQLException {
+        Statement stmt = fConnection.createStatement();
         ResultSet resultSet = stmt.executeQuery("select SID from stacks where matchNumber=" + matchNumber + " && SID=" + SID);
         ResultSet nextSID = stmt.executeQuery("select max(SID) as maxSID from stacks");
         boolean availableSID = resultSet.wasNull(); //if input SID is not in the database, return true
         if (!availableSID) {                        //if it is in the database, do this
             if (nextSID.next()) {
                 int newSID = nextSID.getInt("maxSID");
-                SID = newSID ++;
+                SID = newSID++;
             }
         }
         return SID;

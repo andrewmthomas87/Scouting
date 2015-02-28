@@ -1,6 +1,8 @@
 package team1619.scouting.server.main;
 
-import java.sql.Connection;
+import team1619.scouting.server.database.MySQL;
+import team1619.scouting.server.utils.SCJSON;
+
 import java.sql.SQLException;
 
 /**
@@ -8,14 +10,11 @@ import java.sql.SQLException;
  */
 public class SCReadyForStart extends SCMessage {
 
-    private boolean fStarted;
-
-    public SCReadyForStart(boolean started) {
-        fStarted = started;
+    public SCReadyForStart() {
     }
 
     @Override
-    void processMessage(Connection conn) throws SQLException {
+    void processMessage(MySQL conn, SCJSON message) throws SQLException {
 
     }
 }
