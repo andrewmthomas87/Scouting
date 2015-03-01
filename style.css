@@ -17,7 +17,7 @@
 		transform: rotate(0deg);
 	}
 	to {
-		transform: rotate(360deg);
+		transform: rotate(720deg);
 	}
 }
 
@@ -26,7 +26,7 @@
 		-webkit-transform: rotate(0deg);
 	}
 	to {
-		-webkit-transform: rotate(360deg);
+		-webkit-transform: rotate(720deg);
 	}
 }
 
@@ -161,6 +161,17 @@ div.tote:after {
 	z-index: 100;
 }
 
+div.tote:before {
+	content: attr(teamNumber);
+	position: absolute;
+	top: 0;
+	right: 0.6em;
+	color: #444;
+	font-size: 0.25em;
+	font-weight: 400;
+	z-index: 100;
+}
+
 div.chute-tote {
 	position: relative;
 	width: 2em;
@@ -177,6 +188,17 @@ div.chute-tote:after {
 	left: 0.5em;
 	color: #222;
 	font-size: 0.3em;
+	font-weight: 400;
+	z-index: 100;
+}
+
+div.chute-tote:before {
+	content: attr(teamNumber);
+	position: absolute;
+	top: 0;
+	right: 0.6em;
+	color: #444;
+	font-size: 0.25em;
 	font-weight: 400;
 	z-index: 100;
 }
@@ -271,6 +293,7 @@ div#overlay {
 	bottom: 0;
 	left: 0;
 	right: 0;
+	display: none;
 	width: 100%;
 	height: 100%;
 	background-color: rgba(0, 0, 0, 0.75);
@@ -279,32 +302,48 @@ div#overlay {
 
 div#loading {
 	position: fixed;
-	left: calc(50% - 1.325em);
-	right: calc(50% - 1.325em);
+	left: calc(50% - 1em);
+	right: calc(50% - 1em);
 	display: none;
-	width: 0.75em;
-	height: 0.75em;
-	border-top: 0.5em solid #3498db;
-	border-bottom: 0.5em solid #d35400;
-	border-left: 0.5em solid #2ecc71;
-	border-right: 0.5em solid #f1c40f;
+	width: 0;
+	height: 0;
+	border-top: 1em solid #3498db;
+	border-bottom: 1em solid #d35400;
+	border-left: 1em solid #2ecc71;
+	border-right: 1em solid #f1c40f;
 	border-radius: 50%;
 	opacity: 0.875;
 	z-index: 100;
-	-webkit-animation: rotating 0.75s linear infinite;
-	        animation: rotating 0.75s linear infinite;
+	-webkit-animation: rotating 2s ease infinite;
+	        animation: rotating 2s ease infinite;
 }
 
-form#login {
+form {
 	position: fixed;
+	display: none;
 	left: calc(50% - 15em);
 	right: calc(50% - 15em);
 	width: 30em;
-	background-color: #ecf0f1;
 	z-index: 100;
 }
 
-form#login input[type='text'] {
+form h3 {
+	color: #555;
+	width: calc(100% - 2em);
+	padding: 1.5em 1em;
+	margin: 0;
+	background-color: rgba(255, 255, 255, 0.875);
+	font-size: 1.25em;
+	font-weight: 300;
+	line-height: 1.25em;
+	text-align: center;
+}
+
+form h3 span {
+	color: #3498db;
+}
+
+form input[type='text'] {
 	display: block;
 	color: #555;
 	width: calc(100% - 2em);
@@ -319,7 +358,7 @@ form#login input[type='text'] {
 	text-align: center;
 }
 
-form#login input[type='submit'] {
+form input[type='submit'] {
 	display: block;
 	color: #fff;
 	width: 100%;

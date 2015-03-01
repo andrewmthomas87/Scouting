@@ -1,21 +1,24 @@
 
 var serverIP = 'localhost:';
 
-var CID;
+var CID, matchNumber, teamNumber;
 
 var currentView = 0;
 
 var drag = 0;
 
 function resize() {
-	$('div#loading').css('top', 'calc(' + ($(window).height() / 2) + 'px - 1.325em)');
+	$('div#loading').css('top', 'calc(' + ($(window).height() / 2) + 'px - 1em)');
 	$('form#login').css('top', 'calc(' + ($(window).height() / 2) + 'px - 4.375em)');
+	$('form#readyForNextMatch').css('top', 'calc(' + ($(window).height() / 2) + 'px - 1.875em)');
+	$('form#ready').css ('top', 'calc(' + ($(window).height() / 2) + 'px - 5.3125em)');
 }
 
 $(window).resize(resize);
 
 $(document).ready(function() {
 	resize();
+	$('div#overlay, form#login').fadeIn('slow');
 
 	// Login form events
 
@@ -23,17 +26,62 @@ $(document).ready(function() {
 		event.originalEvent.preventDefault();
 		var scoutName = $(this).find('input[type="text"]').val().trim();
 		if (scoutName) {
-			$(this).fadeOut('fast');
-			$('div#loading').fadeIn('fast');
+			$(this).fadeOut('slow');
+			$('div#loading').fadeIn('slow');
+			/*
 			$.post(serverIP, {
 				'MID': 0,
 				'scoutName': scoutName
 			}, function(result) {
+				*/
+				var result = '{"CID":1}';
 				var data = JSON.parse(result);
 				CID = data.CID;
-				$('div#loading').fadeOut('fast');
-			});
+				$('div#loading').fadeOut('slow');
+				$('form#readyForNextMatch').fadeIn('slow');
+			// });
 		}
+	});
+
+	$('form#readyForNextMatch').submit(function(event) {
+		event.originalEvent.preventDefault();
+		$(this).fadeOut('slow');
+		$('div#loading').fadeIn('slow');
+		/*
+		$.post(serverIP, {
+			'MID': 1,
+			'CID': CID
+		}, function(result) {
+			*/
+			var result = '{"matchNumber":5,"teamNumber":1619}';
+			var data = JSON.parse(result);
+			matchNumber = data.matchNumber;
+			teamNumber = data.teamNumber;
+			$('div#loading').fadeOut('slow');
+			$('form#ready span#matchNumber').html(matchNumber);
+			$('form#ready span#teamNumber').html(teamNumber);
+			$('form#ready').fadeIn('slow');
+		// });
+	});
+
+	$('form#ready').submit(function(event) {
+		event.originalEvent.preventDefault();
+		$(this).fadeOut('slow');
+		$('div#loading').fadeIn('slow');
+		/*
+		$.post(serverIP, {
+			'MID': 2,
+			'CID': CID,
+			'matchNumber': matchNumber
+		}, function(result) {
+			*/
+			var result = '{"started":true}';
+			var data = JSON.parse(result);
+			if (data.started) {
+				$('div#palette div.tote, div#palette div.chute-tote').attr('teamNumber', teamNumber);
+				$('div#overlay, div#loading').fadeOut('slow');
+			}
+		// });
 	});
 
 
@@ -91,7 +139,7 @@ $(document).ready(function() {
 	// PALETTE DIV EVENTS
 
 	$('div#palette>div').on('dragstart', function(event) {
-		event.originalEvent.dataTransfer.setData('objects', $(this).find('div').attr('class') + ',');
+		event.originalEvent.dataTransfer.setData('objects', $(this).find('div').attr('class') + ($(this).find('div').hasClass('tote') || $(this).find('div').hasClass('chute-tote') ? (':' + $(this).find('div').attr('teamNumber')) : '') + ',');
 	});
 
 
@@ -116,7 +164,13 @@ $(document).ready(function() {
 			objects = objects.split(',');
 			var stack = $('<div draggable="true"></div>');
 			for (i = 0; i < objects.length - 1; i++) {
-				stack.append('<div class="' + objects[i] + '"></div>');
+				if (objects[i].indexOf('tote') > -1) {
+					objects[i] = objects[i].split(':');
+					stack.append('<div class="' + objects[i][0] + '" teamNumber="' + objects[i][1] + '"></div>');
+				}
+				else {
+					stack.append('<div class="' + objects[i] + '"></div>');
+				}
 			}
 			var stackContainer = $('<div class="stack"></div>');
 			stackContainer.append(stack);
@@ -185,7 +239,13 @@ $(document).ready(function() {
 			var stack = $(this).find('>div');
 			var object;
 			for (i = 0; i < objects.length - 1; i++) {
-				object = '<div class="' + objects[objects.length - 2 - i] + '"></div>';
+				if (objects[objects.length - 2 - i].indexOf('tote') > -1) {
+					var tote = objects[objects.length - 2 - i].split(':');
+					object = '<div class="' + tote[0] + '" teamNumber="' + tote[1] + '"></div>';
+				}
+				else {
+					object = '<div class="' + objects[objects.length - 2 - i] + '"></div>';
+				}
 				if (object.indexOf('scoring-platform') > -1) {
 					stack.append(object);
 				}
@@ -193,7 +253,8 @@ $(document).ready(function() {
 					stack.prepend(object);
 				}
 				else if (stack.find('div').length > 1) {
-					stack.find('div').not('.scoring-platform').last().after('<div class="' + objects[i] + '"></div>');
+					var tote = objects[i].split(':');
+					stack.find('div').not('.scoring-platform').last().after('<div class="' + tote[0] + '" teamNumber="' + tote[1] + '"></div>');
 				}
 				else {
 					stack.append(object);
@@ -214,7 +275,12 @@ $(document).ready(function() {
 	$('div#main section').delegate('div.stack>div', 'dragstart', function(event) {
 		var objects = '';
 		$(this).find('div').each(function() {
-			objects += $(this).attr('class') + ',';
+			if ($(this).hasClass('tote') || $(this).hasClass('chute-tote')) {
+				objects += 'tote:' + $(this).attr('teamNumber') + ',';
+			}
+			else {
+				objects += $(this).attr('class') + ',';
+			}
 		});
 		event.originalEvent.dataTransfer.setData('objects', objects);
 		$(this).parent().addClass('selection');
