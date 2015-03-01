@@ -1,9 +1,44 @@
 
+var serverIP = 'localhost:';
+
+var CID;
+
 var currentView = 0;
 
 var drag = 0;
 
+function resize() {
+	$('div#loading').css('top', 'calc(' + ($(window).height() / 2) + 'px - 1.325em)');
+	$('form#login').css('top', 'calc(' + ($(window).height() / 2) + 'px - 4.375em)');
+}
+
+$(window).resize(resize);
+
 $(document).ready(function() {
+	resize();
+
+	// Login form events
+
+	$('form#login').submit(function(event) {
+		event.originalEvent.preventDefault();
+		var scoutName = $(this).find('input[type="text"]').val().trim();
+		if (scoutName) {
+			$(this).fadeOut('fast');
+			$('div#loading').fadeIn('fast');
+			$.post(serverIP, {
+				'MID': 0,
+				'scoutName': scoutName
+			}, function(result) {
+				var data = JSON.parse(result);
+				CID = data.CID;
+				$('div#loading').fadeOut('fast');
+			});
+		}
+	});
+
+
+	// Nav events
+
 	$('nav a#global-view').click(function() {
 		if (currentView != 0) {
 			$('nav a.active').removeClass('active');
@@ -52,6 +87,7 @@ $(document).ready(function() {
 		}
 	});
 
+
 	// PALETTE DIV EVENTS
 
 	$('div#palette>div').on('dragstart', function(event) {
@@ -93,6 +129,7 @@ $(document).ready(function() {
 		$('a#trash').removeClass('active');
 		$('a#trash').fadeOut(125);
 	});
+
 
 	// STACK EVENTS
 
