@@ -28,18 +28,16 @@ $(document).ready(function() {
 		if (scoutName) {
 			$(this).fadeOut('slow');
 			$('div#loading').fadeIn('slow');
-			/*
 			$.post(serverIP, {
 				'MID': 0,
 				'scoutName': scoutName
 			}, function(result) {
-				*/
 				var result = '{"CID":1}';
 				var data = JSON.parse(result);
 				CID = data.CID;
 				$('div#loading').fadeOut('slow');
 				$('form#readyForNextMatch').fadeIn('slow');
-			// });
+			});
 		}
 	});
 
@@ -47,12 +45,10 @@ $(document).ready(function() {
 		event.originalEvent.preventDefault();
 		$(this).fadeOut('slow');
 		$('div#loading').fadeIn('slow');
-		/*
 		$.post(serverIP, {
 			'MID': 1,
 			'CID': CID
 		}, function(result) {
-			*/
 			var result = '{"matchNumber":5,"teamNumber":1619}';
 			var data = JSON.parse(result);
 			matchNumber = data.matchNumber;
@@ -61,27 +57,25 @@ $(document).ready(function() {
 			$('form#ready span#matchNumber').html(matchNumber);
 			$('form#ready span#teamNumber').html(teamNumber);
 			$('form#ready').fadeIn('slow');
-		// });
+		});
 	});
 
 	$('form#ready').submit(function(event) {
 		event.originalEvent.preventDefault();
 		$(this).fadeOut('slow');
 		$('div#loading').fadeIn('slow');
-		/*
 		$.post(serverIP, {
 			'MID': 2,
 			'CID': CID,
 			'matchNumber': matchNumber
 		}, function(result) {
-			*/
 			var result = '{"started":true}';
 			var data = JSON.parse(result);
 			if (data.started) {
 				$('div#palette div.tote, div#palette div.chute-tote').attr('teamNumber', teamNumber);
 				$('div#overlay, div#loading').fadeOut('slow');
 			}
-		// });
+		});
 	});
 
 
