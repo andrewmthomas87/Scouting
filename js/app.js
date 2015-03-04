@@ -28,37 +28,30 @@ $(document).ready(function() {
 		if (scoutName) {
 			$(this).fadeOut('slow');
 			$('div#loading').fadeIn('slow');
-			$.ajax({
-				url: serverIP,
-				type: 'GET',
-				data: JSON.stringify({
+			$.getJSON(
+				serverIP,
+				JSON.stringify({
 					'type': 'login',
 					'scoutName': scoutName
-				}),
-				contentType: 'application/json',
-				success: function(result) {
-					var data = JSON.parse('result');
+				}), function(data) {
+					CID = data.CID;
 					$('div#loading').fadeOut('slow');
 					$('form#readyForNextMatch').fadeIn('slow');
 				}
-			});
+			);
 		}
 	});
-/*
+
 	$('form#readyForNextMatch').submit(function(event) {
 		event.originalEvent.preventDefault();
 		$(this).fadeOut('slow');
 		$('div#loading').fadeIn('slow');
-		$.ajax({
-			url: serverIP,
-			type: 'POST',
-			data: JSON.stringify({
+		$.getJSON(
+			serverIP,
+			JSON.stringify({
 				'type': 'prepare',
 				'CID': CID
-			}),
-			contentType: 'jsonp',
-			success: function(result) {
-				var data = JSON.parse(result);
+			}), function(data) {
 				matchNumber = data.matchNumber;
 				teamNumber = data.teamNumber;
 				$('div#loading').fadeOut('slow');
@@ -66,32 +59,28 @@ $(document).ready(function() {
 				$('form#ready span#teamNumber').html(teamNumber);
 				$('form#ready').fadeIn('slow');
 			}
-		});
+		);
 	});
 
 	$('form#ready').submit(function(event) {
 		event.originalEvent.preventDefault();
 		$(this).fadeOut('slow');
 		$('div#loading').fadeIn('slow');
-		$.ajax({
-			url: serverIP,
-			type: 'POST',
-			data: JSON.stringify({
+		$.getJSON(
+			serverIP,
+			JSON.stringify({
 				'type': 'ready',
 				'CID': CID,
 				'matchNumber': matchNumber
-			}),
-			contentType: 'jsonp',
-			success: function(result) {
-				var data = JSON.parse(result);
+			}), function(data) {
 				if (data.started) {
 					$('div#palette div.tote, div#palette div.chute-tote').attr('teamNumber', teamNumber);
 					$('div#overlay, div#loading').fadeOut('slow');
 				}
 			}
-		})
+		);
 	});
-*/
+
 
 	// Nav events
 
