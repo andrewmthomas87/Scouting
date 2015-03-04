@@ -34,7 +34,7 @@ $(document).ready(function() {
 					'type': 'login',
 					'scoutName': scoutName
 				}), function(data) {
-					CID = data.CID;
+					CID = data[0].CID;
 					$('div#loading').fadeOut('slow');
 					$('form#readyForNextMatch').fadeIn('slow');
 				}
