@@ -30,12 +30,12 @@ $(document).ready(function() {
 			$('div#loading').fadeIn('slow');
 			$.ajax({
 				url: serverIP,
-				type: 'GET',
-				data: {
+				type: 'POST',
+				data: JSON.stringify({
 					'type': 'login',
 					'scoutName': scoutName
-				},
-				contentType: 'application/json',
+				}),
+				contentType: 'jsonp',
 				success: function(result) {
 					var data = JSON.parse('result');
 					$('div#loading').fadeOut('slow');
@@ -51,12 +51,12 @@ $(document).ready(function() {
 		$('div#loading').fadeIn('slow');
 		$.ajax({
 			url: serverIP,
-			type: 'GET',
-			data: {
+			type: 'POST',
+			data: JSON.stringify({
 				'type': 'prepare',
 				'CID': CID
-			},
-			contentType: 'application/json',
+			}),
+			contentType: 'jsonp',
 			success: function(result) {
 				var data = JSON.parse(result);
 				matchNumber = data.matchNumber;
@@ -75,13 +75,13 @@ $(document).ready(function() {
 		$('div#loading').fadeIn('slow');
 		$.ajax({
 			url: serverIP,
-			type: 'GET',
-			data: {
+			type: 'POST',
+			data: JSON.stringify({
 				'type': 'ready',
 				'CID': CID,
 				'matchNumber': matchNumber
-			},
-			contentType: 'application/json',
+			}),
+			contentType: 'jsonp',
 			success: function(result) {
 				var data = JSON.parse(result);
 				if (data.started) {
