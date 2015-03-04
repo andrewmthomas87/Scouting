@@ -28,6 +28,7 @@ $(document).ready(function() {
 		if (scoutName) {
 			$(this).fadeOut('slow');
 			$('div#loading').fadeIn('slow');
+			/*
 			$.ajax({
 				url: serverIP,
 				type: 'POST',
@@ -42,9 +43,18 @@ $(document).ready(function() {
 					$('form#readyForNextMatch').fadeIn('slow');
 				}
 			});
+			*/
+			$.getJSON(
+				serverIP,
+				JSON.stringify({
+					'type': 'login',
+					'scoutName': scoutName
+				}), function(data) {
+					console.log(data);
+			});
 		}
 	});
-
+/*
 	$('form#readyForNextMatch').submit(function(event) {
 		event.originalEvent.preventDefault();
 		$(this).fadeOut('slow');
@@ -91,7 +101,7 @@ $(document).ready(function() {
 			}
 		})
 	});
-
+*/
 
 	// Nav events
 
