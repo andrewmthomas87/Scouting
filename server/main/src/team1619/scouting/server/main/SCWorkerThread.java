@@ -119,60 +119,66 @@ public class SCWorkerThread extends Thread
     {
         SCLogger.getLogger().debug( "Starting work on thread %s", getName() );
 
-        try {
+        try
+        {
             // reads the input channel
             InputStream requestStream = fInboundSocket.getInputStream();
 
             // for now, just write the request to the console
-            BufferedReader in = new BufferedReader(new InputStreamReader(requestStream));
+            BufferedReader in = new BufferedReader( new InputStreamReader( requestStream ) );
 
             String line = in.readLine();
             String httpHeader = line;
 
-            while (line != null && !line.isEmpty()) {
+            while ( line != null && !line.isEmpty() )
+            {
                 // read from the input until we get the Content-Length header so that
                 // we know the size of the JSON payload
 
-                System.out.println(line);
+                System.out.println( line );
 
                 line = in.readLine();
             }
 
-            String[] httpParts = httpHeader.split(" ");
-            String encodedJSON = httpParts[1].substring(2);
-            String decodedJSON = URLDecoder.decode(encodedJSON, "UTF-8");
+            String[] httpParts = httpHeader.split( " " );
+            String encodedJSON = httpParts[ 1 ].substring( 2 );
+            String decodedJSON = URLDecoder.decode( encodedJSON, "UTF-8" );
 
             // we should be pointing at the body at this point
 
-            SCJSON json = SCJSON.parse(decodedJSON);
+            SCJSON json = SCJSON.parse( decodedJSON );
 
             // now, based on the "type" field in the object, we create a specific
             // instance of the message and then execute that message.
-            String messageType = (String) json.get("type");
+            String messageType = (String) json.get( "type" );
 
-            SCLogger.getLogger().debug("Received message type '%s'", messageType);
+            SCLogger.getLogger().debug( "Received message type '%s'", messageType );
 
-            if ("shutdown".equals(messageType)) {
+            if ( "shutdown".equals( messageType ) )
+            {
                 fListener.setExit();
-            } else {
-                Class<? extends SCMessage> processorClass = sMessageTable.get(messageType);
+            }
+            else
+            {
+                Class<? extends SCMessage> processorClass = sMessageTable.get( messageType );
 
-                if (processorClass == null) {
-                    SCLogger.getLogger().error("Unknown message type: %s", messageType);
-                    throw new IllegalArgumentException("message type =" + messageType);
+                if ( processorClass == null )
+                {
+                    SCLogger.getLogger().error( "Unknown message type: %s", messageType );
+                    throw new IllegalArgumentException( "message type =" + messageType );
                 }
 
                 SCMessage messageProcessor = processorClass.newInstance();
 
                 // set the client id for every message
-                messageProcessor.setClientID((Integer) json.get("CID"));
+                messageProcessor.setClientID( (Integer) json.get( "CID" ) );
 
-                messageProcessor.processMessage(conn, json);
+                messageProcessor.processMessage( conn, json );
 
                 // flush this client's queue to client
-                SCClientQueue clientQueue = SCOutbound.getClientQueue(messageProcessor.getClientID());
+                SCClientQueue clientQueue = SCOutbound.getClientQueue( messageProcessor.getClientID() );
 
-                clientQueue.flushQueueToClient(fInboundSocket.getOutputStream());
+                clientQueue.flushQueueToClient( fInboundSocket.getOutputStream() );
             }
 
             requestStream.close();

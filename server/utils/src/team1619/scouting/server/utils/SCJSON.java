@@ -217,11 +217,11 @@ public class SCJSON extends HashMap<String, Object>
         }
 
         /**
-         * Reads a number (integer or floating point).
+         * Reads a number (integer).
          *  
          * @return the double rep of the number
          */
-        private Double readNumber()
+        private Integer readNumber()
         {
             char c = fBuffer.charAt( fPos );
             StringBuilder buf = new StringBuilder();
@@ -232,11 +232,11 @@ public class SCJSON extends HashMap<String, Object>
                 fPos++;
                 c = fBuffer.charAt( fPos );
             }
-            while ( fPos < fBuffer.length() && ( Character.isDigit( c ) || c == '.' ) );
+            while ( fPos < fBuffer.length() &&  Character.isDigit( c ) );
 
             fPos--;
             
-            return Double.valueOf( buf.toString() );
+            return Integer.valueOf( buf.toString() );
         }
     }
     
