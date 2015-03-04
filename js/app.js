@@ -28,29 +28,19 @@ $(document).ready(function() {
 		if (scoutName) {
 			$(this).fadeOut('slow');
 			$('div#loading').fadeIn('slow');
-			/*
 			$.ajax({
 				url: serverIP,
-				type: 'POST',
+				type: 'GET',
 				data: JSON.stringify({
 					'type': 'login',
 					'scoutName': scoutName
 				}),
-				contentType: 'jsonp',
+				contentType: 'application/json',
 				success: function(result) {
 					var data = JSON.parse('result');
 					$('div#loading').fadeOut('slow');
 					$('form#readyForNextMatch').fadeIn('slow');
 				}
-			});
-			*/
-			$.getJSON(
-				serverIP,
-				JSON.stringify({
-					'type': 'login',
-					'scoutName': scoutName
-				}), function(data) {
-					console.log(data);
 			});
 		}
 	});
