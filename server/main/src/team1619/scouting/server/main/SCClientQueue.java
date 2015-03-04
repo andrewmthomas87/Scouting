@@ -20,6 +20,7 @@ public class SCClientQueue
 {
     private int fClientId;
     private String fScoutName;
+    private int fMatchNumber = 0;
 
     private Queue<SCJSON> fQueue;
 
@@ -62,6 +63,13 @@ public class SCClientQueue
         return fClientId;
     }
 
+    public void setMatchNumber() {
+        fMatchNumber ++;
+    }
+
+    public int getMatchNumber() {
+        return fMatchNumber;
+    }
     /**
      * Adds a message to the outbound queue.
      *

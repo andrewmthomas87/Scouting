@@ -5,7 +5,7 @@
 Client to Server
 ```javascript
 {
-    'MID': "login"
+    'type': "login"
     'scoutName': String
 }
 ```
@@ -20,7 +20,7 @@ Server to Client
 Client to Server
 ```javascript
 {
-    'MID': "prepare"
+    'type': "prepare"
     'CID': int
 }
 ```
@@ -36,7 +36,7 @@ Server to Client
 Client to Server
 ```javascript
 {
-    'MID': "ready"
+    'type': "ready"
     'CID': int,
     'matchNumber': int
 }
@@ -52,7 +52,7 @@ Server to Client
 Client to Server
 ```javascript
 {
-    'MID': "contribution"
+    'type': "contribution"
     'CID': int,
     'SID': int,
     'objects': String,  // '+' for addition to stack, '-' for subtraction from stack, and 'x' for knocked over removal
@@ -71,7 +71,7 @@ Server to Client
 Client to Server
 ```javascript
 {
-    'MID': "wazup"
+    'type': "wazup"
     'CID': int
 }
 ```
