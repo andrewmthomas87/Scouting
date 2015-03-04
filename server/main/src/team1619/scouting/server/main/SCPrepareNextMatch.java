@@ -10,32 +10,19 @@ import java.sql.SQLException;
  */
 public class SCPrepareNextMatch extends SCMessage {
 
-    private int fMatchNumber;
-    private int fTeamNumber;
-
-    public int getMatchNumber() {
-        return fMatchNumber;
-    }
-
-    public void setMatchNumber(int matchNumber) {
-        this.fMatchNumber = matchNumber;
-    }
-
-    public int getTeamNumber() {
-        return fTeamNumber;
-    }
-
-    public void setTeamNumber(int teamNumber) {
-        this.fTeamNumber = teamNumber;
-    }
-
     public SCPrepareNextMatch() {
 
     }
 
     @Override
-    void processMessage( MySQL conn, SCJSON message ) throws SQLException {
+    void processMessage(MySQL conn, SCJSON message) throws SQLException {
+        SCJSON outboundMessage = new SCJSON();
+        SCClientQueue clientQueue = SCOutbound.getClientQueue(getClientID());
 
+        if (getClientID() == 1) {
+            clientQueue.setMatchNumber();
+        } else {
+            outboundMessage.put("matchNumber", clientQueue.getMatchNumber());
+        }
     }
-
 }
