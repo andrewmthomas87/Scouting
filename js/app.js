@@ -83,7 +83,6 @@ $(document).ready(function() {
 			},
 			contentType: 'application/json',
 			success: function(result) {
-				var result = '{"started":true}';
 				var data = JSON.parse(result);
 				if (data.started) {
 					$('div#palette div.tote, div#palette div.chute-tote').attr('teamNumber', teamNumber);
