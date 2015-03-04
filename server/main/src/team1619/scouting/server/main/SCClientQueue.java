@@ -20,7 +20,6 @@ public class SCClientQueue
 {
     private int fClientId;
     private String fScoutName;
-    private int fMatchNumber = 0;
 
     private Queue<SCJSON> fQueue;
 
@@ -63,13 +62,6 @@ public class SCClientQueue
         return fClientId;
     }
 
-    public void setMatchNumber() {
-        fMatchNumber ++;
-    }
-
-    public int getMatchNumber() {
-        return fMatchNumber;
-    }
     /**
      * Adds a message to the outbound queue.
      *
@@ -150,6 +142,15 @@ public class SCClientQueue
 
         for ( Map.Entry<String, Object> entry : map.entrySet() )
         {
+            if ( !first )
+            {
+                buf.append( ", " );
+            }
+            else
+            {
+                first = false;
+            }
+
             buf.append('"').append( entry.getKey() ).append( "\" : " );
 
             Object val = entry.getValue();
@@ -169,15 +170,6 @@ public class SCClientQueue
             else
             {
                 buf.append( '"' ).append( val.toString() ).append( '"' );
-            }
-
-            if ( !first )
-            {
-                buf.append( ", " );
-            }
-            else
-            {
-                first = false;
             }
         }
         buf.append( "}" );
@@ -200,6 +192,7 @@ public class SCClientQueue
 
         out.write( "Content-Type: application/json; charset=UTF-8\n" );
         out.write( "Content-Length: " + contentLength + "\n" );
+        out.write( "Access-Control-Allow-Origin: *\n");
 
         // need to write a blank line to separate headers from body
         out.write( "\n" );

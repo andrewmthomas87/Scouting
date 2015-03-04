@@ -18,11 +18,8 @@ public class SCPrepareNextMatch extends SCMessage {
     void processMessage(MySQL conn, SCJSON message) throws SQLException {
         SCJSON outboundMessage = new SCJSON();
         SCClientQueue clientQueue = SCOutbound.getClientQueue(getClientID());
-
-        if (getClientID() == 1) {
-            clientQueue.setMatchNumber();
-        } else {
-            outboundMessage.put("matchNumber", clientQueue.getMatchNumber());
-        }
+        outboundMessage.put("matchNumber", SCMatch.getMatchNumber());
+        outboundMessage.put("teamNumber", SCMatch.getNextTeam());
+        clientQueue.writeToClient(outboundMessage);
     }
 }
