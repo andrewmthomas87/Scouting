@@ -1,5 +1,5 @@
 
-var serverIP = 'localhost:';
+var serverIP = 'http://127.0.0.1:8002';
 
 var CID, matchNumber, teamNumber;
 
@@ -28,15 +28,19 @@ $(document).ready(function() {
 		if (scoutName) {
 			$(this).fadeOut('slow');
 			$('div#loading').fadeIn('slow');
-			$.post(serverIP, {
-				'MID': 0,
-				'scoutName': scoutName
-			}, function(result) {
-				var result = '{"CID":1}';
-				var data = JSON.parse(result);
-				CID = data.CID;
-				$('div#loading').fadeOut('slow');
-				$('form#readyForNextMatch').fadeIn('slow');
+			$.ajax({
+				url: serverIP,
+				type: 'GET',
+				data: {
+					'type': 'login',
+					'scoutName': scoutName
+				},
+				contentType: 'application/json',
+				success: function(result) {
+					var data = JSON.parse('result');
+					$('div#loading').fadeOut('slow');
+					$('form#readyForNextMatch').fadeIn('slow');
+				}
 			});
 		}
 	});
@@ -45,18 +49,23 @@ $(document).ready(function() {
 		event.originalEvent.preventDefault();
 		$(this).fadeOut('slow');
 		$('div#loading').fadeIn('slow');
-		$.post(serverIP, {
-			'MID': 1,
-			'CID': CID
-		}, function(result) {
-			var result = '{"matchNumber":5,"teamNumber":1619}';
-			var data = JSON.parse(result);
-			matchNumber = data.matchNumber;
-			teamNumber = data.teamNumber;
-			$('div#loading').fadeOut('slow');
-			$('form#ready span#matchNumber').html(matchNumber);
-			$('form#ready span#teamNumber').html(teamNumber);
-			$('form#ready').fadeIn('slow');
+		$.ajax({
+			url: serverIP,
+			type: 'GET',
+			data: {
+				'type': 'prepare',
+				'CID': CID
+			},
+			contentType: 'application/json',
+			success: function(result) {
+				var data = JSON.parse(result);
+				matchNumber = data.matchNumber;
+				teamNumber = data.teamNumber;
+				$('div#loading').fadeOut('slow');
+				$('form#ready span#matchNumber').html(matchNumber);
+				$('form#ready span#teamNumber').html(teamNumber);
+				$('form#ready').fadeIn('slow');
+			}
 		});
 	});
 
@@ -64,18 +73,24 @@ $(document).ready(function() {
 		event.originalEvent.preventDefault();
 		$(this).fadeOut('slow');
 		$('div#loading').fadeIn('slow');
-		$.post(serverIP, {
-			'MID': 2,
-			'CID': CID,
-			'matchNumber': matchNumber
-		}, function(result) {
-			var result = '{"started":true}';
-			var data = JSON.parse(result);
-			if (data.started) {
-				$('div#palette div.tote, div#palette div.chute-tote').attr('teamNumber', teamNumber);
-				$('div#overlay, div#loading').fadeOut('slow');
+		$.ajax({
+			url: serverIP,
+			type: 'GET',
+			data: {
+				'type': 'ready',
+				'CID': CID,
+				'matchNumber': matchNumber
+			},
+			contentType: 'application/json',
+			success: function(result) {
+				var result = '{"started":true}';
+				var data = JSON.parse(result);
+				if (data.started) {
+					$('div#palette div.tote, div#palette div.chute-tote').attr('teamNumber', teamNumber);
+					$('div#overlay, div#loading').fadeOut('slow');
+				}
 			}
-		});
+		})
 	});
 
 
