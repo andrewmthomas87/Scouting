@@ -3,7 +3,6 @@ package team1619.scouting.server.main;
 import team1619.scouting.server.utils.SCLogger;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -64,5 +63,17 @@ public class SCOutbound
     public static Iterable<SCClientQueue> getClientQueues()
     {
         return fQueueMap.values();
+    }
+
+    /**
+     * Removes the queue (and any unsent messages) for client.
+     *
+     * @param clientId the id of the client to remove
+     */
+    public static void removeClientQueue( Integer clientId )
+    {
+        SCLogger.getLogger().info( "Removing queue for client id: %d", clientId );
+
+        fQueueMap.remove( clientId );
     }
 }
