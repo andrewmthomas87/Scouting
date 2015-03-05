@@ -17,13 +17,14 @@ public class MySQL
 
     private static int newMatchNumber;
 
-    private static String[] tables = new String[]{
-            // eventType: D = disabled, E = enabled (after disabled), F = fell over, C = comments
-            "create table robotEvents (teamNumber int, matchNumber int, eventType char(1), matchTime int, comments varchar(1024))",
+    private static String[] tables = new String[]
+            {
+                    // eventType: D = disabled, E = enabled (after disabled), F = fell over, C = comments
+                    "create table robotEvents (teamNumber int, matchNumber int, eventType char(1), matchTime int, comments varchar(1024))",
 
 
-            //not used for now:
-            "create table stacks (matchNumber int, SID int, totalHeight int, bin tinyint(1), litter tinyint(1), auton tinyint(1), scoringTeam int, platformType char(1), knockedBy int, matchTime int)",
+                    //not used for now:
+                    "create table stacks (matchNumber int, SID int, totalHeight int, bin tinyint(1), litter tinyint(1), auton tinyint(1), scoringTeam int, platformType char(1), knockedBy int, matchTime int)",
 
             
             /*
@@ -31,10 +32,18 @@ public class MySQL
             object: Y = yellow tote, F = floor tote, H = chute tote, B = bin, L = litter, S = step, P = platform
             */
 
-            "create table contributions (teamNumber int, matchNumber int, mode char(1), object char(1), SID int, matchTime int)"};
+                    "create table contributions (teamNumber int, matchNumber int, mode char(1), object char(1), SID int, matchTime int)",
 
-    private static String[] killTables = new String[]{
-            "drop table robotEvents", "drop table stacks", "drop table contributions"};
+                    "create table eventMatches (eventCode varchar(12), matchNumber int, played boolean default false, redTeam1 int, redTeam2 int, redTeam3 int, blueTeam1 int, blueTeam2 int, blueTeam3 int)"
+            };
+
+    private static String[] killTables = new String[]
+            {
+                    "drop table robotEvents",
+                    "drop table stacks",
+                    "drop table contributions",
+                    "drop table eventMatches"
+            };
 
     public void deleteTables() throws SQLException
     {
@@ -113,13 +122,13 @@ public class MySQL
 
     public int checkSID(int matchNumber, int SID) throws SQLException {
         Statement stmt = fConnection.createStatement();
-        ResultSet resultSet = stmt.executeQuery("select SID from stacks where matchNumber=" + matchNumber + " && SID=" + SID);
-        ResultSet nextSID = stmt.executeQuery("select max(SID) as maxSID from stacks");
+        ResultSet resultSet = stmt.executeQuery("select SID from contributions where matchNumber=" + matchNumber + " and SID=" + SID);
+        ResultSet nextSID = stmt.executeQuery("select max(SID) as maxSID from contributions");
         boolean availableSID = resultSet.wasNull(); //if input SID is not in the database, return true
         if (!availableSID) {                        //if it is in the database, do this
             if (nextSID.next()) {
                 int newSID = nextSID.getInt("maxSID");
-                SID = newSID++;
+                SID = newSID + 1;
             }
         }
         return SID;
