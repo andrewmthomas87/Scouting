@@ -30,10 +30,11 @@ public class SCWorkerThread extends Thread
         sMessageTable.put( "prepare", SCPrepareNextMatch.class );
         sMessageTable.put( "login", SCLogin.class );
         sMessageTable.put( "contribution", SCContribution.class );   // TODO: check the type name
-        sMessageTable.put( "setNextMatch", SCSetNextMatch.class );
+        sMessageTable.put( "setMatchData", SCSetMatchData.class );
         sMessageTable.put( "matchStarted", SCMatchStartedMessage.class );
         sMessageTable.put( "disconnectClient", SCDisconnectClientMessage.class );
         sMessageTable.put( "getClients", SCGetClientsMessage.class );
+        sMessageTable.put( "getNextMatch", SCGetNextMatchMessage.class );
     }
 
     private final Object fWaitFlag;

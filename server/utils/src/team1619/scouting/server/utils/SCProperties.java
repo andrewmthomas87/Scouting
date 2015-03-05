@@ -47,6 +47,17 @@ public class SCProperties
         
         return value;
     }
+
+    /**
+     * Sets a property.  Usually used when we want to override a default.
+     *
+     * @param key the key of the property
+     * @param value the value of the property
+     */
+    public static void setProperty( String key, String value )
+    {
+        sProperties.fProperties.setProperty( key, value );
+    }
     
     private SCProperties() throws InstantiationException
     {

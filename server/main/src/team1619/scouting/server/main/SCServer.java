@@ -35,12 +35,32 @@ public class SCServer
         {
             if ( args.length > 0 )
             {
-                if ( "--initialize".equals( args[ 0 ] ) )
+                for ( String arg : args )
                 {
-                    MySQL db = MySQL.connect();
-                    db.initialize();
-                    db.close();
+                    if ( "--initialize".equals( arg ) )
+                    {
+                        MySQL db = MySQL.connect();
+                        db.initialize();
+                        db.close();
+                    }
+                    else if ( arg.startsWith( "--eventCode=" ) )
+                    {
+                        String eventCode = arg.substring( arg.indexOf( "=" ) + 1 );
+
+                        // this will override a property given in the file
+
+                        SCProperties.setProperty( "event.code", eventCode );
+                    }
+                    else if ( "--clean-db".equals( arg ) )
+                    {
+                        // drops tables and then initializes
+                        MySQL db = MySQL.connect();
+                        db.deleteTables();
+                        db.initialize();
+                        db.close();
+                    }
                 }
+
             }
 
             // start the main listener on its own thread

@@ -42,7 +42,7 @@ public class SCMatch
 
     private List<MatchTeamData> fTeams;
 
-    public static void newMatch( int matchNumber, int redTeam1, int redTeam2, int redTeam3, int blueTeam1, int blueTeam2, int blueTeam3 )
+    public static void setCurrentMatch( int matchNumber, int redTeam1, int redTeam2, int redTeam3, int blueTeam1, int blueTeam2, int blueTeam3 )
     {
         sCurrentMatch = new SCMatch( matchNumber, redTeam1, redTeam2, redTeam3, blueTeam1, blueTeam2, blueTeam3 );
     }
@@ -95,5 +95,15 @@ public class SCMatch
     public static int getMatchNumber()
     {
         return sCurrentMatch.fMatchNumber;
+    }
+
+    /**
+     * This call only works before any clients have been assigned.
+     *
+     * @return the list of teams in this match
+     */
+    public static List<MatchTeamData> getAllTeamData()
+    {
+        return sCurrentMatch.fTeams;
     }
 }

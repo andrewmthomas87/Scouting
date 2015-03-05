@@ -370,4 +370,28 @@ public class SCJSON extends HashMap<String, Object>
 
         return parser.parse();
     }
+
+    /**
+     * Gets an integer object from the map.
+     *
+     * @param key the key of the object
+     *
+     * @return the value of the key or null if not present
+     */
+    public Integer getInteger( String key )
+    {
+        return (Integer)get( key );
+    }
+
+    /**
+     * Gets a string object from the map.
+     *
+     * @param key the key of the object
+     *
+     * @return the value of the key or null if not present
+     */
+    public String getString( String key )
+    {
+        return (String)get( key );
+    }
 }
