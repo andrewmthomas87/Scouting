@@ -14,7 +14,13 @@ public class SCReadyForStart extends SCMessage {
     }
 
     @Override
-    void processMessage(MySQL conn, SCJSON message) throws SQLException {
+    void processMessage(MySQL conn, SCJSON message) throws SQLException
+    {
+        SCJSON response = new SCJSON();
 
+        response.put( "type", "waiting" );
+
+        SCOutbound.getClientQueue( getClientID() ).writeToClient( response );
     }
+
 }

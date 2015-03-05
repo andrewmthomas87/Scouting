@@ -30,7 +30,7 @@ public class SCLogin extends SCMessage
 
         // json object that holds the assigned client id
         SCJSON outboundMessage = new SCJSON();
-        outboundMessage.put("type", "login");
+        outboundMessage.put( "type", "login" );
         outboundMessage.put( "CID", getClientID() );
 
         clientQueue.writeToClient( outboundMessage );

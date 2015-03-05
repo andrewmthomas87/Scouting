@@ -31,6 +31,7 @@ public class SCWorkerThread extends Thread
         sMessageTable.put( "login", SCLogin.class );
         sMessageTable.put( "contribution", SCContribution.class );   // TODO: check the type name
         sMessageTable.put( "setNextMatch", SCSetNextMatch.class );
+        sMessageTable.put( "matchStarted", SCMatchStartedMessage.class );
     }
 
     private final Object fWaitFlag;

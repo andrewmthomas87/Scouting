@@ -15,11 +15,13 @@ public class SCPrepareNextMatch extends SCMessage {
     }
 
     @Override
-    void processMessage(MySQL conn, SCJSON message) throws SQLException {
+    void processMessage(MySQL conn, SCJSON message) throws SQLException
+    {
         SCJSON outboundMessage = new SCJSON();
-        SCClientQueue clientQueue = SCOutbound.getClientQueue(getClientID());
-        outboundMessage.put("matchNumber", SCMatch.getMatchNumber());
-        outboundMessage.put("teamNumber", SCMatch.getNextTeam());
-        clientQueue.writeToClient(outboundMessage);
+        SCClientQueue clientQueue = SCOutbound.getClientQueue( getClientID() );
+        outboundMessage.put( "matchNumber", SCMatch.getMatchNumber() );
+        outboundMessage.put( "teamNumber", SCMatch.getNextTeam() );
+        outboundMessage.put( "alliance", "red" );  // TODO: correct color
+        clientQueue.writeToClient( outboundMessage );
     }
 }

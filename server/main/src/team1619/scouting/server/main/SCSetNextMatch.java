@@ -12,7 +12,8 @@ public class SCSetNextMatch extends SCMessage {
 
 
     @Override
-    void processMessage(MySQL conn, SCJSON message) throws SQLException {
+    void processMessage(MySQL conn, SCJSON message) throws SQLException
+    {
         SCMatch.newMatch(
                 (Integer) message.get("matchNumber"),
                 (Integer) message.get("redTeam1"),
@@ -21,5 +22,13 @@ public class SCSetNextMatch extends SCMessage {
                 (Integer) message.get("blueTeam1"),
                 (Integer) message.get("blueTeam2"),
                 (Integer) message.get("blueTeam3"));
+
+        // write back a happy response
+        SCJSON response = new SCJSON();
+
+        response.put( "type", "status" );
+        response.put( "status", "ok" );
+
+        SCOutbound.getClientQueue( getClientID() ).writeToClient( response );
     }
 }

@@ -3,6 +3,7 @@ package team1619.scouting.server.main;
 import team1619.scouting.server.utils.SCLogger;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -53,5 +54,15 @@ public class SCOutbound
         }
 
         return clientQueue;
+    }
+
+    /**
+     * Gets all the current client queues
+     *
+     * @return the client queues
+     */
+    public static Iterable<SCClientQueue> getClientQueues()
+    {
+        return fQueueMap.values();
     }
 }

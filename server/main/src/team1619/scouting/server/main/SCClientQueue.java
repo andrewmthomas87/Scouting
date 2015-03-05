@@ -1,6 +1,7 @@
 package team1619.scouting.server.main;
 
 import team1619.scouting.server.utils.SCJSON;
+import team1619.scouting.server.utils.SCLogger;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -80,9 +81,13 @@ public class SCClientQueue
      */
     public synchronized void flushQueueToClient( OutputStream out ) throws IOException
     {
+        SCLogger.getLogger().debug( "Flushing queue to client %d", getClientId() );
+
         if ( !fQueue.isEmpty() )
         {
             String serializedMessages = serializeMessage();
+
+            SCLogger.getLogger().debug( "Writing message to client %d: %s", getClientId(), serializedMessages );
 
             BufferedWriter writer = new BufferedWriter( new OutputStreamWriter( out ) );
 
@@ -118,8 +123,6 @@ public class SCClientQueue
 
         for ( SCJSON element : elements )
         {
-            addObject( buf, element );
-
             if ( !first )
             {
                 buf.append( ", " );
@@ -128,6 +131,8 @@ public class SCClientQueue
             {
                 first = false;
             }
+
+            addObject( buf, element );
         }
 
         buf.append( "]" );
