@@ -58,6 +58,7 @@ public class SCServer
                         db.deleteTables();
                         db.initialize();
                         db.close();
+                        System.exit( 0 );
                     }
                 }
 
@@ -72,6 +73,7 @@ public class SCServer
         catch ( Throwable t )
         {
             SCLogger.getLogger().info( "Exiting server." );
+            SCLogger.getLogger().error( "Exception: %s", t.getMessage() );
         }
 
         shutdownSubsystems();

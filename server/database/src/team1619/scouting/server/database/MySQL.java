@@ -13,7 +13,6 @@ import java.sql.Statement;
 
 public class MySQL
 {
-
     private Connection fConnection;
 
     private static int newMatchNumber;
@@ -40,10 +39,10 @@ public class MySQL
 
     private static String[] killTables = new String[]
             {
-                    "drop table robotEvents",
-                    "drop table stacks",
-                    "drop table contributions",
-                    "drop table eventMatches"
+                    "drop table if exists robotEvents",
+                    "drop table if exists stacks",
+                    "drop table if exists contributions",
+                    "drop table if exists eventMatches"
             };
 
     public void deleteTables() throws SQLException
@@ -200,8 +199,6 @@ public class MySQL
             stmt.close();
         }
 
-        fConnection.commit();
-
         matchDataExistsStmt.close();
     }
 
@@ -215,7 +212,7 @@ public class MySQL
     {
         PreparedStatement nextMatchStmt =
                 fConnection.prepareStatement( "select matchNumber, redTeam1, redTeam2, redTeam3," +
-                                                      " blueTeam1, blueTeam2, blueTeam2 from eventMatches where eventCode=? and" +
+                                                      " blueTeam1, blueTeam2, blueTeam3 from eventMatches where eventCode=? and" +
                                                       " matchNumber=(select min(matchNumber) from eventMatches where eventCode=? and" +
                                                       " played=false)" );
 
