@@ -52,8 +52,8 @@ $(document).ready(function() {
 				'type': 'prepare',
 				'CID': CID
 			}), function(data) {
-				matchNumber = data.matchNumber;
-				teamNumber = data.teamNumber;
+				matchNumber = data[0].matchNumber;
+				teamNumber = data[0].teamNumber;
 				$('div#loading').fadeOut('slow');
 				$('form#ready span#matchNumber').html(matchNumber);
 				$('form#ready span#teamNumber').html(teamNumber);
@@ -66,19 +66,7 @@ $(document).ready(function() {
 		event.originalEvent.preventDefault();
 		$(this).fadeOut('slow');
 		$('div#loading').fadeIn('slow');
-		$.getJSON(
-			serverIP,
-			JSON.stringify({
-				'type': 'ready',
-				'CID': CID,
-				'matchNumber': matchNumber
-			}), function(data) {
-				if (data.started) {
-					$('div#palette div.tote, div#palette div.chute-tote').attr('teamNumber', teamNumber);
-					$('div#overlay, div#loading').fadeOut('slow');
-				}
-			}
-		);
+		waitForNextMatch();
 	});
 
 
@@ -330,3 +318,29 @@ $(document).ready(function() {
 	});
 
 });
+
+function waitForNextMatch() {
+	$.getJSON(
+		serverIP,
+		JSON.stringify({
+			'type': 'ready',
+			'CID': CID,
+			'matchNumber': matchNumber
+		}), function(data) {
+			var matchStarted = false;
+			for (i = 0; i < data.length; i++) {
+				if (data[i].type == 'matchStarted' && data[i].matchNumber == matchNumber) {
+					matchStarted = true;
+					break;
+				}
+			}
+			if (matchStarted) {
+				$('div#palette div.tote, div#palette div.chute-tote').attr('teamNumber', teamNumber);
+				$('div#overlay, div#loading').fadeOut('slow');
+			}
+			else {
+				setTimeout(waitForNextMatch, 50);
+			}
+		}
+	);
+}

@@ -9,20 +9,30 @@
 	</head>
 
 	<body>
-		<form>
-			<input type='text' name='matchNumber' placeholder='Match Number'>
-			<hr>
-			<input type='text' name='redTeam1' placeholder='Red Alliance 1'>
-			<input type='text' name='redTeam2' placeholder='Red Alliance 2'>
-			<input type='text' name='redTeam3' placeholder='Red Alliance 3'>
-			<hr>
-			<input type='text' name='blueTeam1' placeholder='Blue Alliance 1'>
-			<input type='text' name='blueTeam2' placeholder='Blue Alliance 2'>
-			<input type='text' name='blueTeam3' placeholder='Blue Alliance 3'>
-			<hr>
-			<input type='submit' value='Set next match'>
-		</form>
+		<nav>
+			<a id='match'>Set up match</a><!--
+			--><a id='connections'>Manage devices</a>
+		</nav>
+		<section id='setUpMatch'>
+			<form>
+				<input id='matchNumber' type='text' placeholder='Match Number'>
+				<div class='left'>
+					<input id='redTeam1' type='text' placeholder='Red Alliance 1'>
+					<input id='redTeam2' type='text' placeholder='Red Alliance 2'>
+					<input id='redTeam3' type='text' placeholder='Red Alliance 3'>
+				</div><!--
+				--><div class='right'>
+					<input id='blueTeam1' type='text' placeholder='Blue Alliance 1'>
+					<input id='blueTeam2' type='text' placeholder='Blue Alliance 2'>
+					<input id='blueTeam3' type='text' placeholder='Blue Alliance 3'>
+				</div>
+				<a class='inline' id='edit'>Edit</a><!--
+				--><a class='inline' id='start'>Start</a>
+				<a id='update' style='display: none'>Update</a>
+			</form>
+		</section>
 		<script src='../js/jquery-1.11.2.js'></script>
+		<script src='../js/utils.js'></script>
 		<script src='../js/supervisor.js'></script>
 	</body>
 
