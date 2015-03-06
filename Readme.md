@@ -32,9 +32,62 @@ Server to Client
 }
 ```
 ---
+#### Get next match ####
+Supervisor to Server
+'''javascript
+{
+    'type': "getNextMatch"
+    'CID': int
+}
+'''
+Server to Supervisor
+'''Javascript
+{   // if error
+    'type': 'status'
+    'status': 'noNextMatch'
+    'description': 'error text'
+}
+{   //else
+    'type': 'nextMatchData'
+    'matchNumber': int
+    'redTeam1': int
+    'redTeam2': int
+    'redTeam3': int
+    'blueTeam1': int
+    'blueTeam2': int
+    'blueTeam3': int
+}
+'''
+---
+#### Set match data ####
+Supervisor to Server
+'''Javascript
+{
+    'type': 'setMatchData'
+    'matchNumber': int
+    'redTeam1': int
+    'redTeam2': int
+    'redTeam3': int
+    'blueTeam1': int
+    'blueTeam2': int
+    'blueTeam3': int
+}
+'''
+Server to Supervisor
+'''Javascript
+{   // if fine
+    'type': 'status'
+    'status': 'ok'
+}
+{   // else
+    'type': 'status'
+    'status': 'badMessage'
+}
+'''
+---
 #### Ready for start ####
 Client to Server
-```javascript
+```Javascript
 {
     'type': "ready"
     'CID': int,
@@ -42,11 +95,28 @@ Client to Server
 }
 ```
 Server to Client
-```javascript
+```Javascript
 {
     'started': true
 }
 ```
+
+---
+#### Get clients ####
+Supervisor to Server
+'''Javascript
+{
+    'type': 'getClients'
+}
+'''
+Server to Supervisor
+'''Javascript
+{
+    'type': 'connectedClients'
+    'clients': [{'CID': int, 'scoutName': String, 'teamNumber': int}...]
+}
+'''
+
 ---
 #### Contribution ####
 Client to Server
@@ -81,3 +151,17 @@ Server to Client
     'updates': JSON
 }
 ```
+
+#### Disconnect ####
+Supervisor to Server '''Javascript
+{
+    'type': "disconnectClient"
+    'disconnectCID': int
+}
+'''
+Server to Supervisor '''Javascript
+{
+    'type': "status"
+    'status': "ok"
+}
+'''

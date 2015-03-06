@@ -23,19 +23,16 @@ public class SCContribution extends SCMessage {
 
     }
 
-    void init(SCJSON data) {
-        fSID = (int) data.get("SID");
-        fTime = (int) data.get("time");
-        String mode = (String) data.get("mode");
-        fMode = mode.substring(0, 0);
-        fObjects = mode.substring(1);
-        fAutonomous = (boolean) data.get("autonomous");
-        fTeamNumber = (int) data.get("teamNumber");
-        fMatchNumber = (int) data.get("matchNumber");
-    }
-
     void processMessage( MySQL conn, SCJSON message ) throws SQLException
     {
         conn.addContribution( fTeamNumber, fMatchNumber, fMode, fObjects, fSID, fTime );
+        fSID = (int) message.get("SID");
+        fTime = (int) message.get("time");
+        String mode = (String) message.get("mode");
+        fMode = mode.substring(0, 0);
+        fObjects = mode.substring(1);
+        fAutonomous = (boolean) message.get("autonomous");
+        fTeamNumber = (int) message.get("teamNumber");
+        fMatchNumber = (int) message.get("matchNumber");
     }
 }

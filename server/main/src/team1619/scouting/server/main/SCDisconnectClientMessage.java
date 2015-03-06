@@ -17,12 +17,12 @@ public class SCDisconnectClientMessage extends SCMessage
     public void processMessage( MySQL conn, SCJSON message )
         throws SQLException
     {
-        SCOutbound.removeClientQueue( (Integer)message.get( "disconnectCID") );
+        SCOutbound.removeClientQueue( message.getInteger( "disconnectCID") );
 
         SCJSON response = new SCJSON();
 
         response.put( "type", "status" );
-        response.put( "status", "disconnected" );
+        response.put( "status", "ok" );
 
         SCOutbound.getClientQueue( getClientID() ).writeToClient( response );
     }
