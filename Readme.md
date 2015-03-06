@@ -41,7 +41,7 @@ Supervisor to Server
 }
 '''
 Server to Supervisor
-'''Javascript
+'''javascript
 {   // if error
     'type': 'status'
     'status': 'noNextMatch'
@@ -61,7 +61,7 @@ Server to Supervisor
 ---
 #### Set match data ####
 Supervisor to Server
-'''Javascript
+'''javascript
 {
     'type': 'setMatchData'
     'matchNumber': int
@@ -74,7 +74,7 @@ Supervisor to Server
 }
 '''
 Server to Supervisor
-'''Javascript
+'''javascript
 {   // if fine
     'type': 'status'
     'status': 'ok'
@@ -87,7 +87,7 @@ Server to Supervisor
 ---
 #### Ready for start ####
 Client to Server
-```Javascript
+```javascript
 {
     'type': "ready"
     'CID': int,
@@ -95,7 +95,7 @@ Client to Server
 }
 ```
 Server to Client
-```Javascript
+```javascript
 {
     'started': true
 }
@@ -104,16 +104,16 @@ Server to Client
 ---
 #### Get clients ####
 Supervisor to Server
-'''Javascript
+'''javascript
 {
     'type': 'getClients'
 }
 '''
 Server to Supervisor
-'''Javascript
+'''javascript
 {
     'type': 'connectedClients'
-    'clients': [{'CID': int, 'scoutName': String, 'teamNumber': int}...]
+    'clients': [{'CID': int, 'scoutName': String, 'teamNumber': int}...] // if teamNumber == -1, teamNumber returned null
 }
 '''
 
@@ -153,13 +153,15 @@ Server to Client
 ```
 
 #### Disconnect ####
-Supervisor to Server '''Javascript
+Supervisor to Server
+'''javascript
 {
     'type': "disconnectClient"
     'disconnectCID': int
 }
 '''
-Server to Supervisor '''Javascript
+Server to Supervisor
+'''javascript
 {
     'type': "status"
     'status': "ok"
