@@ -106,4 +106,14 @@ public class SCMatch
     {
         return sCurrentMatch.fTeams;
     }
+
+    public static int getTeamNumber(Integer clientID) {
+        MatchTeamData data = sCurrentMatch.fTeamsMap.get( clientID );
+        if (data == null) {
+            return -1;
+        }
+        else {
+            return data.getTeamNumber();
+        }
+    }
 }
