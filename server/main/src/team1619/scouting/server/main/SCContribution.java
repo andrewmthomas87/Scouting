@@ -34,5 +34,27 @@ public class SCContribution extends SCMessage {
         fAutonomous = (boolean) message.get("autonomous");
         fTeamNumber = (int) message.get("teamNumber");
         fMatchNumber = (int) message.get("matchNumber");
+        SCClientQueue clientQueue1 = SCOutbound.getClientQueue( 1 );
+        SCClientQueue clientQueue2 = SCOutbound.getClientQueue(2);
+        SCClientQueue clientQueue3 = SCOutbound.getClientQueue(3);
+        SCClientQueue clientQueue4 = SCOutbound.getClientQueue(4);
+        SCClientQueue clientQueue5 = SCOutbound.getClientQueue(5);
+        SCClientQueue clientQueue6 = SCOutbound.getClientQueue(6);
+
+        SCJSON outboundMessage = new SCJSON();
+        outboundMessage.put( "type", "contribution" );
+        outboundMessage.put( "SID", fSID );
+        outboundMessage.put( "time", fTime);
+        outboundMessage.put( "mode", mode );
+        outboundMessage.put( "autonomous", fAutonomous);
+        outboundMessage.put( "teamNumber", fTeamNumber);
+        outboundMessage.put( "matchNumber", fMatchNumber );
+
+        clientQueue1.writeToClient( outboundMessage );
+        clientQueue2.writeToClient( outboundMessage );
+        clientQueue3.writeToClient( outboundMessage );
+        clientQueue4.writeToClient( outboundMessage );
+        clientQueue5.writeToClient( outboundMessage );
+        clientQueue6.writeToClient( outboundMessage );
     }
 }
