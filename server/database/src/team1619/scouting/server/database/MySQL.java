@@ -134,7 +134,7 @@ public class MySQL
         Statement stmt = fConnection.createStatement();
         ResultSet resultSet = stmt.executeQuery( "select UUID_SHORT()");
         resultSet.next();
-        int SID = resultSet.getInt( 1 );
+        int SID = (int)(0xffffffffL & resultSet.getLong( 1 ));
         stmt.close();
         return SID;
     }

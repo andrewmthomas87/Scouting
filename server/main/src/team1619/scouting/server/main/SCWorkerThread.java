@@ -38,6 +38,7 @@ public class SCWorkerThread extends Thread
         sMessageTable.put( "getClients", SCGetClientsMessage.class );
         sMessageTable.put( "getNextMatch", SCGetNextMatchMessage.class );
         sMessageTable.put( "resetMatch", SCResetMatchMessage.class );
+        sMessageTable.put( "wazUp", SCWazUp.class);
     }
 
     private final Object fWaitFlag;
@@ -114,7 +115,7 @@ public class SCWorkerThread extends Thread
 
         synchronized ( fWaitFlag )
         {
-            // ok, we have work to do, so let this thread now run
+            // ok, we have work to do, so let this thread run now
             fWaitFlag.notifyAll();
         }
     }
@@ -142,8 +143,6 @@ public class SCWorkerThread extends Thread
                 // read from the input until we get the Content-Length header so that
                 // we know the size of the JSON payload
 
-                System.out.println( line );
-
                 line = in.readLine();
             }
 
@@ -159,7 +158,11 @@ public class SCWorkerThread extends Thread
             // instance of the message and then execute that message.
             String messageType = (String) json.get( "type" );
 
-            SCLogger.getLogger().debug( "Received message type '%s'", messageType );
+            if (!(messageType.equals("wazUp") || messageType.equals( "ready" )))
+            {
+                System.out.printf( "Received message type %s\n", messageType );
+                SCLogger.getLogger().debug( "Received message type '%s'", messageType );
+            }
 
             if ( "shutdown".equals( messageType ) )
             {
@@ -172,7 +175,7 @@ public class SCWorkerThread extends Thread
                 if ( processorClass == null )
                 {
                     SCLogger.getLogger().error( "Unknown message type: %s", messageType );
-                    throw new IllegalArgumentException( "message type =" + messageType );
+                    throw new IllegalArgumentException( "message type " + messageType );
                 }
 
                 SCMessage messageProcessor = processorClass.newInstance();
