@@ -66,6 +66,10 @@ public class SCMatch
 
     public static MatchTeamData getNextTeam(Integer clientId)
     {
+        if ( sCurrentMatch == null) {
+            SCLogger.getLogger().warning( "client %d trying to get team before match setup", clientId );
+            return null;
+        }
         return sCurrentMatch.lookupTeamData( clientId );
     }
 

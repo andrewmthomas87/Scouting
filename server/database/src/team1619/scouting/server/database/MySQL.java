@@ -4,12 +4,7 @@ import team1619.scouting.server.main.SCMatch;
 import team1619.scouting.server.utils.SCLogger;
 import team1619.scouting.server.utils.SCProperties;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class MySQL
 {
@@ -27,10 +22,11 @@ public class MySQL
             
                     /*
                     mode: A = autonomous, T = teleop
-                    object: Y = yellow tote, F = floor tote, H = chute tote, B = bin, L = litter, S = step, P = platform
+                    object: Y = yellow tote, F = floor tote, H = chute tote, B = bin, L = litter, S = step, P = platform,
+                    K = stack (K<int>)
                     */
 
-                    "create table contributions (teamNumber int, matchNumber int, mode char(1), object char(1), SID int, matchTime int)",
+                    "create table contributions (teamNumber int, matchNumber int, mode char(1), object char(1), SID int, otherSID int, matchTime int)",
 
                     "create table eventMatches (eventCode varchar(12), matchNumber int, played boolean default false, redTeam1 int, redTeam2 int, redTeam3 int, blueTeam1 int, blueTeam2 int, blueTeam3 int)"
             };
@@ -97,14 +93,25 @@ public class MySQL
 
     public void addContribution( int teamNumber, int matchNumber, String mode, String object, int SID, int matchTime ) throws SQLException
     {
+        Integer otherSID = null;
+
+        if (object.charAt( 0 ) == 'K') {
+            otherSID = Integer.valueOf( object.substring( 1 ) );
+        }
         PreparedStatement stmt = fConnection
-                .prepareStatement( "insert into contributions (teamNumber, matchNumber, mode, object, SID, matchTime) values (?,?,?,?,?,?)" );
+                .prepareStatement( "insert into contributions (teamNumber, matchNumber, mode, object, SID, matchTime, otherSID) values (?,?,?,?,?,?,?)" );
         stmt.setInt( 1, teamNumber );
         stmt.setInt( 2, matchNumber );
         stmt.setString( 3, mode );
         stmt.setString( 4, object );
         stmt.setInt( 5, SID );
         stmt.setInt( 6, matchTime );
+        if (otherSID == null) {
+            stmt.setNull( 7, Types.INTEGER );
+        }
+        else {
+            stmt.setInt(7, otherSID);
+        }
         stmt.executeUpdate();
         stmt.close();
     }

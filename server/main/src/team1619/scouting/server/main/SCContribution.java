@@ -13,6 +13,7 @@ public class SCContribution extends SCMessage {
 
     private int fSID;
     private String fObjects;
+    private String[] fObjectArray;
     private String fMode;
     private int fTime;
     private int fTeamNumber;
@@ -29,17 +30,22 @@ public class SCContribution extends SCMessage {
             fSID = conn.getNextSID();
         }
         fTime = message.getInteger("time");
-        fObjects = message.getString("objects");
-        fMode = (boolean) message.get("autonomous") ? "A" : "T";
+        fObjects = message.getString( "objects" );
+        fObjectArray = fObjects.split( "," );
+        fMode = message.getString("mode");
         fTeamNumber = message.getInteger("teamNumber");
         fMatchNumber = message.getInteger("matchNumber");
-        conn.addContribution( fTeamNumber, fMatchNumber, fMode, fObjects, fSID, fTime );
+        for(int i = 0; i < fObjectArray.length; i ++)
+        {
+            conn.addContribution( fTeamNumber, fMatchNumber, fMode, fObjectArray[i], fSID, fTime );
+        }
 
         SCJSON outboundMessage = new SCJSON();
         outboundMessage.put( "type", "contribution" );
         outboundMessage.put( "SID", fSID );
         outboundMessage.put( "time", fTime);
-        outboundMessage.put( "autonomous", fMode);
+        outboundMessage.put( "objects", fObjects);
+        outboundMessage.put( "mode", fMode);
         outboundMessage.put( "teamNumber", fTeamNumber);
         outboundMessage.put( "matchNumber", fMatchNumber );
         

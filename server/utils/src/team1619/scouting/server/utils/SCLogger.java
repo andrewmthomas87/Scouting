@@ -19,26 +19,25 @@ public class SCLogger
     {
         INFO, ERROR, WARNING, DEBUG
     }
-    
+
     // the parameter in the log name will be replaced with the date and time the
     // log file was created
     private static final String LOG_NAME = "scout_log_%s.txt";
-    
+
     // the file that holds the log
     private final FileWriter fLog;
-    
+
     private final SimpleDateFormat fLogTimeFormat;
-    
+
     // the singleton logger object
     private static SCLogger sLogger;
 
     /**
      * Gets the singleton logger object.
-     * 
-     * Precondition: logger must have been initialized before 
-     *  
+     * <p>
+     * Precondition: logger must have been initialized before
+     *
      * @return the logger object.
-     * 
      * @throws InstantiationError the logger was never initialized
      */
     public static SCLogger getLogger()
@@ -62,7 +61,7 @@ public class SCLogger
             throw new InstantiationException( ex.getMessage() );
         }
     }
-    
+
     public static void shutdown()
     {
         sLogger.close();
@@ -70,9 +69,9 @@ public class SCLogger
 
     /**
      * Constructs a logger by creating the logger file.
-     * 
+     *
      * @throws InstantiationException if directory invalid or unable to create
-     * @throws IOException if unable to create the log file
+     * @throws IOException            if unable to create the log file
      */
     private SCLogger() throws InstantiationException, IOException
     {
@@ -88,9 +87,9 @@ public class SCLogger
             System.out.format( "Directory '%s' does not exist, create it? (y/n) ", directory );
 
             Scanner in = new Scanner( System.in );
-            
+
             String answer = in.nextLine();
-            
+
             if ( answer.startsWith( "y" ) || answer.startsWith( "Y" ) )
             {
                 // create the directory
@@ -100,21 +99,21 @@ public class SCLogger
                     throw new InstantiationException( "unable to create logging directory" );
                 }
             }
-            
+
         }
-            
+
         if ( !dir.isDirectory() )
         {
             // make sure the path is a directory
             System.out.format( "The path '%s' does not name a directory.\n", directory );
             throw new InstantiationException( "unable to open logging directory" );
         }
-        
+
         // finally, create the logging file
         // get the timestamp as a string
         SimpleDateFormat format = new SimpleDateFormat( "yyyy-MM-dd-HHmm" );
         String timestamp = format.format( new Date() );
-        
+
         fLog = new FileWriter( new File( dir, String.format( LOG_NAME, timestamp ) ) );
     }
 
@@ -135,54 +134,50 @@ public class SCLogger
 
     /**
      * Writes a message at the info level to the log.
-     * 
-     * @param msg the message to write
+     *
+     * @param msg  the message to write
      * @param args the arguments to the message
-     *  
      * @throws SCIOException if there is a problem writing to the log
      */
-    public void info( String msg, Object ... args ) throws SCIOException
+    public void info(String msg, Object... args) throws SCIOException
     {
-        logWrite( SCLogLevels.INFO.toString(), msg, args );
+        logWrite( SCLogLevels.INFO, msg, args );
     }
 
     /**
      * Writes a message at the warning level to the log.
      *
-     * @param msg the message to write
+     * @param msg  the message to write
      * @param args the arguments to the message
-     *
      * @throws SCIOException if there is a problem writing to the log
      */
-    public void warning( String msg, Object ... args ) throws SCIOException
+    public void warning(String msg, Object... args) throws SCIOException
     {
-        logWrite( SCLogLevels.WARNING.toString(), msg, args );
+        logWrite( SCLogLevels.WARNING, msg, args );
     }
 
     /**
      * Writes a message at the error level to the log.
      *
-     * @param msg the message to write
+     * @param msg  the message to write
      * @param args the arguments to the message
-     *
      * @throws SCIOException if there is a problem writing to the log
      */
-    public void error( String msg, Object ... args ) throws SCIOException
+    public void error(String msg, Object... args) throws SCIOException
     {
-        logWrite( SCLogLevels.ERROR.toString(), msg, args );
+        logWrite( SCLogLevels.ERROR, msg, args );
     }
 
     /**
      * Writes a message at the debug level to the log.
      *
-     * @param msg the message to write
+     * @param msg  the message to write
      * @param args the arguments to the message
-     *
      * @throws SCIOException if there is a problem writing to the log
      */
-    public void debug( String msg, Object ... args ) throws SCIOException
+    public void debug(String msg, Object... args) throws SCIOException
     {
-        logWrite( SCLogLevels.DEBUG.toString(), msg, args );
+        logWrite( SCLogLevels.DEBUG, msg, args );
     }
 
     /**
@@ -190,24 +185,33 @@ public class SCLogger
      *
      * @param t the exception
      */
-    public void printStackTrace( Throwable t )
+    public void printStackTrace(Throwable t)
     {
         PrintWriter out = new PrintWriter( fLog );
         t.printStackTrace( out );
+
+        t.printStackTrace();
     }
 
-    private void logWrite( String level, String msg, Object ... args ) throws SCIOException
+    private void logWrite(SCLogLevels level, String msg, Object... args) throws SCIOException
     {
         try
         {
             String formattedString = String.format( "%s <%s> [%s]: %s\n",
-                                                    fLogTimeFormat.format( new Date() ),
-                                                    Thread.currentThread().getName(),
-                                                    level,
-                                                    msg );
-            
+                    fLogTimeFormat.format( new Date() ),
+                    Thread.currentThread().getName(),
+                    level,
+                    msg );
+
             fLog.write( String.format( formattedString, args ) );
-            
+
+            if ( SCLogLevels.ERROR.equals( level ) )
+            {
+                System.out.println( "----------------------------------------------------------------------" );
+                System.out.println( String.format( formattedString, args ) );
+                System.out.println( "----------------------------------------------------------------------" );
+            }
+
             fLog.flush();
         }
         catch ( IOException ex )

@@ -85,20 +85,25 @@ public class SCClientQueue
 
         if ( !fQueue.isEmpty() )
         {
-            String serializedMessages = serializeMessage();
-
-            SCLogger.getLogger().debug( "Writing message to client %d: %s", getClientId(), serializedMessages );
-
-            BufferedWriter writer = new BufferedWriter( new OutputStreamWriter( out ) );
-
-            writeHTTPResponseHeaders( writer, serializedMessages.length() );
-
-            writer.write( serializedMessages );
-
-            writer.flush();
+            writeJSONToClient( out, fQueue, getClientId() );
 
             fQueue.clear();
         }
+    }
+
+    public static void writeJSONToClient( OutputStream out, Queue<SCJSON> messageQueue, int clientID ) throws IOException
+    {
+        String serializedMessages = serializeMessage( messageQueue );
+
+        SCLogger.getLogger().debug( "Writing message to client %d: %s", clientID, serializedMessages );
+
+        BufferedWriter writer = new BufferedWriter( new OutputStreamWriter( out ) );
+
+        writeHTTPResponseHeaders( writer, serializedMessages.length() );
+
+        writer.write( serializedMessages );
+
+        writer.flush();
     }
 
     /**
@@ -106,16 +111,16 @@ public class SCClientQueue
      *
      * @return the string version of the JSON objects
      */
-    private String serializeMessage()
+    public static String serializeMessage( Queue<SCJSON> queue )
     {
         StringBuilder buf = new StringBuilder();
 
-        addArray( buf, fQueue );
+        addArray( buf, queue );
 
         return buf.toString();
     }
 
-    private void addArray( StringBuilder buf, Collection<SCJSON> elements )
+    private static void addArray( StringBuilder buf, Collection<SCJSON> elements )
     {
         buf.append( "[" );
 
@@ -139,7 +144,7 @@ public class SCClientQueue
     }
 
     @SuppressWarnings( "unchecked" )
-    private void addObject( StringBuilder buf, SCJSON map )
+    private static void addObject( StringBuilder buf, SCJSON map )
     {
         buf.append( "{" );
 
@@ -188,7 +193,7 @@ public class SCClientQueue
      *
      * @throws IOException problem writing
      */
-    private void writeHTTPResponseHeaders( BufferedWriter out, int contentLength ) throws IOException
+    private static void writeHTTPResponseHeaders( BufferedWriter out, int contentLength ) throws IOException
     {
         out.write( "HTTP/1.1 200 OK\n" );
 

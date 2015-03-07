@@ -11,7 +11,9 @@ import java.net.Socket;
 import java.net.URLDecoder;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 
 /**
  * A worker thread processes an inbound connection.
@@ -35,6 +37,7 @@ public class SCWorkerThread extends Thread
         sMessageTable.put( "disconnectClient", SCDisconnectClientMessage.class );
         sMessageTable.put( "getClients", SCGetClientsMessage.class );
         sMessageTable.put( "getNextMatch", SCGetNextMatchMessage.class );
+        sMessageTable.put( "resetMatch", SCResetMatchMessage.class );
     }
 
     private final Object fWaitFlag;
@@ -177,12 +180,31 @@ public class SCWorkerThread extends Thread
                 // set the client id for every message
                 messageProcessor.setClientID( (Integer) json.get( "CID" ) );
 
-                messageProcessor.processMessage( conn, json );
+                boolean normalResponse = true;
 
-                // flush this client's queue to client
-                SCClientQueue clientQueue = SCOutbound.getClientQueue( messageProcessor.getClientID() );
+                try
+                {
+                    messageProcessor.processMessage( conn, json );
+                }
+                catch (IllegalArgumentException ex )
+                {
+                    // this means no client queue, so send back not logged in directly on socket
+                    Queue<SCJSON> logoutMessage = new LinkedList<>();
+                    SCJSON msg = new SCJSON();
+                    msg.put( "type", "status" );
+                    msg.put( "status", "disconnected" );
+                    logoutMessage.add( msg );
+                    SCClientQueue.writeJSONToClient( fInboundSocket.getOutputStream(), logoutMessage, 0 );
+                    normalResponse = false;
+                }
 
-                clientQueue.flushQueueToClient( fInboundSocket.getOutputStream() );
+                if ( normalResponse )
+                {
+                    // flush this client's queue to client
+                    SCClientQueue clientQueue = SCOutbound.getClientQueue( messageProcessor.getClientID() );
+
+                    clientQueue.flushQueueToClient( fInboundSocket.getOutputStream() );
+                }
             }
 
             requestStream.close();

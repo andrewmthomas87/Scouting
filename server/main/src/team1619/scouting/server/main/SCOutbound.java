@@ -48,7 +48,7 @@ public class SCOutbound
 
         if ( clientQueue == null )
         {
-            SCLogger.getLogger().error( "Missing queue for client id %d", clientId );
+            SCLogger.getLogger().error( "not logged in" );
             throw new IllegalArgumentException( "no queue for client: " + clientId );
         }
 
@@ -70,10 +70,10 @@ public class SCOutbound
      *
      * @param clientId the id of the client to remove
      */
-    public static void removeClientQueue( Integer clientId )
+    public static SCClientQueue removeClientQueue( Integer clientId )
     {
         SCLogger.getLogger().info( "Removing queue for client id: %d", clientId );
 
-        fQueueMap.remove( clientId );
+        return fQueueMap.remove( clientId );
     }
 }
