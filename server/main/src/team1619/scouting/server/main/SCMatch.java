@@ -126,4 +126,8 @@ public class SCMatch
             return data.getTeamNumber();
         }
     }
+
+    public static void closeMatch() {
+        sCurrentMatch = null;
+    }
 }

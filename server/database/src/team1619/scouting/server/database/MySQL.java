@@ -20,7 +20,7 @@ public class MySQL
     private static String[] tables = new String[]
             {
                     // eventType: D = disabled, E = enabled (after disabled), F = fell over, C = comments
-                    "create table robotEvents (teamNumber int, matchNumber int, eventType char(1), matchTime int, comments varchar(1024))",
+                    "create table robotEvents (eventCode varchar(12), teamNumber int, matchNumber int, eventType char(1), matchTime int, comments varchar(1024))",
 
 
                     // not used for now:
@@ -124,20 +124,13 @@ public class MySQL
     }
 
 
-    public int checkSID( int matchNumber, int SID ) throws SQLException
+    public int getNextSID() throws SQLException
     {
         Statement stmt = fConnection.createStatement();
-        ResultSet resultSet = stmt.executeQuery( "select SID from contributions where matchNumber=" + matchNumber + " and SID=" + SID );
-        ResultSet nextSID = stmt.executeQuery( "select max(SID) as maxSID from contributions" );
-        boolean availableSID = resultSet.wasNull(); //if input SID is not in the database, return true
-        if ( !availableSID )
-        {                        //if it is in the database, do this
-            if ( nextSID.next() )
-            {
-                int newSID = nextSID.getInt( "maxSID" );
-                SID = newSID + 1;
-            }
-        }
+        ResultSet resultSet = stmt.executeQuery( "select UUID_SHORT()");
+        resultSet.next();
+        int SID = resultSet.getInt( 1 );
+        stmt.close();
         return SID;
     }
 
@@ -259,7 +252,7 @@ public class MySQL
      *
      * @throws SQLException if an error occurs
      */
-    public void setMatchStarted( String eventCode, int matchNumber ) throws SQLException
+    public void setMatchPlayed(String eventCode, int matchNumber) throws SQLException
     {
         PreparedStatement matchStartedStmt =
                 fConnection.prepareStatement( "update eventMatches set played=true where matchNumber=? and eventCode=? " );
@@ -270,5 +263,14 @@ public class MySQL
         matchStartedStmt.execute();
 
         matchStartedStmt.close();
+    }
+
+    public void deleteMatch(int matchNumber) throws SQLException {
+        PreparedStatement matchDeleteStmt = fConnection.prepareStatement( "delete from contributions where matchNumber = ?" );
+        matchDeleteStmt.setInt( 1 , matchNumber );
+
+        matchDeleteStmt.execute();
+
+        matchDeleteStmt.close();
     }
 }

@@ -31,9 +31,6 @@ public class SCMatchStartedMessage extends SCMessage
             queue.writeToClient( startMessage );
         }
 
-        // update the database for this match
-
-        conn.setMatchStarted( SCProperties.getProperty( "event.code" ), SCMatch.getMatchNumber() );
     }
 
 }
