@@ -25,10 +25,25 @@ public class SCServer
      * for scout.properties for the properties file.
      * 
      * @param args command-line arguments
+     * <username for scout.properties>: this is a username that is prepended to scout.properties such
+     *             as avi.scout.properties
      * --initialize : this will create the tables in the database
+     * --clean-db: deletes old database tables before initializing
+     * --event-code: the code for this event
      */
     public static void main( String[] args )
     {
+
+        if ( args.length == 0 )
+        {
+            System.out.println( "Missing required argument: username for scout properties" );
+            System.exit(0);
+        }
+
+        String username = args[ 0 ];
+        String propertiesFileName = String.format( "%s.scout.properties", username );
+        SCProperties.setPropertyFileName( propertiesFileName );
+
         startupSubsystems();
 
         try

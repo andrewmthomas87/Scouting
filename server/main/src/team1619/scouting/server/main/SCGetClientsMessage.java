@@ -32,7 +32,7 @@ public class SCGetClientsMessage extends SCMessage
             client.put( "CID", queue.getClientId() );
             client.put( "scoutName", queue.getScoutName() );
             client.put( "teamNumber", SCMatch.getTeamNumber( queue.getClientId() ) );
-
+            client.put( "alliance" , SCMatch.getTeamAlliance( queue.getClientId() ));
             clientList.add( client );
         }
 

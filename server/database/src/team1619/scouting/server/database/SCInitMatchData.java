@@ -14,10 +14,11 @@ public class SCInitMatchData
     {
         try
         {
+            SCProperties.setPropertyFileName( String.format( "%s.scout.properties" , args[0]) );
             SCProperties.startup();
             MySQL db = MySQL.connect();
-            String eventCode = args[0];
-            String dataFile = args[1];
+            String eventCode = args[1];
+            String dataFile = args[2];
             BufferedReader file = new BufferedReader( new FileReader( dataFile ) );
             String line = file.readLine();
             while (line != null)

@@ -13,7 +13,12 @@ public class SCProperties
 {
     private Properties fProperties;
     
-    private static final String PROPERTY_FILE_NAME = "scout.properties";
+    private static String PROPERTY_FILE_NAME;
+
+    public static void setPropertyFileName( String name )
+    {
+        PROPERTY_FILE_NAME = name;
+    }
     
     private static SCProperties sProperties;
     

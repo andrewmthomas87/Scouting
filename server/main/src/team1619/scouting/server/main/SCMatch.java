@@ -127,6 +127,26 @@ public class SCMatch
         }
     }
 
+    public static String getTeamAlliance(Integer clientID)
+    {
+        if ( sCurrentMatch == null )
+        {
+            // called before first match has been set up
+            return "";
+        }
+
+        MatchTeamData data = sCurrentMatch.fTeamsMap.get( clientID );
+
+        if ( data == null )
+        {
+            return "";
+        }
+        else
+        {
+            return data.getAlliance();
+        }
+    }
+
     public static void closeMatch() {
         sCurrentMatch = null;
     }

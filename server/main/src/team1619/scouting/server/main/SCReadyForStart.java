@@ -18,7 +18,8 @@ public class SCReadyForStart extends SCMessage {
     {
         SCJSON response = new SCJSON();
 
-        response.put( "type", "waiting" );
+        response.put( "type", "status" );
+        response.put( "status", "waiting" );
 
         SCOutbound.getClientQueue( getClientID() ).writeToClient( response );
     }
