@@ -1,5 +1,5 @@
 
-var serverIP = 'http://172.20.10.4:8002';
+var serverIP = 'http://127.0.0.1:8002';
 
 var CID;
 
@@ -7,7 +7,6 @@ function queryServer(data, handler) {
 	if (CID) {
 		data.CID = CID;
 	}
-	console.log(data);
 	$.getJSON(serverIP, JSON.stringify(data), handler);
 }
 

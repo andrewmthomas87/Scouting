@@ -33,18 +33,19 @@ nav a {
 	padding: 1em 2.5em;
 	font-size: 1.25em;
 	font-weight: 300;
+	cursor: pointer;
 }
 
 section {
 	display: none;
-	width: 50%;
+	width: 37.5%;
 	margin: 0 auto;
+	margin-top: 2.5em;
 }
 
 section form {
-	width: 75%;
-	margin: 0 auto;
-	margin-top: 2.5em;
+	width: 100%;
+	margin: 0;
 	border-left: 1px solid #ecf0f1;
 	border-right: 1px solid #ecf0f1;
 	text-align: center;
@@ -97,6 +98,7 @@ section form a {
 	font-weight: 300;
 	text-decoration: none;
 	text-align: center;
+	cursor: pointer;
 }
 
 section form a.inline {
@@ -104,6 +106,44 @@ section form a.inline {
 	width: 50%;
 }
 
-section form#setUpMatch input {
+section#manageDevices div {
+	border: 1px solid #ecf0f1;
+	border-right: none;
+	margin-bottom: 0.75em;
+}
 
+section#manageDevices div span {
+	display: inline-block;
+	color: #555;
+	padding: 0.5em 1em;
+	font-size: 1.5em;
+	font-weight: 300;
+	line-height: 1em;
+}
+
+section#manageDevices div a {
+	float: right;
+	display: inline-block;
+	color: #fff;
+	width: 1em;
+	height: 1em;
+	padding: 1.5em;
+	background-color: rgba(231, 76, 60, 0.75);
+	font-size: 0.75em;
+	font-weight: 300;
+	line-height: 1em;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+section#manageDevices>a {
+	display: block;
+	color: #777;
+	padding: 0.75em 0;
+	background-color: #ecf0f1;
+	font-size: 1.25em;
+	font-weight: 300;
+	text-align: center;
+	text-decoration: none;
+	cursor: pointer;
 }

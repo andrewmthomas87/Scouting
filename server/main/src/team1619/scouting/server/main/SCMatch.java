@@ -17,7 +17,7 @@ public class SCMatch
         private final int fTeamNumber;
         private final String fAlliance;
 
-        public MatchTeamData( int teamNumber, String alliance )
+        public MatchTeamData(int teamNumber, String alliance)
         {
             fTeamNumber = teamNumber;
             fAlliance = alliance;
@@ -42,12 +42,12 @@ public class SCMatch
 
     private List<MatchTeamData> fTeams;
 
-    public static void setCurrentMatch( int matchNumber, int redTeam1, int redTeam2, int redTeam3, int blueTeam1, int blueTeam2, int blueTeam3 )
+    public static void setCurrentMatch(int matchNumber, int redTeam1, int redTeam2, int redTeam3, int blueTeam1, int blueTeam2, int blueTeam3)
     {
         sCurrentMatch = new SCMatch( matchNumber, redTeam1, redTeam2, redTeam3, blueTeam1, blueTeam2, blueTeam3 );
     }
 
-    private SCMatch( int matchNumber, int redTeam1, int redTeam2, int redTeam3, int blueTeam1, int blueTeam2, int blueTeam3 )
+    private SCMatch(int matchNumber, int redTeam1, int redTeam2, int redTeam3, int blueTeam1, int blueTeam2, int blueTeam3)
     {
         fMatchNumber = matchNumber;
 
@@ -64,12 +64,12 @@ public class SCMatch
         fTeamsMap = new HashMap<>();
     }
 
-    public static MatchTeamData getNextTeam( Integer clientId )
+    public static MatchTeamData getNextTeam(Integer clientId)
     {
         return sCurrentMatch.lookupTeamData( clientId );
     }
 
-    private MatchTeamData lookupTeamData( Integer clientId )
+    private MatchTeamData lookupTeamData(Integer clientId)
     {
         MatchTeamData teamData = fTeamsMap.get( clientId );
 
@@ -107,12 +107,22 @@ public class SCMatch
         return sCurrentMatch.fTeams;
     }
 
-    public static int getTeamNumber(Integer clientID) {
-        MatchTeamData data = sCurrentMatch.fTeamsMap.get( clientID );
-        if (data == null) {
+    public static int getTeamNumber(Integer clientID)
+    {
+        if ( sCurrentMatch == null )
+        {
+            // called before first match has been set up
             return -1;
         }
-        else {
+
+        MatchTeamData data = sCurrentMatch.fTeamsMap.get( clientID );
+        
+        if ( data == null )
+        {
+            return -1;
+        }
+        else
+        {
             return data.getTeamNumber();
         }
     }
