@@ -32,7 +32,7 @@ public class MySQL
                     K = stack (K<int>)
                     */
 
-                    "create table contributions (teamNumber int, matchNumber int, mode char(1), object char(1), SID int, otherSID int, matchTime int)",
+                    "create table contributions (eventCode varchar(12), teamNumber int, matchNumber int, mode char(1), object char(1), SID int, otherSID int, matchTime int)",
 
                     "create table eventMatches (eventCode varchar(12), matchNumber int, played boolean default false, redTeam1 int, redTeam2 int, redTeam3 int, blueTeam1 int, blueTeam2 int, blueTeam3 int)"
             };
@@ -97,7 +97,7 @@ public class MySQL
         stmt.close();
     }
 
-    public void addContribution( int teamNumber, int matchNumber, String mode, String object, int SID, int matchTime ) throws SQLException
+    public void addContribution( String eventCode, int teamNumber, int matchNumber, String mode, String object, int SID, int matchTime ) throws SQLException
     {
         Integer otherSID = null;
 
@@ -107,7 +107,8 @@ public class MySQL
             object = "K";
         }
         PreparedStatement stmt = fConnection
-                .prepareStatement( "insert into contributions (teamNumber, matchNumber, mode, object, SID, matchTime, otherSID) values (?,?,?,?,?,?,?)" );
+                .prepareStatement( "insert into contributions (teamNumber, matchNumber, mode, object, SID, matchTime, otherSID, eventCode) " +
+                                           "values (?,?,?,?,?,?,?,?)" );
         stmt.setInt( 1, teamNumber );
         stmt.setInt( 2, matchNumber );
         stmt.setString( 3, mode );
@@ -122,7 +123,10 @@ public class MySQL
         {
             stmt.setInt( 7, otherSID );
         }
+        stmt.setString( 8, eventCode );
+
         stmt.executeUpdate();
+
         stmt.close();
     }
 

@@ -2,6 +2,7 @@ package team1619.scouting.server.main;
 
 import team1619.scouting.server.database.MySQL;
 import team1619.scouting.server.utils.SCJSON;
+import team1619.scouting.server.utils.SCProperties;
 
 import java.sql.SQLException;
 
@@ -35,7 +36,7 @@ public class SCContribution extends SCMessage
         {
             if ( !object.isEmpty() )
             {
-                conn.addContribution( teamNumber, matchNumber, mode, object, SID, time );
+                conn.addContribution( SCProperties.getProperty( "event.code" ), teamNumber, matchNumber, mode, object, SID, time );
             }
         }
 
@@ -56,7 +57,8 @@ public class SCContribution extends SCMessage
 
         for ( SCClientQueue q : SCOutbound.getClientQueues() )
         {
-            SCMatch.MatchTeamData myTeamData = SCMatch.getNextTeam( q.getClientId() );
+            SCMatch.MatchTeamData myTeamData = SCMatch.getAssociatedTeamData( q.getClientId() );
+
             if ( myTeamData == null || clientTeam.getAlliance().equals( myTeamData.getAlliance() ) )
             {
                 q.writeToClient( outboundMessage );

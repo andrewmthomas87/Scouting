@@ -96,6 +96,11 @@ public class SCMatch
         return teamData;
     }
 
+    public static MatchTeamData getAssociatedTeamData( Integer clientId )
+    {
+        return sCurrentMatch.fTeamsMap.get( clientId );
+    }
+
     public static int getMatchNumber()
     {
         return sCurrentMatch.fMatchNumber;
@@ -151,7 +156,13 @@ public class SCMatch
         }
     }
 
-    public static void closeMatch() {
+    public static void closeMatch()
+    {
         sCurrentMatch = null;
+    }
+
+    public static boolean isMatchActive()
+    {
+        return sCurrentMatch != null;
     }
 }

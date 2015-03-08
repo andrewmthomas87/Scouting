@@ -19,18 +19,32 @@ public class SCMatchEnded extends SCMessage
     @Override
     void processMessage(MySQL conn, SCJSON message) throws SQLException
     {
-        SCMatch.closeMatch();
+        if ( SCMatch.isMatchActive() )
+        {
+            int thisMatchNumber = SCMatch.getMatchNumber();
 
-        SCClientQueue clientQueue = SCOutbound.setupClient();
-        SCJSON outMessage = new SCJSON();
+            SCMatch.closeMatch();
 
-        outMessage.put( "type:", "status" );
-        outMessage.put( "status", "ok");
+            SCJSON outMessage = new SCJSON();
 
-        clientQueue.writeToClient( outMessage );
+            outMessage.put( "type", "status" );
+            outMessage.put( "status", "matchEnded" );
 
-        // update the database for this match
+            SCOutbound.getClientQueue( getClientID() ).writeToClient( outMessage );
 
-        conn.setMatchPlayed( SCProperties.getProperty( "event.code" ), SCMatch.getMatchNumber() );
+            // update the database for this match
+
+            conn.setMatchPlayed( SCProperties.getProperty( "event.code" ), thisMatchNumber );
+        }
+        else
+        {
+            SCJSON response = new SCJSON();
+
+            response.put( "type", "status" );
+            response.put( "status", "no-current-match" );
+            response.put( "description", "trying to end a match when none is currently active" );
+
+            SCOutbound.getClientQueue( getClientID() ).writeToClient( response );
+        }
     }
 }
