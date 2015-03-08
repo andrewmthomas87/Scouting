@@ -151,6 +151,7 @@ Server to Client
     'updates': JSON
 }
 ```
+---
 
 #### Disconnect ####
 Supervisor to Server
