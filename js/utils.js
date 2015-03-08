@@ -1,5 +1,7 @@
 
-var serverIP = 'http://127.0.0.1:8002';
+var updateSpeed = 125;
+
+var serverIP = 'http://172.20.10.5:8002';
 
 var CID;
 
@@ -17,8 +19,11 @@ function handleServerResponses(data) {
 				CID = message.CID
 				break;
 			case 'status':
-				if (message.status != 'ok') {
-					alert(message.description);
+				if (message.status == 'disconnected') {
+					window.location = '/disconnected.html';
+				}
+				else if (message.status != 'ok' && message.status != 'waiting') {
+					console.log(message);
 				}
 				break;
 			default:
@@ -26,9 +31,9 @@ function handleServerResponses(data) {
 	});
 }
 
-function connect(name) {
+function connect(name, handler) {
 	var data = {};
 	data.type = 'login';
-	data.scoutName = 'Supervisor';
-	queryServer(data, handleServerResponses);
+	data.scoutName = name;
+	queryServer(data, handler);
 }

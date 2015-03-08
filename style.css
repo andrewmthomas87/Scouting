@@ -116,7 +116,46 @@ a#trash.active {
 	background-image: url('trash-active.png');
 }
 
-div.bin {
+a#autonomous-ended {
+	position: fixed;
+	top: 1em;
+	right: 5em;
+	color: #fff;
+	display: inline-block;
+	padding: 0.75em 1.5em;
+	background-color: #2bbe69;
+	font-size: 1.25em;
+	font-weight: 300;
+	text-decoration: none;
+	z-index: 100;
+	cursor: pointer;
+}
+
+a#robot-state {
+	position: fixed;
+	top: 1.5em;
+	right: 1em;
+	width: 2em;
+	height: 1.5em;
+	padding: 0;
+	border: none;
+	border-radius: 0.25em;
+	font-size: 1.25em;
+	z-index: 100;
+	cursor: pointer;
+}
+
+a#robot-state.enabled {
+	background-color: #2ecc71;
+	border-right: 1em solid #ecf0f1;
+}
+
+a#robot-state.disabled {
+	background-color: #e74c3c;
+	border-left: 1em solid #ecf0f1;
+}
+
+div.B {
 	width: 1em;
 	height: 1.45em;
 	margin: 0 0.5em;
@@ -124,24 +163,15 @@ div.bin {
 	border-top: 0.05em solid #777;
 }
 
-div.litter {
+div.L {
 	width: 0.125em;
-	height: 1.95em;
-	margin: 0 0.9375em;
-	background-color: #2ecc71;
-	border-top: 0.05em solid #27ae60;
-}
-
-div.litter-binned {
-	width: 0.125em;
-	height: 1.95em;
-	margin: 0 0.9375em;
-	background-color: #2ecc71;
-	border-top: 0.05em solid #27ae60;
 	height: 0.45em;
+	margin: 0 0.9375em;
+	background-color: #2ecc71;
+	border-top: 0.05em solid #27ae60;
 }
 
-div.tote {
+div.F {
 	position: relative;
 	width: 2em;
 	height: 0.95em;
@@ -150,7 +180,7 @@ div.tote {
 	border-top: 0.05em solid #777;
 }
 
-div.tote:after {
+div.F:after {
 	content: 'F';
 	position: absolute;
 	top: 0;
@@ -161,7 +191,7 @@ div.tote:after {
 	z-index: 100;
 }
 
-div.tote:before {
+div.F:before {
 	content: attr(teamNumber);
 	position: absolute;
 	top: 0;
@@ -172,7 +202,7 @@ div.tote:before {
 	z-index: 100;
 }
 
-div.chute-tote {
+div.H {
 	position: relative;
 	width: 2em;
 	height: 0.95em;
@@ -181,7 +211,7 @@ div.chute-tote {
 	border-top: 0.05em solid #777;
 }
 
-div.chute-tote:after {
+div.H:after {
 	content: 'C';
 	position: absolute;
 	top: 0;
@@ -192,7 +222,7 @@ div.chute-tote:after {
 	z-index: 100;
 }
 
-div.chute-tote:before {
+div.H:before {
 	content: attr(teamNumber);
 	position: absolute;
 	top: 0;
@@ -203,7 +233,7 @@ div.chute-tote:before {
 	z-index: 100;
 }
 
-div.yellow-tote {
+div.Y {
 	width: 2em;
 	height: 0.95em;
 	margin: 0;
@@ -211,7 +241,7 @@ div.yellow-tote {
 	border-top: 0.05em solid #f39c12;
 }
 
-div.scoring-platform {
+div.P {
 	width: 2em;
 	height: 0.062em;
 	margin: 0;
@@ -287,6 +317,10 @@ body>div#palette>div {
 	padding: 0.5em;
 }
 
+body>div#palette div div.L {
+	height: 1.95em;
+}
+
 div#overlay {
 	position: fixed;
 	top: 0;
@@ -358,7 +392,7 @@ form input[type='text'] {
 	text-align: center;
 }
 
-form input[type='submit'] {
+form a {
 	display: block;
 	color: #fff;
 	width: 100%;
@@ -366,9 +400,17 @@ form input[type='submit'] {
 	margin: 0;
 	background-color: #3498db;
 	border: none;
-	outline: none;
 	font-family: 'Source Sans Pro', sans-serif;
 	font-size: 1.5em;
 	font-weight: 300;
+	text-decoration: none;
 	text-align: center;
+}
+
+form#ready span#alliance.red {
+	color: #e74c3c;
+}
+
+form#ready span#alliance.blue {
+	color: #3498db;
 }

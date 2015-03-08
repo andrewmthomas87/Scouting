@@ -1,7 +1,9 @@
 
-connect('Supervisor');
+connect('Supervisor', handleServerResponses);
 
 var currentView = 0;
+
+var matchStarted = false;
 
 $(document).ready(function() {
 
@@ -46,7 +48,7 @@ $(document).ready(function() {
 		setTimeout(function() {
 			$('section#setUpMatch input').prop('disabled', true);
 			$('section#setUpMatch a#update').fadeOut('fast', function() {
-				$('section#setUpMatch a#edit, section#setUpMatch a#start').fadeIn('fast');
+				$('section#setUpMatch a#edit, section#setUpMatch a#continue').fadeIn('fast');
 				var data = {};
 				data.type = 'getNextMatch';
 				queryServer(data, handleSupervisorServerResponses);
@@ -55,7 +57,10 @@ $(document).ready(function() {
 	});
 
 	$('section#setUpMatch a#continue').click(function() {
-
+		currentView = 3;
+		$('section#setUpMatch').fadeOut('fast', function() {
+			$('section#startMatch').fadeIn('fast');
+		});
 	});
 
 	$('section#manageDevices').delegate('div a', 'click', function() {
@@ -76,7 +81,28 @@ $(document).ready(function() {
 		currentView = -1;
 	});
 
+	$('section#startMatch a').click(function() {
+		var data = {};
+		data.type = 'matchStarted';
+		queryServer(data, handleSupervisorServerResponses);
+		currentView = -1;
+	});
+
+	$('a#matchEnded').click(function() {
+		$(this).fadeOut('fast');
+		$('body>div').fadeOut('fast');
+		var data = {};
+		data.type = 'matchEnded';
+		queryServer(data, handleSupervisorServerResponses);
+	});
+
 });
+
+function wazUp() {
+	var data = {};
+	data.type = 'wazUp';
+	queryServer(data, handleSupervisorServerResponses);
+}
 
 function handleSupervisorServerResponses(data) {
 	data.forEach(function(message) {
@@ -110,6 +136,80 @@ function handleSupervisorServerResponses(data) {
 				$('section:visible').hide();
 				$('section#manageDevices').fadeIn('fast');
 				currentView = 2;
+				break;
+			case 'matchStarted':
+				$('nav, section#startMatch').fadeOut('fast', function() {
+					$('body>div, a#matchEnded').fadeIn('fast');
+				});
+				matchStarted = true;
+				setTimeout(wazUp, updateSpeed);
+				break;
+			case 'status':
+				if (message.status == 'wazUp' && matchStarted) {
+					setTimeout(wazUp, updateSpeed);
+				}
+				else if (message.status == 'matchEnded') {
+					$('nav').fadeIn('fast');
+					matchStarted = false;
+					var data = {};
+					data.type = 'matchStarted';
+					queryServer(data, handleSupervisorServerResponses);
+				}
+				else {
+					handleServerResponses([message]);
+				}
+				break;
+			case 'contribution':
+				var alliance = message.alliance;
+				console.log(alliance);
+				var SID = message.SID;
+				var contributor = message.teamNumber;
+				var objects = message.objects.split(',');
+				var stackExists = $('div#' + alliance + ' div#' + SID).length > 0;
+				if (stackExists) {
+					if (objects[0].charAt(0) == 'K') {
+						var originSID = parseInt(objects[0].substring(1));
+						var objects = [];
+						$('div#' + alliance + ' div#' + originSID + ' div div').each(function() {
+							objects.push($(this).attr('class'));
+						});
+						$('div#' + alliance + ' div#' + originSID).next('div.spacer').remove();
+						$('div#' + alliance + ' div#' + originSID).remove();
+					}
+					var stack = $('div#' + alliance + ' div#' + SID + '>div');
+					var objectType;
+					var object;
+					for (i = 0; i < objects.length; i++) {
+						objectType = objects[objects.length - 1 - i];
+						object = '<div style="display: none" class="' + objectType + '" teamNumber="' + contributor + '"></div>';
+						if (objectType == 'P') {
+							stack.append(object);
+						}
+						else if (!stack.find('div.B').length > 0 || objectType == 'L') {
+							stack.prepend(object);
+						}
+						else if (stack.find('div').length > 1) {
+							stack.find('div').not('.P').last().after('<div class="' + objects[i] + '" teamNumber="' + contributor + '"></div>');
+						}
+						else {
+							stack.append(object);
+						}
+					}
+					stack.find('div').not(':visible').fadeIn('fast');
+				}
+				else {
+					var stackContainer = $('<div class="stack" id="' + SID + '"></div>');
+					var stack = $('<div draggable="true"></div>');
+					var object;
+					for (i = 0; i < objects.length; i++) {
+						object = $('<div style="display: none" class="' + objects[i] + '" teamNumber="' + contributor + '"></div>');
+						stack.append(object);
+					}
+					stackContainer.append(stack);
+					$('div#' + alliance).append(stackContainer);
+					$('div#' + alliance).append('<div class="spacer"></div>');
+					stack.find('div').fadeIn('fast');
+				}
 				break;
 			default:
 				handleServerResponses([message]);

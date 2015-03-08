@@ -158,7 +158,7 @@ public class SCWorkerThread extends Thread
             // instance of the message and then execute that message.
             String messageType = (String) json.get( "type" );
 
-            if (!(messageType.equals("wazUp") || messageType.equals( "ready" )))
+            if ( !messageType.equals( "ready" ) )
             {
                 System.out.printf( "Received message type %s\n", messageType );
                 SCLogger.getLogger().debug( "Received message type '%s'", messageType );
