@@ -30,9 +30,13 @@ public class SCContribution extends SCMessage
         String mode = message.getString( "mode" );
         int teamNumber = message.getInteger( "teamNumber" );
         int matchNumber = message.getInteger( "matchNumber" );
-        for ( int i = 0; i < objectArray.length; i++ )
+
+        for ( String object : objectArray )
         {
-            conn.addContribution( teamNumber, matchNumber, mode, objectArray[i], SID, time );
+            if ( !object.isEmpty() )
+            {
+                conn.addContribution( teamNumber, matchNumber, mode, object, SID, time );
+            }
         }
 
         SCJSON outboundMessage = new SCJSON();
@@ -46,10 +50,14 @@ public class SCContribution extends SCMessage
 
         SCMatch.MatchTeamData clientTeam = SCMatch.getNextTeam( getClientID() );
 
+        // add alliance color based on the client
+
+        outboundMessage.put( "alliance", clientTeam.getAlliance() );
+
         for ( SCClientQueue q : SCOutbound.getClientQueues() )
         {
-            SCMatch.MatchTeamData data = SCMatch.getNextTeam( q.getClientId() );
-            if ( data == null || clientTeam.getAlliance().equals( data.getAlliance() ) )
+            SCMatch.MatchTeamData myTeamData = SCMatch.getNextTeam( q.getClientId() );
+            if ( myTeamData == null || clientTeam.getAlliance().equals( myTeamData.getAlliance() ) )
             {
                 q.writeToClient( outboundMessage );
             }

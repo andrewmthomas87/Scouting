@@ -4,7 +4,13 @@ import team1619.scouting.server.main.SCMatch;
 import team1619.scouting.server.utils.SCLogger;
 import team1619.scouting.server.utils.SCProperties;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
 
 public class MySQL
 {
@@ -95,8 +101,10 @@ public class MySQL
     {
         Integer otherSID = null;
 
-        if (object.charAt( 0 ) == 'K') {
+        if ( object.charAt( 0 ) == 'K' )
+        {
             otherSID = Integer.valueOf( object.substring( 1 ) );
+            object = "K";
         }
         PreparedStatement stmt = fConnection
                 .prepareStatement( "insert into contributions (teamNumber, matchNumber, mode, object, SID, matchTime, otherSID) values (?,?,?,?,?,?,?)" );
@@ -106,35 +114,24 @@ public class MySQL
         stmt.setString( 4, object );
         stmt.setInt( 5, SID );
         stmt.setInt( 6, matchTime );
-        if (otherSID == null) {
+        if ( otherSID == null )
+        {
             stmt.setNull( 7, Types.INTEGER );
         }
-        else {
-            stmt.setInt(7, otherSID);
+        else
+        {
+            stmt.setInt( 7, otherSID );
         }
         stmt.executeUpdate();
         stmt.close();
     }
-
-    public void addRobotEvent( int teamNumber, int matchNumber, String eventType, int matchTime, String comments ) throws SQLException
-    {
-        PreparedStatement stmt = fConnection.prepareStatement( "insert into robotEvents (teamNumber, matchNumber, eventType, eventTime, comments) values (?,?,?,?,?)" );
-        stmt.setInt( 1, teamNumber );
-        stmt.setInt( 2, matchNumber );
-        stmt.setString( 3, eventType );
-        stmt.setInt( 4, matchTime );
-        stmt.setString( 5, comments );
-        stmt.executeUpdate();
-        stmt.close();
-    }
-
 
     public int getNextSID() throws SQLException
     {
         Statement stmt = fConnection.createStatement();
         ResultSet resultSet = stmt.executeQuery( "select UUID_SHORT()");
         resultSet.next();
-        int SID = (int)(0xffffffffL & resultSet.getLong( 1 ));
+        int SID = (int)(0x7fffffffL & resultSet.getLong( 1 ));
         stmt.close();
         return SID;
     }
@@ -270,12 +267,45 @@ public class MySQL
         matchStartedStmt.close();
     }
 
-    public void deleteMatch(int matchNumber) throws SQLException {
+    /**
+     * Deletes intermediate results from the database.  Used when the match needed to be reset.
+     *
+     * @param matchNumber the match number being reset
+     *
+     * @throws SQLException if an error occurs
+     */
+    public void deleteMatch(int matchNumber) throws SQLException
+    {
         PreparedStatement matchDeleteStmt = fConnection.prepareStatement( "delete from contributions where matchNumber = ?" );
-        matchDeleteStmt.setInt( 1 , matchNumber );
+        matchDeleteStmt.setInt( 1, matchNumber );
 
         matchDeleteStmt.execute();
 
         matchDeleteStmt.close();
+    }
+
+    public void addRobotEvent( String eventCode, int matchNumber, int teamNumber, String eventType, int matchTime, String comments ) throws SQLException
+    {
+        PreparedStatement stmt =
+                fConnection.prepareStatement( "insert into robotEvents(eventCode, matchNumber, teamNumber, eventType, matchTime, comments) values (?,?,?,?,?,?)" );
+
+        stmt.setString( 1, eventCode );
+        stmt.setInt( 2, matchNumber );
+        stmt.setInt( 3, teamNumber );
+        stmt.setString( 4, eventType );
+        stmt.setInt( 5, matchTime );
+
+        if ( comments == null || comments.isEmpty() )
+        {
+            stmt.setNull( 6, Types.VARCHAR );
+        }
+        else
+        {
+            stmt.setString( 6, comments );
+        }
+
+        stmt.executeUpdate();
+
+        stmt.close();
     }
 }

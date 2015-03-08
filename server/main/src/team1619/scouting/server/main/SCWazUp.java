@@ -16,6 +16,11 @@ public class SCWazUp extends SCMessage{
     @Override
     void processMessage(MySQL conn, SCJSON message) throws SQLException
     {
+        SCJSON response = new SCJSON();
 
+        response.put( "type", "status" );
+        response.put( "status", "wazUp" );
+
+        SCOutbound.getClientQueue( getClientID() ).writeToClient( response );
     }
 }
