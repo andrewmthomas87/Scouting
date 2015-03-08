@@ -104,6 +104,8 @@ public class SCClientQueue
         writer.write( serializedMessages );
 
         writer.flush();
+
+        writer.close();
     }
 
     /**

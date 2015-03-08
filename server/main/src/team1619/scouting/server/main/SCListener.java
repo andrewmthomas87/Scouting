@@ -35,6 +35,8 @@ public class SCListener extends Thread
         {
             fServerSocket = new ServerSocket( fPort );
 
+            System.out.println( "Ready..." );
+
             while ( !fExit )
             {
                 SCLogger.getLogger().debug( "Waiting for next inbound..." );

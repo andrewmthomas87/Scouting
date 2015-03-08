@@ -2,6 +2,7 @@ package team1619.scouting.server.main;
 
 import team1619.scouting.server.database.MySQL;
 import team1619.scouting.server.utils.SCJSON;
+import team1619.scouting.server.utils.SCJSONSyntaxException;
 import team1619.scouting.server.utils.SCLogger;
 
 import java.io.BufferedReader;
@@ -39,6 +40,7 @@ public class SCWorkerThread extends Thread
         sMessageTable.put( "getNextMatch", SCGetNextMatchMessage.class );
         sMessageTable.put( "resetMatch", SCResetMatchMessage.class );
         sMessageTable.put( "wazUp", SCWazUp.class);
+        sMessageTable.put( "robotEvent", SCRobotEventMessage.class );
     }
 
     private final Object fWaitFlag;
@@ -143,72 +145,95 @@ public class SCWorkerThread extends Thread
                 // read from the input until we get the Content-Length header so that
                 // we know the size of the JSON payload
 
+                //System.out.println( line );
+
                 line = in.readLine();
             }
 
-            String[] httpParts = httpHeader.split( " " );
-            String encodedJSON = httpParts[ 1 ].substring( 2 );
-            String decodedJSON = URLDecoder.decode( encodedJSON, "UTF-8" );
-
-            // we should be pointing at the body at this point
-
-            SCJSON json = SCJSON.parse( decodedJSON );
-
-            // now, based on the "type" field in the object, we create a specific
-            // instance of the message and then execute that message.
-            String messageType = (String) json.get( "type" );
-
-            if (!(messageType.equals("wazUp") || messageType.equals( "ready" )))
+            if ( httpHeader == null )
             {
-                System.out.printf( "Received message type %s\n", messageType );
-                SCLogger.getLogger().debug( "Received message type '%s'", messageType );
-            }
-
-            if ( "shutdown".equals( messageType ) )
-            {
-                fListener.setExit();
+                SCLogger.getLogger().error( "[%s] missing HTTP header", fInboundSocket.getInetAddress().toString() );
+                System.out.format( "[%s] missing HTTP header\n", fInboundSocket.getInetAddress().toString() );
             }
             else
             {
-                Class<? extends SCMessage> processorClass = sMessageTable.get( messageType );
-
-                if ( processorClass == null )
-                {
-                    SCLogger.getLogger().error( "Unknown message type: %s", messageType );
-                    throw new IllegalArgumentException( "message type " + messageType );
-                }
-
-                SCMessage messageProcessor = processorClass.newInstance();
-
-                // set the client id for every message
-                messageProcessor.setClientID( (Integer) json.get( "CID" ) );
-
-                boolean normalResponse = true;
-
+                String decodedJSON = "";
                 try
                 {
-                    messageProcessor.processMessage( conn, json );
-                }
-                catch (IllegalArgumentException ex )
-                {
-                    // this means no client queue, so send back not logged in directly on socket
-                    Queue<SCJSON> logoutMessage = new LinkedList<>();
-                    SCJSON msg = new SCJSON();
-                    msg.put( "type", "status" );
-                    msg.put( "status", "disconnected" );
-                    logoutMessage.add( msg );
-                    SCClientQueue.writeJSONToClient( fInboundSocket.getOutputStream(), logoutMessage, 0 );
-                    normalResponse = false;
-                }
+                    String[] httpParts = httpHeader.split( " " );
+                    String encodedJSON = httpParts[ 1 ].substring( 2 );
+                    decodedJSON = URLDecoder.decode( encodedJSON, "UTF-8" );
 
-                if ( normalResponse )
-                {
-                    // flush this client's queue to client
-                    SCClientQueue clientQueue = SCOutbound.getClientQueue( messageProcessor.getClientID() );
+                    // we should be pointing at the body at this point
 
-                    clientQueue.flushQueueToClient( fInboundSocket.getOutputStream() );
+                    SCJSON json = SCJSON.parse( decodedJSON );
+
+                    // now, based on the "type" field in the object, we create a specific
+                    // instance of the message and then execute that message.
+                    String messageType = (String) json.get( "type" );
+
+                    if ( !( messageType.equals( "wazUp" ) || messageType.equals( "ready" ) ) )
+                    {
+                        String inetAddress = fInboundSocket.getInetAddress().toString();
+
+                        System.out.printf( "[%s] Received message type %s\n", inetAddress, messageType );
+                        SCLogger.getLogger().debug( "[%s] Received message type '%s'", inetAddress, messageType );
+                    }
+
+                    if ( "shutdown".equals( messageType ) )
+                    {
+                        fListener.setExit();
+                    }
+                    else
+                    {
+                        Class<? extends SCMessage> processorClass = sMessageTable.get( messageType );
+
+                        if ( processorClass == null )
+                        {
+                            SCLogger.getLogger().error( "Unknown message type: %s", messageType );
+                            throw new IllegalArgumentException( "message type " + messageType );
+                        }
+
+                        SCMessage messageProcessor = processorClass.newInstance();
+
+                        // set the client id for every message
+                        messageProcessor.setClientID( (Integer) json.get( "CID" ) );
+
+                        boolean normalResponse = true;
+
+                        try
+                        {
+                            messageProcessor.processMessage( conn, json );
+                        }
+                        catch ( IllegalArgumentException ex )
+                        {
+                            SCLogger.getLogger().warning( ( "Client not logged in response" ) );
+                            // this means no client queue, so send back not logged in directly on socket
+                            Queue<SCJSON> logoutMessage = new LinkedList<>();
+                            SCJSON msg = new SCJSON();
+                            msg.put( "type", "status" );
+                            msg.put( "status", "disconnected" );
+                            logoutMessage.add( msg );
+                            SCClientQueue.writeJSONToClient( fInboundSocket.getOutputStream(), logoutMessage, 0 );
+                            normalResponse = false;
+                        }
+
+                        if ( normalResponse )
+                        {
+                            // flush this client's queue to client
+                            SCClientQueue clientQueue = SCOutbound.getClientQueue( messageProcessor.getClientID() );
+
+                            clientQueue.flushQueueToClient( fInboundSocket.getOutputStream() );
+                        }
+                    }
+                }
+                catch ( SCJSONSyntaxException ex )
+                {
+                    SCLogger.getLogger().debug( "Syntax error on input: %s", decodedJSON );
                 }
             }
+
+            // System.out.println( "=== Finished processing inbound message ===" );
 
             requestStream.close();
 
@@ -218,6 +243,7 @@ public class SCWorkerThread extends Thread
         {
             SCLogger.getLogger().error( "Exception while executing work: %s", t.getMessage() );
             SCLogger.getLogger().printStackTrace( t );
+            t.printStackTrace();
         }
 
         // when the work is done, signal the pool to reclaim this thread

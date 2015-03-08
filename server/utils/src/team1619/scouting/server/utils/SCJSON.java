@@ -144,6 +144,7 @@ public class SCJSON extends HashMap<String, Object>
                     else
                     {
                         // unknown token
+                        SCLogger.getLogger().error( "unknown token: %s", name );
                         return new SCJSONToken( SCJSONTokenType.UNKNOWN );
                     }
                 }
