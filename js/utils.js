@@ -1,7 +1,7 @@
 
 var updateSpeed = 125;
 
-var serverIP = 'http://172.20.10.5:8002';
+var serverIP = 'http://169.254.22.205:8002';
 
 var CID;
 
@@ -23,7 +23,7 @@ function handleServerResponses(data) {
 					window.location = '/disconnected.html';
 				}
 				else if (message.status != 'ok' && message.status != 'waiting') {
-					console.log(message);
+
 				}
 				break;
 			default:

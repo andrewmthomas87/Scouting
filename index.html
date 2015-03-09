@@ -17,10 +17,12 @@
 		<h1 id='header'>Global</h1>
 		<a id='trash'></a>
 		<a id='autonomous-ended'>Autonomous Ended</a>
+		<a id='teleop-ended'>Teleop Ended</a>
 		<a class='enabled' id='robot-state'></a>
+		<a id='robot-orientation'></a>
 		<div id='main'>
-			<section id='global'><div class='spacer'></div></section><!--
-			--><section id='local'><div class='stack'></div></section>
+			<section id='global'><div class='spacer initial'></div></section><!--
+			--><section id='local'><div class='stack initial' id='-1'><div draggable='true'></div></div></section>
 		</div><!--
 		--><div id='palette'>
 			<div draggable='true'>
@@ -55,6 +57,9 @@
 			<h3>Match <span id='matchNumber'></span> - <span id='alliance'></span><br>You have been assigned team <span id='teamNumber'></span></h3>
 			<a>Continue</a>
 		</form>
+		<form id='comments'>
+			<input type='text' placeholder='Comments'>
+			<a>Continue</a>
 		<script src='js/jquery-1.11.2.js'></script>
 		<script>
 			var iosDragDropShim = {

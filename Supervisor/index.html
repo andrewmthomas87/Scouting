@@ -37,9 +37,15 @@
 		<section id='startMatch'>
 			<a>Start match</a>
 		</section>
-		<div style='display: none' id='red'><div class='spacer'></div></div><!--
-		--><div style='display: none' id='blue'><div class='spacer'></div></div>
+		<div style='display: none' id='red'><div class='spacer initial'></div></div><!--
+		--><div style='display: none' id='blue'><div class='spacer initial'></div></div>
 		<a style='display: none' id='matchEnded'>End match</a>
+		<a style='display: none' id='matchReset'>Reset match</a>
+		<div id='overlay'></div>
+		<form id='confirmMatchReset'>
+			<span>Are you sure?</span>
+			<a id='cancel'>Cancel</a><a id='reset'>Reset</a>
+		</form>
 		<script src='../js/jquery-1.11.2.js'></script>
 		<script src='../js/utils.js'></script>
 		<script src='../js/supervisor.js'></script>

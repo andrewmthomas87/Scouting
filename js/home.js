@@ -16,7 +16,8 @@ function resize() {
 	$('div#loading').css('top', 'calc(' + ($(window).height() / 2) + 'px - 1em)');
 	$('form#login').css('top', 'calc(' + ($(window).height() / 2) + 'px - 4.375em)');
 	$('form#readyForNextMatch').css('top', 'calc(' + ($(window).height() / 2) + 'px - 1.875em)');
-	$('form#ready').css ('top', 'calc(' + ($(window).height() / 2) + 'px - 5.3125em)');
+	$('form#ready').css('top', 'calc(' + ($(window).height() / 2) + 'px - 5.3125em)');
+	$('form#comments').css('top', 'calc(' + ($(window).height() / 2) + 'px - 4.375em)');
 }
 
 $(window).resize(resize);
@@ -111,6 +112,32 @@ $(document).ready(function() {
 	});
 
 
+	// Comments form events
+
+	$('form#comments a').click(function() {
+		$('div.stack, div.spacer').not('.initial').fadeOut('fast', function() {
+			$(this).remove();
+		});
+		var comments = $(this).parent().find('input').val();
+		if (comments) {
+			var data = {};
+			data.type = 'robotEvent';
+			data.matchNumber = matchNumber;
+			data.teamNumber = teamNumber;
+			date = new Date();
+			data.matchTime = date.getTime() - startTime;
+			data.eventType = 'C';
+			data.comments = comments;
+			queryServer(data, handleServerResponses);
+		}
+		$(this).parent().fadeOut('fast');
+		matchNumber = null;
+		teamNumber = null;
+		autonomous = true;
+		$('form#readyForNextMatch').fadeIn('fast');
+	});
+
+
 	// Pallete div events
 
 	$('div#palette>div').on('dragstart', function(event) {
@@ -123,6 +150,15 @@ $(document).ready(function() {
 	$('a#autonomous-ended').click(function() {
 		autonomous = false;
 		$(this).fadeOut('fast');
+		$('a#teleop-ended').fadeIn('fast');
+	});
+
+
+	// Teleop ended events
+
+	$('a#teleop-ended').click(function() {
+		matchStarted = false;
+		$('div#overlay, form#comments').fadeIn('fast');
 	});
 
 
@@ -151,6 +187,28 @@ $(document).ready(function() {
 	});
 
 
+	// Robot orientation events
+
+	$('a#robot-orientation').click(function() {
+		if ($(this).hasClass('fell-over')) {
+			$(this).removeClass('fell-over');
+			$('div#palette>div').fadeIn('fast');
+		}
+		else {
+			var data = {};
+			data.type = 'robotEvent';
+			data.matchNumber = matchNumber;
+			data.teamNumber = teamNumber;
+			date = new Date();
+			data.matchTime = date.getTime() - startTime;
+			data.eventType = 'F';
+			queryServer(data, handleServerResponses);
+			$(this).addClass('fell-over');
+			$('div#palette>div').fadeOut('fast');
+		}
+	});
+
+
 	// Spacer events
 
 	$('div#main section').delegate('div.spacer', 'dragenter', function(event) {
@@ -167,7 +225,7 @@ $(document).ready(function() {
 	$('div#main section').delegate('div.spacer', 'drop', function(event) {
 		event.originalEvent.preventDefault();
 		var objects = event.originalEvent.dataTransfer.getData('objects');
-		if (objects.indexOf('L') < 0 && objects.indexOf('P') < 0 && objects.indexOf('K') < 0) {
+		if ((objects.charAt(0) != 'K' && objects.length > 1) || (objects.indexOf('L') < 0 && objects.indexOf('P') < 0 && objects.indexOf('K') < 0)) {
 			event.stopPropagation();
 			var data = {};
 			data.type = 'contribution';
@@ -211,17 +269,17 @@ $(document).ready(function() {
 		}
 		event.originalEvent.preventDefault();
 	});
-	$('div#main section').delegate('div.stack', 'drop', function(event) {
+	$('div#main section#global').delegate('div.stack', 'drop', function(event) {
 		event.originalEvent.preventDefault();
 		var objects = event.originalEvent.dataTransfer.getData('objects');
 		var SID = 0;
 		if (objects.charAt(0) == 'K') {
-			SID = objects.substring(1);
+			SID = objects.substr(1);
 			objects = '';
 			$('div#' + SID + ' div div').each(function() {
 				objects += $(this).attr('class') + ',';
 			});
-			objects = objects.substring(-1);
+			objects = objects.substr(0, objects.length - 1);
 		}
 		var invalid = false;
 		var hasBin = $(this).find('div div.B').length > 0;
@@ -257,11 +315,46 @@ $(document).ready(function() {
 		$('a#trash').fadeOut(125);
 		drag = 0;
 	});
+	$('div#main section#local').delegate('div.stack', 'drop', function(event) {
+		event.originalEvent.preventDefault();
+		var objects = event.originalEvent.dataTransfer.getData('objects');
+		var SID = 0;
+		if (objects.charAt(0) == 'K') {
+			invalid = true;
+		}
+		var invalid = false;
+		var hasBin = $(this).find('div div.B').length > 0;
+		var alreadyBinned = objects.indexOf('B') > -1 && hasBin;
+		var alreadyLittered = objects.indexOf('L') > -1 && $(this).find('div div.L').length > 0;
+		var alreadyScored = objects.indexOf('P') > -1 && $(this).find('div div.P').length > 0;
+		var invalidYellowTotePlacement = objects.indexOf('Y') > -1 && ($(this).find('div div.Y').length < 1 || $(this).find('div div.Y').length > 2);
+		var invalidPlacementUponYellowToteStack = objects.indexOf('Y') < 0 && $(this).find('div div.Y').length > 0;
+		var invalidLitter = !hasBin && objects.indexOf('L') > -1;
+		invalid = alreadyBinned || alreadyLittered || alreadyScored || invalidYellowTotePlacement || invalidPlacementUponYellowToteStack || invalidLitter;
+		objects = objects.split(',');
+		var totes = 0;
+		for (i = 0; i < objects.length; i++) {
+			totes += (objects[i].indexOf('F') > -1 || objects[i].indexOf('H') > -1) ? 1 : 0;
+		}
+		invalid = invalid || (totes + $(this).find('div div.F, div div.H').length > 6 && totes > 0);
+		objects = SID > 0 ? 'K' + SID : objects.join();
+		if (!invalid) {
+			event.stopPropagation();
+			var data = {};
+			data.type = 'contribution';
+			data.teamNumber = teamNumber;
+			data.SID = -1;
+			data.objects = objects;
+			handleClientServerResponses([data]);
+		}
+		$(this).removeClass('active');
+		drag = 0;
+	});
 
 
 	// Stack events
 
-	$('div#main section').delegate('div.stack>div', 'dragstart', function(event) {
+	$('div#main section#global').delegate('div.stack>div', 'dragstart', function(event) {
 		var objects = '';
 		objects += 'K' + $(this).parent().attr('id');
 		event.originalEvent.dataTransfer.setData('objects', objects);
@@ -270,7 +363,25 @@ $(document).ready(function() {
 		$('div.selection').hide(125);
 		$('a#trash').fadeIn(125);
 	});
-	$('div#main section').delegate('div.stack>div', 'dragend', function(event) {
+	$('div#main section#local').delegate('div.stack>div', 'dragstart', function(event) {
+		var objects = '';
+		$(this).find('div').each(function() {
+			objects += $(this).attr('class') + ',';
+		});
+		objects = objects.substr(0, objects.length - 1);
+		event.originalEvent.dataTransfer.setData('objects', objects);
+		$(this).find('div').addClass('selection');
+		$('div.selection').hide(125);
+		$('a#trash').fadeIn(125);
+	});
+	$('div#main section#global').delegate('div.stack>div', 'dragend', function(event) {
+		$('a#trash').removeClass('active');
+		$('a#trash').fadeOut(125);
+		$('div.selection').show(125);
+		$('div.selection').removeClass('selection');
+		$('div.active').removeClass('active');
+	});
+	$('div#main section#local').delegate('div.stack>div', 'dragend', function(event) {
 		$('a#trash').removeClass('active');
 		$('a#trash').fadeOut(125);
 		$('div.selection').show(125);
@@ -366,8 +477,19 @@ function handleClientServerResponses(data) {
 				else if (message.status == 'waiting') {
 					setTimeout(waitForMatchStart, updateSpeed);
 				}
-				else if (message.status == 'wazUp') {
+				else if (message.status == 'wazUp' && matchStarted) {
 					setTimeout(wazUp, updateSpeed);
+				}
+				else if (message.status == 'matchReset') {
+					$('div.stack, div.spacer').not('.initial').fadeOut('fast', function() {
+						$(this).remove();
+					});
+					$('a#trash').removeClass('active');
+					$('a#trash').fadeOut('fast');
+					matchNumber = null;
+					teamNumber = null;
+					autonomous = true;
+					$('div#overlay, form#readyForNextMatch').fadeIn('fast');
 				}
 				handleServerResponses([message]);
 				break;
@@ -375,16 +497,19 @@ function handleClientServerResponses(data) {
 				var SID = message.SID;
 				var contributor = message.teamNumber;
 				var objects = message.objects.split(',');
-				var stackExists = $('section#global div#' + SID).length > 0;
+				var stackExists = $('section div#' + SID).length > 0;
 				if (stackExists) {
 					if (objects[0].charAt(0) == 'K') {
-						var originSID = parseInt(objects[0].substring(1));
+						var originSID = parseInt(objects[0].substr(1));
 						var objects = [];
 						$('div#' + originSID + ' div div').each(function() {
 							objects.push($(this).attr('class'));
 						});
 						$('div#' + originSID).next('div.spacer').remove();
 						$('div#' + originSID).remove();
+					}
+					else if (objects.length > 1) {
+						$('div.selection').remove();
 					}
 					var stack = $('div#' + SID + '>div');
 					var objectType;

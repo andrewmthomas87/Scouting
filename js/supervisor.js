@@ -5,7 +5,16 @@ var currentView = 0;
 
 var matchStarted = false;
 
+var matchNumber;
+
+function resize() {
+	$('form#confirmMatchReset').css('top', 'calc(' + ($(window).height() / 2) + 'px - 3.8125em)');
+}
+
+$(window).resize(resize);
+
 $(document).ready(function() {
+	resize();
 
 	$('section#setUpMatch input').prop('disabled', true);
 
@@ -90,9 +99,24 @@ $(document).ready(function() {
 
 	$('a#matchEnded').click(function() {
 		$(this).fadeOut('fast');
-		$('body>div').fadeOut('fast');
+		$('div#red, div#blue').fadeOut('fast');
 		var data = {};
 		data.type = 'matchEnded';
+		queryServer(data, handleSupervisorServerResponses);
+	});
+
+	$('a#matchReset').click(function() {
+		$('div#overlay, form#confirmMatchReset').fadeIn('fast');
+	});
+
+	$('a#cancel').click(function() {
+		$('div#overlay, form#confirmMatchReset').fadeOut('fast');
+	});
+
+	$('a#reset').click(function() {
+		var data = {};
+		data.type = 'matchReset';
+		data.matchNumber = matchNumber;
 		queryServer(data, handleSupervisorServerResponses);
 	});
 
@@ -117,6 +141,7 @@ function handleSupervisorServerResponses(data) {
 				$('section#setUpMatch input#blueTeam3').val(message.blueTeam3);
 				$('section:visible').hide();
 				$('section#setUpMatch').fadeIn('fast');
+				matchNumber = message.matchNumber;
 				currentView = 1;
 				break;
 			case 'connectedClients':
@@ -139,7 +164,7 @@ function handleSupervisorServerResponses(data) {
 				break;
 			case 'matchStarted':
 				$('nav, section#startMatch').fadeOut('fast', function() {
-					$('body>div, a#matchEnded').fadeIn('fast');
+					$('div#red, div#blue, a#matchEnded, a#matchReset').fadeIn('fast');
 				});
 				matchStarted = true;
 				setTimeout(wazUp, updateSpeed);
@@ -149,10 +174,30 @@ function handleSupervisorServerResponses(data) {
 					setTimeout(wazUp, updateSpeed);
 				}
 				else if (message.status == 'matchEnded') {
+					$('div.stack, div.spacer').not('.initial').fadeOut('fast', function() {
+						$(this).remove();
+					});
+					$('div#red, div#blue, a#matchEnded, a#matchReset').fadeOut('fast');
 					$('nav').fadeIn('fast');
 					matchStarted = false;
+					matchNumber = null;
+					currentView = 0;
 					var data = {};
-					data.type = 'matchStarted';
+					data.type = 'getNextMatch';
+					queryServer(data, handleSupervisorServerResponses);
+				}
+				else if (message.status == 'matchReset') {
+					$('div#overlay, form#confirmMatchReset').fadeOut('fast');
+					$('div.stack, div.spacer').not('.initial').fadeOut('fast', function() {
+						$(this).remove();
+					});
+					$('div#red, div#blue, a#matchEnded, a#matchReset').fadeOut('fast');
+					$('nav').fadeIn('fast');
+					matchStarted = false;
+					matchNumber = null;
+					currentView = 0;
+					var data = {};
+					data.type = 'getNextMatch';
 					queryServer(data, handleSupervisorServerResponses);
 				}
 				else {
@@ -161,7 +206,6 @@ function handleSupervisorServerResponses(data) {
 				break;
 			case 'contribution':
 				var alliance = message.alliance;
-				console.log(alliance);
 				var SID = message.SID;
 				var contributor = message.teamNumber;
 				var objects = message.objects.split(',');

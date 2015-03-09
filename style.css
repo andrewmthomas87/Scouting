@@ -116,19 +116,27 @@ a#trash.active {
 	background-image: url('trash-active.png');
 }
 
-a#autonomous-ended {
+a#autonomous-ended, a#teleop-ended {
 	position: fixed;
 	top: 1em;
 	right: 5em;
 	color: #fff;
 	display: inline-block;
 	padding: 0.75em 1.5em;
-	background-color: #2bbe69;
 	font-size: 1.25em;
 	font-weight: 300;
 	text-decoration: none;
 	z-index: 100;
 	cursor: pointer;
+}
+
+a#autonomous-ended {
+	background-color: #2bbe69;
+}
+
+a#teleop-ended {
+	display: none;
+	background-color: #e74c3c;
 }
 
 a#robot-state {
@@ -143,6 +151,8 @@ a#robot-state {
 	font-size: 1.25em;
 	z-index: 100;
 	cursor: pointer;
+	-webkit-transition: background-color 0.125s ease;
+	        transition: background-color 0.125s ease;
 }
 
 a#robot-state.enabled {
@@ -153,6 +163,26 @@ a#robot-state.enabled {
 a#robot-state.disabled {
 	background-color: #e74c3c;
 	border-left: 1em solid #ecf0f1;
+}
+
+a#robot-orientation {
+	position: fixed;
+	top: 5em;
+	right: 1.75em;
+	width: 3em;
+	height: 3em;
+	background-image: url('robot.png');
+	background-position: center;
+	background-size: 100%;
+	z-index: 100;
+	cursor: pointer;
+	-webkit-transition: -webkit-transform 0.125s ease;
+	        transition: transform 0.125s ease;
+}
+
+a#robot-orientation.fell-over {
+	-webkit-transform: rotate(90deg);
+	        transform: rotate(90deg);
 }
 
 div.B {
