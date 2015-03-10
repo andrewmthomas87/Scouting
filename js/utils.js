@@ -1,8 +1,4 @@
 
-var updateSpeed = 125;
-
-var serverIP = 'http://169.254.22.205:8002';
-
 var CID;
 
 function queryServer(data, handler) {

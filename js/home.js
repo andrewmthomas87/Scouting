@@ -79,6 +79,13 @@ $(document).ready(function() {
 	});
 
 
+	// Form events
+
+	$('form').submit(function(event) {
+		event.originalEvent.preventDefault();
+	});
+
+
 	// Login form events
 
 	$('form#login a').click(function() {
@@ -115,7 +122,7 @@ $(document).ready(function() {
 	// Comments form events
 
 	$('form#comments a').click(function() {
-		$('div.stack, div.spacer').not('.initial').fadeOut('fast', function() {
+		$('div.stack, div.spacer, div.stack.initial div div').not('.initial').fadeOut('fast', function() {
 			$(this).remove();
 		});
 		var comments = $(this).parent().find('input').val();
@@ -225,6 +232,10 @@ $(document).ready(function() {
 	$('div#main section').delegate('div.spacer', 'drop', function(event) {
 		event.originalEvent.preventDefault();
 		var objects = event.originalEvent.dataTransfer.getData('objects');
+		if (objects.charAt(0) == 'l') {
+			objects = objects.substr(1);
+			$('section#local div.stack div div').remove();
+		}
 		if ((objects.charAt(0) != 'K' && objects.length > 1) || (objects.indexOf('L') < 0 && objects.indexOf('P') < 0 && objects.indexOf('K') < 0)) {
 			event.stopPropagation();
 			var data = {};
@@ -273,6 +284,7 @@ $(document).ready(function() {
 		event.originalEvent.preventDefault();
 		var objects = event.originalEvent.dataTransfer.getData('objects');
 		var SID = 0;
+		var local = false;
 		if (objects.charAt(0) == 'K') {
 			SID = objects.substr(1);
 			objects = '';
@@ -281,6 +293,10 @@ $(document).ready(function() {
 			});
 			objects = objects.substr(0, objects.length - 1);
 		}
+		else if (objects.charAt(0) == 'l') {
+			local = true;
+			objects = objects.substr(1);
+		}
 		var invalid = false;
 		var hasBin = $(this).find('div div.B').length > 0;
 		var alreadyBinned = objects.indexOf('B') > -1 && hasBin;
@@ -288,7 +304,7 @@ $(document).ready(function() {
 		var alreadyScored = objects.indexOf('P') > -1 && $(this).find('div div.P').length > 0;
 		var invalidYellowTotePlacement = objects.indexOf('Y') > -1 && ($(this).find('div div.Y').length < 1 || $(this).find('div div.Y').length > 2);
 		var invalidPlacementUponYellowToteStack = objects.indexOf('Y') < 0 && $(this).find('div div.Y').length > 0;
-		var invalidLitter = !hasBin && objects.indexOf('L') > -1;
+		var invalidLitter = !(hasBin || objects.indexOf('B') > -1) && objects.indexOf('L') > -1;
 		invalid = alreadyBinned || alreadyLittered || alreadyScored || invalidYellowTotePlacement || invalidPlacementUponYellowToteStack || invalidLitter;
 		objects = objects.split(',');
 		var totes = 0;
@@ -299,6 +315,9 @@ $(document).ready(function() {
 		objects = SID > 0 ? 'K' + SID : objects.join();
 		if (!invalid) {
 			event.stopPropagation();
+			if (local) {
+				$('section#local div.stack div div').remove();
+			}
 			var data = {};
 			data.type = 'contribution';
 			data.matchNumber = matchNumber;
@@ -319,18 +338,16 @@ $(document).ready(function() {
 		event.originalEvent.preventDefault();
 		var objects = event.originalEvent.dataTransfer.getData('objects');
 		var SID = 0;
-		if (objects.charAt(0) == 'K') {
-			invalid = true;
-		}
 		var invalid = false;
+		var isStack = objects.charAt(0) == 'K';
 		var hasBin = $(this).find('div div.B').length > 0;
 		var alreadyBinned = objects.indexOf('B') > -1 && hasBin;
 		var alreadyLittered = objects.indexOf('L') > -1 && $(this).find('div div.L').length > 0;
 		var alreadyScored = objects.indexOf('P') > -1 && $(this).find('div div.P').length > 0;
 		var invalidYellowTotePlacement = objects.indexOf('Y') > -1 && ($(this).find('div div.Y').length < 1 || $(this).find('div div.Y').length > 2);
 		var invalidPlacementUponYellowToteStack = objects.indexOf('Y') < 0 && $(this).find('div div.Y').length > 0;
-		var invalidLitter = !hasBin && objects.indexOf('L') > -1;
-		invalid = alreadyBinned || alreadyLittered || alreadyScored || invalidYellowTotePlacement || invalidPlacementUponYellowToteStack || invalidLitter;
+		var invalidLitter = !(hasBin || objects.indexOf('B') > -1) && objects.indexOf('L') > -1;
+		invalid = isStack || alreadyBinned || alreadyLittered || alreadyScored || invalidYellowTotePlacement || invalidPlacementUponYellowToteStack || invalidLitter;
 		objects = objects.split(',');
 		var totes = 0;
 		for (i = 0; i < objects.length; i++) {
@@ -364,7 +381,7 @@ $(document).ready(function() {
 		$('a#trash').fadeIn(125);
 	});
 	$('div#main section#local').delegate('div.stack>div', 'dragstart', function(event) {
-		var objects = '';
+		var objects = 'l';
 		$(this).find('div').each(function() {
 			objects += $(this).attr('class') + ',';
 		});
@@ -420,7 +437,22 @@ $(document).ready(function() {
 	$('a#trash').on('drop', function(event) {
 		event.stopPropagation();
 		event.originalEvent.preventDefault();
-		$('div.selection').remove();
+		var objects = event.originalEvent.dataTransfer.getData('objects');
+		if (objects.charAt(0) == 'K') {
+			var data = {};
+			data.type = 'contribution';
+			data.matchNumber = matchNumber;
+			data.teamNumber = teamNumber;
+			data.mode = autonomous ? 'A' : 'T';
+			data.SID = parseInt(objects.substr(1));
+			date = new Date();
+			data.time = date.getTime() - startTime;
+			data.objects = 'X';
+			queryServer(data, handleClientServerResponses);
+		}
+		else {
+			$('div.selection').remove();
+		}
 		$(this).removeClass('active');
 		$(this).fadeOut(125);
 	});
@@ -497,53 +529,63 @@ function handleClientServerResponses(data) {
 				var SID = message.SID;
 				var contributor = message.teamNumber;
 				var objects = message.objects.split(',');
-				var stackExists = $('section div#' + SID).length > 0;
-				if (stackExists) {
-					if (objects[0].charAt(0) == 'K') {
-						var originSID = parseInt(objects[0].substr(1));
-						var objects = [];
-						$('div#' + originSID + ' div div').each(function() {
-							objects.push($(this).attr('class'));
-						});
-						$('div#' + originSID).next('div.spacer').remove();
-						$('div#' + originSID).remove();
-					}
-					else if (objects.length > 1) {
-						$('div.selection').remove();
-					}
-					var stack = $('div#' + SID + '>div');
-					var objectType;
-					var object;
-					for (i = 0; i < objects.length; i++) {
-						objectType = objects[objects.length - 1 - i];
-						object = '<div style="display: none" class="' + objectType + '" teamNumber="' + contributor + '"></div>';
-						if (objectType == 'P') {
-							stack.append(object);
-						}
-						else if (!stack.find('div.B').length > 0 || objectType == 'L') {
-							stack.prepend(object);
-						}
-						else if (stack.find('div').length > 1) {
-							stack.find('div').not('.P').last().after('<div class="' + objects[i] + '" teamNumber="' + contributor + '"></div>');
-						}
-						else {
-							stack.append(object);
-						}
-					}
-					stack.find('div').not(':visible').fadeIn('fast');
+				if (objects[0].charAt(0) == 'X') {
+					$('section div#' + SID).next('div.spacer').fadeOut('fast', function() {
+						$(this).remove();
+					});
+					$('section div#' + SID).fadeOut('fast', function() {
+						$(this).remove();
+					});
 				}
 				else {
-					var stackContainer = $('<div class="stack" id="' + SID + '"></div>');
-					var stack = $('<div draggable="true"></div>');
-					var object;
-					for (i = 0; i < objects.length; i++) {
-						object = $('<div style="display: none" class="' + objects[i] + '" teamNumber="' + contributor + '"></div>');
-						stack.append(object);
+					var stackExists = $('section div#' + SID).length > 0;
+					if (stackExists) {
+						if (objects[0].charAt(0) == 'K') {
+							var originSID = parseInt(objects[0].substr(1));
+							var objects = [];
+							$('div#' + originSID + ' div div').each(function() {
+								objects.push($(this).attr('class'));
+							});
+							$('div#' + originSID).next('div.spacer').remove();
+							$('div#' + originSID).remove();
+						}
+						else if (objects.length > 1) {
+							$('div.selection').remove();
+						}
+						var stack = $('div#' + SID + '>div');
+						var objectType;
+						var object;
+						for (i = 0; i < objects.length; i++) {
+							objectType = objects[objects.length - 1 - i];
+							object = '<div style="display: none" class="' + objectType + '" teamNumber="' + contributor + '"></div>';
+							if (objectType == 'P') {
+								stack.append(object);
+							}
+							else if (!stack.find('div.B').length > 0 || objectType == 'L') {
+								stack.prepend(object);
+							}
+							else if (stack.find('div').length > 1) {
+								stack.find('div').not('.P').last().after('<div class="' + objects[i] + '" teamNumber="' + contributor + '"></div>');
+							}
+							else {
+								stack.append(object);
+							}
+						}
+						stack.find('div').not(':visible').fadeIn('fast');
 					}
-					stackContainer.append(stack);
-					$('section#global').append(stackContainer);
-					$('section#global').append('<div class="spacer"></div>');
-					stack.find('div').fadeIn('fast');
+					else {
+						var stackContainer = $('<div class="stack" id="' + SID + '"></div>');
+						var stack = $('<div draggable="true"></div>');
+						var object;
+						for (i = 0; i < objects.length; i++) {
+							object = $('<div style="display: none" class="' + objects[i] + '" teamNumber="' + contributor + '"></div>');
+							stack.append(object);
+						}
+						stackContainer.append(stack);
+						$('section#global').append(stackContainer);
+						$('section#global').append('<div class="spacer"></div>');
+						stack.find('div').fadeIn('fast');
+					}
 				}
 				break;
 			default:
