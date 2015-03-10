@@ -125,7 +125,7 @@ public class SCMatch
         }
 
         MatchTeamData data = sCurrentMatch.fTeamsMap.get( clientID );
-        
+
         if ( data == null )
         {
             return -1;

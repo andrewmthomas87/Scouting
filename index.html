@@ -16,47 +16,50 @@
 		</nav>
 		<h1 id='header'>Global</h1>
 		<a id='trash'></a>
+		<a id='autonomous-ended'>Autonomous Ended</a>
+		<a id='teleop-ended'>Teleop Ended</a>
+		<a class='enabled' id='robot-state'></a>
+		<a id='robot-orientation'></a>
 		<div id='main'>
-			<section id='global'>
-				<div class='spacer'></div>
-			</section><!--
-			--><section id='local'>
-				<div class='spacer'></div>
-			</section>
+			<section id='global'><div class='spacer initial'></div></section><!--
+			--><section id='local'><div class='stack initial' id='-1'><div draggable='true'></div></div></section>
 		</div><!--
 		--><div id='palette'>
 			<div draggable='true'>
-				<div class='bin'></div>
+				<div class='B'></div>
 			</div><!--
 			--><div draggable='true'>
-				<div class='tote'></div>
+				<div class='F'></div>
 			</div><!--
 			--><div draggable='true'>
-				<div class='chute-tote'></div>
+				<div class='H'></div>
 			</div><!--
 			--><div draggable='true'>
-				<div class='litter'></div>
+				<div class='L'></div>
 			</div><!--
 			--><div draggable='true'>
-				<div class='scoring-platform'></div>
+				<div class='P'></div>
 			</div><!--
 			--><div draggable='true'>
-				<div class='yellow-tote'></div>
+				<div class='Y'></div>
 			</div>
 		</div>
 		<div id='overlay'></div>
 		<div id='loading'></div>
 		<form id='login'>
 			<input type='text' placeholder='Scout Name'>
-			<input type='submit' value='Connect'>
+			<a>Connect</a>
 		</form>
 		<form id='readyForNextMatch'>
-			<input type='submit' value='Ready for match'>
+			<a>Ready for match</a>
 		</form>
 		<form id='ready'>
-			<h3>Match <span id='matchNumber'></span><br>You have been assigned team <span id='teamNumber'></span></h3>
-			<input type='submit' value='Continue'>
+			<h3>Match <span id='matchNumber'></span> - <span id='alliance'></span><br>You have been assigned team <span id='teamNumber'></span></h3>
+			<a>Continue</a>
 		</form>
+		<form id='comments'>
+			<input type='text' placeholder='Comments'>
+			<a>Continue</a>
 		<script src='js/jquery-1.11.2.js'></script>
 		<script>
 			var iosDragDropShim = {
@@ -64,7 +67,8 @@
 			}
 		</script>
 		<script src='js/ios-drag-drop.js'></script>
-		<script src='js/app.js'></script>
+		<script src='js/utils.js'></script>
+		<script src='js/home.js'></script>
 	</body>
 
 </html>

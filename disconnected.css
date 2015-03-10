@@ -1,0 +1,40 @@
+
+@font-face {
+	font-family: 'Source Sans Pro';
+	src: url('fonts/SourceSansPro-Light.ttf');
+	font-weight: 300;
+}
+
+html, body {
+	width: 100%;
+	margin: 0;
+}
+
+body {
+	font-family: 'Source Sans Pro', sans-serif;
+}
+
+h1 {
+	color: #2980b9;
+	padding: 0.5em 0;
+	margin: 0;
+	font-size: 5em;
+	font-weight: 300;
+	text-align: center;
+}
+
+h2 {
+	color: #555;
+	padding: 0;
+	margin: 0;
+	font-size: 3.5em;
+	font-weight: 300;
+	text-align: center;
+}
+
+h2 a {
+	color: #3498db;
+	font-size: 1em;
+	font-weight: 300;
+	text-decoration: none;
+}

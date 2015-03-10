@@ -14,7 +14,9 @@
 
 html, body {
 	width: 100%;
+	height: 100%;
 	margin: 0;
+	overflow: hidden;
 }
 
 body {
@@ -136,7 +138,7 @@ section#manageDevices div a {
 	cursor: pointer;
 }
 
-section#manageDevices>a {
+section#manageDevices>a, section#startMatch>a {
 	display: block;
 	color: #777;
 	padding: 0.75em 0;
@@ -145,5 +147,218 @@ section#manageDevices>a {
 	font-weight: 300;
 	text-align: center;
 	text-decoration: none;
+	cursor: pointer;
+}
+
+a#matchEnded, a#matchReset {
+	position: fixed;
+	left: calc(50% - 3.75em);
+	right: calc(50% - 3.75em);
+	color: #fff;
+	width: 7.5em;
+	padding: 0.75em 0;
+	background-color: #e74c3c;
+	font-size: 1.25em;
+	font-weight: 300;
+	text-decoration: none;
+	text-align: center;
+	cursor: pointer;
+}
+
+a#matchEnded {
+	top: 3em;
+}
+
+a#matchReset {
+	top: 7.5em;
+}
+
+div.B {
+	width: 1em;
+	height: 1.45em;
+	margin: 0 0.5em;
+	background-color: #666;
+	border-top: 0.05em solid #777;
+}
+
+div.L {
+	width: 0.125em;
+	height: 0.45em;
+	margin: 0 0.9375em;
+	background-color: #2ecc71;
+	border-top: 0.05em solid #27ae60;
+}
+
+div.F {
+	position: relative;
+	width: 2em;
+	height: 0.95em;
+	margin: 0;
+	background-color: #999;
+	border-top: 0.05em solid #777;
+}
+
+div.F:after {
+	content: 'F';
+	position: absolute;
+	top: 0;
+	left: 0.5em;
+	color: #222;
+	font-size: 0.3em;
+	font-weight: 400;
+	z-index: 100;
+}
+
+div.F:before {
+	content: attr(teamNumber);
+	position: absolute;
+	top: 0;
+	right: 0.6em;
+	color: #444;
+	font-size: 0.25em;
+	font-weight: 400;
+	z-index: 100;
+}
+
+div.H {
+	position: relative;
+	width: 2em;
+	height: 0.95em;
+	margin: 0;
+	background-color: #999;
+	border-top: 0.05em solid #777;
+}
+
+div.H:after {
+	content: 'C';
+	position: absolute;
+	top: 0;
+	left: 0.5em;
+	color: #222;
+	font-size: 0.3em;
+	font-weight: 400;
+	z-index: 100;
+}
+
+div.H:before {
+	content: attr(teamNumber);
+	position: absolute;
+	top: 0;
+	right: 0.6em;
+	color: #444;
+	font-size: 0.25em;
+	font-weight: 400;
+	z-index: 100;
+}
+
+div.Y {
+	width: 2em;
+	height: 0.95em;
+	margin: 0;
+	background-color: #f1c40f;
+	border-top: 0.05em solid #f39c12;
+}
+
+div.P {
+	width: 2em;
+	height: 0.062em;
+	margin: 0;
+	background-color: #3498db;
+	border-top: 0.05em solid #2980b9;
+}
+
+body>div {
+	display: inline-block;
+	position: relative;
+	width: 50%;
+	height: calc(100% - 10px);
+	text-align: center;
+	overflow-x: auto;
+	overflow-y: hidden;
+	white-space: nowrap;
+}
+
+div#red {
+	border-top: 10px solid #e74c3c;
+}
+
+div#blue {
+	border-top: 10px solid #3498db;
+}
+
+body>div>div {
+	display: inline-block;
+	height: calc(100% - 0.5em);
+	border-bottom: 0.5em solid #555;
+	font-size: 3em;
+}
+
+body>div>div.active {
+	background-color: #ecf0f1;
+	border-bottom: 0.5em solid #777;
+}
+
+body>div>div.spacer {
+	width: 1em;
+	transition: width 0.125s ease;
+}
+
+body>div>div.spacer.active {
+	width: 2em;
+}
+
+body>div>div.stack {
+	position: relative;
+	width: 2em;
+}
+
+body>div>div.stack>div {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+div#overlay {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: none;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.75);
+	z-index: 100;
+}
+
+form#confirmMatchReset {
+	position: fixed;
+	display: none;
+	left: calc(50% - 7.5em);
+	right: calc(50% - 7.5em);
+	width: 15em;
+	z-index: 100;
+}
+
+form#confirmMatchReset span {
+	display: block;
+	color: #555;
+	padding: 1em 0;
+	background-color: #fff;
+	font-size: 1.5em;
+	font-weight: 300;
+	text-align: center;
+}
+
+form#confirmMatchReset a {
+	display: inline-block;
+	color: #fff;
+	width: 50%;
+	padding: 0.75em 0;
+	background-color: #3498db;
+	font-size: 1.25em;
+	font-weight: 300;
+	text-align: center;
 	cursor: pointer;
 }
