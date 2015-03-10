@@ -18,7 +18,7 @@ public class MySQL
 
     private static String[] tables = new String[]
             {
-                    // eventType: D = disabled, E = enabled (after disabled), F = fell over, C = comments
+                    // eventType: D = disabled, E = enabled (after disabled), F = fell over, C = comments, R = rake bin
                     "create table robotEvents (eventCode varchar(12), teamNumber int, matchNumber int, eventType char(1), matchTime int, comments varchar(1024))",
 
 
@@ -34,7 +34,9 @@ public class MySQL
 
                     "create table contributions (eventCode varchar(12), teamNumber int, matchNumber int, mode char(1), object char(1), SID int, otherSID int, matchTime int)",
 
-                    "create table eventMatches (eventCode varchar(12), matchNumber int, played boolean default false, redTeam1 int, redTeam2 int, redTeam3 int, blueTeam1 int, blueTeam2 int, blueTeam3 int)"
+                    "create table eventMatches (eventCode varchar(12), matchNumber int, played boolean default false, redTeam1 int, redTeam2 int, redTeam3 int, blueTeam1 int, blueTeam2 int, blueTeam3 int)",
+
+                    "create table matchScouts(eventCode varchar(12), matchNumber int, teamNumber int, scoutName varchar(64))"
             };
 
     private static String[] killTables = new String[]
@@ -42,7 +44,8 @@ public class MySQL
                     "drop table if exists robotEvents",
                     "drop table if exists stacks",
                     "drop table if exists contributions",
-                    "drop table if exists eventMatches"
+                    "drop table if exists eventMatches",
+                    "drop table if exists matchScouts"
             };
 
     public void deleteTables() throws SQLException
@@ -307,6 +310,21 @@ public class MySQL
         {
             stmt.setString( 6, comments );
         }
+
+        stmt.executeUpdate();
+
+        stmt.close();
+    }
+
+    public void assignScoutToTeam( String eventCode, int matchNumber, int teamNumber, String scoutName ) throws SQLException
+    {
+        PreparedStatement stmt =
+                fConnection.prepareStatement( "insert into matchScouts(eventCode, matchNumber, teamNumber, scoutName) values (?,?,?,?)" );
+
+        stmt.setString( 1, eventCode );
+        stmt.setInt( 2, matchNumber );
+        stmt.setInt( 3, teamNumber );
+        stmt.setString( 4, scoutName );
 
         stmt.executeUpdate();
 

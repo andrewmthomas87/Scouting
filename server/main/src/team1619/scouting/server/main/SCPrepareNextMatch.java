@@ -2,6 +2,7 @@ package team1619.scouting.server.main;
 
 import team1619.scouting.server.database.MySQL;
 import team1619.scouting.server.utils.SCJSON;
+import team1619.scouting.server.utils.SCProperties;
 
 import java.sql.SQLException;
 
@@ -35,6 +36,13 @@ public class SCPrepareNextMatch extends SCMessage
             outboundMessage.put( "matchNumber", SCMatch.getMatchNumber() );
             outboundMessage.put( "teamNumber", matchData.getTeamNumber() );
             outboundMessage.put( "alliance", matchData.getAlliance() );
+
+            // assign scout to this match
+            conn.assignScoutToTeam( SCProperties.getProperty( "event.code" ),
+                                    outboundMessage.getInteger( "matchNumber" ),
+                                    outboundMessage.getInteger( "teamNumber" ),
+                                    clientQueue.getScoutName() );
+
         }
 
         clientQueue.writeToClient( outboundMessage );
