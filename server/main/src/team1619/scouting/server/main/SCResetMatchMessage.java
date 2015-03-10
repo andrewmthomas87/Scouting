@@ -17,15 +17,18 @@ public class SCResetMatchMessage extends SCMessage
     @Override
     void processMessage(MySQL conn, SCJSON message) throws SQLException
     {
-        conn.deleteMatch(message.getInteger( "matchNumber" ));
+        conn.deleteMatch( message.getInteger( "matchNumber" ) );
 
-        SCClientQueue clientQueue = SCOutbound.setupClient();
         SCJSON outMessage = new SCJSON();
 
-        outMessage.put( "type:", "status" );
-        outMessage.put( "status", "ok");
+        outMessage.put( "type", "status" );
+        outMessage.put( "status", "matchReset" );
+        outMessage.put( "description", "Match was reset by supervisor" );
 
-        clientQueue.writeToClient( outMessage );
+        for ( SCClientQueue q : SCOutbound.getClientQueues() )
+        {
+            q.writeToClient( outMessage );
+        }
 
     }
 }
