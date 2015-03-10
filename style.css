@@ -185,7 +185,7 @@ a#robot-orientation.fell-over {
 	        transform: rotate(90deg);
 }
 
-span#matchNumber, span#teamNumber {
+span#matchNumberDisplay, span#teamNumberDisplay {
 	position: fixed;
 	right: 1.5em;
 	color: #555;
@@ -194,11 +194,11 @@ span#matchNumber, span#teamNumber {
 	z-index: 100;
 }
 
-span#matchNumber {
+span#matchNumberDisplay {
 	top: 7.5em;
 }
 
-span#teamNumber {
+span#teamNumberDisplay {
 	top: 9em;
 }
 

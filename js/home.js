@@ -143,6 +143,8 @@ $(document).ready(function() {
 		autonomous = true;
 		$('a#teleop-ended').fadeOut('fast');
 		$('a#autonomous-ended').fadeIn('fast');
+		$('span#matchNumberDisplay span').html('');
+		$('span#teamNumberDisplay span').html('');
 		$('form#readyForNextMatch').fadeIn('fast');
 	});
 
@@ -499,8 +501,8 @@ function handleClientServerResponses(data) {
 					date = new Date();
 					startTime = date.getTime();
 					$('div#palette div.F, div#palette div.H').attr('teamNumber', teamNumber);
-					$('span#matchNumber span').html(matchNumber);
-					$('span#teamNumber span').html(teamNumber);
+					$('span#matchNumberDisplay span').html(matchNumber);
+					$('span#teamNumberDisplay span').html(teamNumber);
 					$('div#overlay, div#loading').fadeOut('fast');
 					setTimeout(wazUp, updateSpeed);
 				}
@@ -527,6 +529,8 @@ function handleClientServerResponses(data) {
 					autonomous = true;
 					$('a#teleop-ended').fadeOut('fast');
 					$('a#autonomous-ended').fadeIn('fast');
+					$('span#matchNumberDisplay span').html('');
+					$('span#teamNumberDisplay span').html('');
 					$('div#overlay, form#readyForNextMatch').fadeIn('fast');
 				}
 				handleServerResponses([message]);
@@ -550,7 +554,7 @@ function handleClientServerResponses(data) {
 							var originSID = parseInt(objects[0].substr(1));
 							var objects = [];
 							$('div#' + originSID + ' div div').each(function() {
-								objects.push($(this).attr('class'));
+								objects.push($(this).attr('class').replace('H', 'F'));
 							});
 							$('div#' + originSID).next('div.spacer').remove();
 							$('div#' + originSID).remove();
