@@ -499,6 +499,8 @@ function handleClientServerResponses(data) {
 					date = new Date();
 					startTime = date.getTime();
 					$('div#palette div.F, div#palette div.H').attr('teamNumber', teamNumber);
+					$('span#matchNumber span').html(matchNumber);
+					$('span#teamNumber span').html(teamNumber);
 					$('div#overlay, div#loading').fadeOut('fast');
 					setTimeout(wazUp, updateSpeed);
 				}

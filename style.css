@@ -185,6 +185,27 @@ a#robot-orientation.fell-over {
 	        transform: rotate(90deg);
 }
 
+span#matchNumber, span#teamNumber {
+	position: fixed;
+	right: 1.5em;
+	color: #555;
+	font-size: 1.25em;
+	font-weight: 300;
+	z-index: 100;
+}
+
+span#matchNumber {
+	top: 7.5em;
+}
+
+span#teamNumber {
+	top: 9em;
+}
+
+body>span span {
+	color: #3498db;
+}
+
 div.B {
 	width: 1em;
 	height: 1.45em;
