@@ -141,6 +141,8 @@ $(document).ready(function() {
 		matchNumber = null;
 		teamNumber = null;
 		autonomous = true;
+		$('a#teleop-ended').fadeOut('fast');
+		$('a#autonomous-ended').fadeIn('fast');
 		$('form#readyForNextMatch').fadeIn('fast');
 	});
 
@@ -521,6 +523,8 @@ function handleClientServerResponses(data) {
 					matchNumber = null;
 					teamNumber = null;
 					autonomous = true;
+					$('a#teleop-ended').fadeOut('fast');
+					$('a#autonomous-ended').fadeIn('fast');
 					$('div#overlay, form#readyForNextMatch').fadeIn('fast');
 				}
 				handleServerResponses([message]);
