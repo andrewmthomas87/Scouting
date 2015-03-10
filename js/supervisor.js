@@ -200,6 +200,10 @@ function handleSupervisorServerResponses(data) {
 					data.type = 'getNextMatch';
 					queryServer(data, handleSupervisorServerResponses);
 				}
+				else if (message.status == 'noNextMatch') {
+					alert('No next match');
+					currentView = 0;
+				}
 				else {
 					handleServerResponses([message]);
 				}
@@ -209,50 +213,60 @@ function handleSupervisorServerResponses(data) {
 				var SID = message.SID;
 				var contributor = message.teamNumber;
 				var objects = message.objects.split(',');
-				var stackExists = $('div#' + alliance + ' div#' + SID).length > 0;
-				if (stackExists) {
-					if (objects[0].charAt(0) == 'K') {
-						var originSID = parseInt(objects[0].substring(1));
-						var objects = [];
-						$('div#' + alliance + ' div#' + originSID + ' div div').each(function() {
-							objects.push($(this).attr('class'));
-						});
-						$('div#' + alliance + ' div#' + originSID).next('div.spacer').remove();
-						$('div#' + alliance + ' div#' + originSID).remove();
-					}
-					var stack = $('div#' + alliance + ' div#' + SID + '>div');
-					var objectType;
-					var object;
-					for (i = 0; i < objects.length; i++) {
-						objectType = objects[objects.length - 1 - i];
-						object = '<div style="display: none" class="' + objectType + '" teamNumber="' + contributor + '"></div>';
-						if (objectType == 'P') {
-							stack.append(object);
-						}
-						else if (!stack.find('div.B').length > 0 || objectType == 'L') {
-							stack.prepend(object);
-						}
-						else if (stack.find('div').length > 1) {
-							stack.find('div').not('.P').last().after('<div class="' + objects[i] + '" teamNumber="' + contributor + '"></div>');
-						}
-						else {
-							stack.append(object);
-						}
-					}
-					stack.find('div').not(':visible').fadeIn('fast');
+				if (objects[0].charAt(0) == 'X') {
+					$('div#' + alliance + ' div#' + SID).next('div.spacer').fadeOut('fast', function() {
+						$(this).remove();
+					});
+					$('div#' + alliance + ' div#' + SID).fadeOut('fast', function() {
+						$(this).remove();
+					});
 				}
 				else {
-					var stackContainer = $('<div class="stack" id="' + SID + '"></div>');
-					var stack = $('<div draggable="true"></div>');
-					var object;
-					for (i = 0; i < objects.length; i++) {
-						object = $('<div style="display: none" class="' + objects[i] + '" teamNumber="' + contributor + '"></div>');
-						stack.append(object);
+					var stackExists = $('div#' + alliance + ' div#' + SID).length > 0;
+					if (stackExists) {
+						if (objects[0].charAt(0) == 'K') {
+							var originSID = parseInt(objects[0].substring(1));
+							var objects = [];
+							$('div#' + alliance + ' div#' + originSID + ' div div').each(function() {
+								objects.push($(this).attr('class'));
+							});
+							$('div#' + alliance + ' div#' + originSID).next('div.spacer').remove();
+							$('div#' + alliance + ' div#' + originSID).remove();
+						}
+						var stack = $('div#' + alliance + ' div#' + SID + '>div');
+						var objectType;
+						var object;
+						for (i = 0; i < objects.length; i++) {
+							objectType = objects[objects.length - 1 - i];
+							object = '<div style="display: none" class="' + objectType + '" teamNumber="' + contributor + '"></div>';
+							if (objectType == 'P') {
+								stack.append(object);
+							}
+							else if (!stack.find('div.B').length > 0 || objectType == 'L') {
+								stack.prepend(object);
+							}
+							else if (stack.find('div').length > 1) {
+								stack.find('div').not('.P').last().after('<div class="' + objects[i] + '" teamNumber="' + contributor + '"></div>');
+							}
+							else {
+								stack.append(object);
+							}
+						}
+						stack.find('div').not(':visible').fadeIn('fast');
 					}
-					stackContainer.append(stack);
-					$('div#' + alliance).append(stackContainer);
-					$('div#' + alliance).append('<div class="spacer"></div>');
-					stack.find('div').fadeIn('fast');
+					else {
+						var stackContainer = $('<div class="stack" id="' + SID + '"></div>');
+						var stack = $('<div draggable="true"></div>');
+						var object;
+						for (i = 0; i < objects.length; i++) {
+							object = $('<div style="display: none" class="' + objects[i] + '" teamNumber="' + contributor + '"></div>');
+							stack.append(object);
+						}
+						stackContainer.append(stack);
+						$('div#' + alliance).append(stackContainer);
+						$('div#' + alliance).append('<div class="spacer"></div>');
+						stack.find('div').fadeIn('fast');
+					}
 				}
 				break;
 			default:
