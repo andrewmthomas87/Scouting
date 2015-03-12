@@ -30,6 +30,30 @@
 	}
 }
 
+@keyframes blinking {
+	0% {
+		transform: scale(1.0, 1.0);
+	}
+	50% {
+		transform: scale(1.125, 1.125);
+	}
+	100% {
+		transform: scale(1.0, 1.0);
+	}
+}
+
+@-webkit-keyframes blinking {
+	0% {
+		-webkit-transform: scale(1.0, 1.0);
+	}
+	50% {
+		-webkit-transform: scale(1.125, 1.125);
+	}
+	100% {
+		-webkit-transform: scale(1.0, 1.0);
+	}
+}
+
 
 html, body {
 	width: 100%;
@@ -59,41 +83,6 @@ nav a {
 	text-decoration: none;
 	opacity: 0.9375;
 	cursor: pointer;
-}
-
-nav a#global-view, nav a#local-view {
-	width: 1.5em;
-	background-color: #16a085;
-}
-
-nav a#global-view.active, nav a#local-view.active {
-	background-color: #1abc9c;
-}
-
-nav a#split-view {
-	width: 0.25em;
-	border-left: 0.75em solid #16a085;
-	border-right: 0.75em solid #16a085;
-}
-
-nav a#split-view.active {
-	border-left: 0.75em solid #1abc9c;
-	border-right: 0.75em solid #1abc9c;
-}
-
-h1#header {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	width: 100%;
-	color: #1abc9c;
-	padding: 0.0625em 0;
-	margin: 0;
-	font-size: 3em;
-	font-weight: 400;
-	text-align: center;
-	z-index: 99;
 }
 
 a#trash {
@@ -132,6 +121,11 @@ a#autonomous-ended, a#teleop-ended {
 
 a#autonomous-ended {
 	background-color: #2bbe69;
+}
+
+a#autonomous-ended.blinking {
+	-webkit-animation: blinking 1s ease infinite;
+	        animation: blinking 1s ease infinite;
 }
 
 a#teleop-ended {
@@ -187,7 +181,7 @@ a#robot-orientation.fell-over {
 
 span#matchNumberDisplay, span#teamNumberDisplay {
 	position: fixed;
-	right: 1.5em;
+	left: 1.5em;
 	color: #555;
 	font-size: 1.25em;
 	font-weight: 300;
@@ -195,11 +189,11 @@ span#matchNumberDisplay, span#teamNumberDisplay {
 }
 
 span#matchNumberDisplay {
-	top: 7.5em;
+	top: 1em;
 }
 
 span#teamNumberDisplay {
-	top: 9em;
+	top: 3em;
 }
 
 body>span span {
@@ -309,14 +303,20 @@ body>div#main {
 body>div#main section {
 	display: inline-block;
 	position: relative;
-	left: 0;
-	width: 100%;
 	height: 100%;
 	text-align: center;
 	overflow-x: auto;
 	overflow-y: hidden;
 	white-space: nowrap;
 	transition: left 0.25s linear, width 0.25s linear;
+}
+
+body>div#main section#global {
+	width: 75%;
+}
+
+body>div#main section#local {
+	width: 25%;
 }
 
 body>div#main section>div {

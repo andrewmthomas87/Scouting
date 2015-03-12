@@ -1,6 +1,4 @@
 
-var currentView = 0;
-
 var matchNumber, teamNumber;
 
 var drag = 0;
@@ -20,70 +18,34 @@ function resize() {
 	$('form#comments').css('top', 'calc(' + ($(window).height() / 2) + 'px - 4.375em)');
 }
 
+function reset() {
+	$('div.stack, div.spacer').not('.initial').fadeOut('fast', function() {
+		$(this).remove();
+	});
+	$('a#trash').removeClass('active');
+	$('a#trash').fadeOut('fast');
+	matchNumber = null;
+	teamNumber = null;
+	autonomous = true;
+	$('a#teleop-ended').fadeOut('fast');
+	$('a#autonomous-ended').removeClass('blinking');
+	$('a#autonomous-ended').fadeIn('fast');
+	$('a#robot-state').removeClass('disabled');
+	$('a#robot-state').addClass('enabled');
+	$('a#robot-orientation').removeClass('fell-over');
+	$('div#palette>div').fadeIn('fast');
+	$('div#palette div.F, div#palette div.H').attr('teamNumber', '');
+	$('span#matchNumberDisplay span').html('');
+	$('span#teamNumberDisplay span').html('');
+	$('form#comments input').val('');
+	$('div#overlay, form#readyForNextMatch').fadeIn('fast');
+}
+
 $(window).resize(resize);
 
 $(document).ready(function() {
 	resize();
 	$('div#overlay, form#login').fadeIn('fast');
-
-
-	// Nav events
-
-	$('nav a#global-view').click(function() {
-		if (currentView != 0) {
-			$('nav a.active').removeClass('active');
-			$(this).addClass('active');
-			$('h1#header').fadeOut(125, function() {
-				$(this).html('Global');
-				$(this).fadeIn(125);
-			});
-			if (currentView == 2) {
-				$('div section').css('width', '100%');
-			}
-			else {
-				$('div section').css('left', '0');
-			}
-			currentView = 0;
-		}
-	});
-	$('nav a#local-view').click(function() {
-		if (currentView != 1) {
-			$('h1#header').fadeOut(125, function() {
-				$(this).html('Local');
-				$(this).fadeIn(125);
-			});
-			$('nav a.active').removeClass('active');
-			$(this).addClass('active');
-			if (currentView == 2) {
-				$('div section').css('width', '100%');
-			}
-			$('div section').css('left', '-100%');
-			currentView = 1;
-		}
-	});
-	$('nav a#split-view').click(function() {
-		if (currentView != 2) {
-			$('h1#header').fadeOut(125, function() {
-				$(this).html('Split');
-				$(this).fadeIn(125);
-			});
-			$('nav a.active').removeClass('active');
-			$(this).addClass('active');
-			if (currentView == 1) {
-				$('div section').css('left', '0');
-			}
-			$('div section#global').css('width', '75%');
-			$('div section#local').css('width', '25%');
-			currentView = 2;
-		}
-	});
-
-
-	// Form events
-
-	$('form').submit(function(event) {
-		event.originalEvent.preventDefault();
-	});
 
 
 	// Login form events
@@ -122,9 +84,6 @@ $(document).ready(function() {
 	// Comments form events
 
 	$('form#comments a').click(function() {
-		$('div.stack, div.spacer, div.stack.initial div div').not('.initial').fadeOut('fast', function() {
-			$(this).remove();
-		});
 		var comments = $(this).parent().find('input').val();
 		if (comments) {
 			var data = {};
@@ -138,14 +97,7 @@ $(document).ready(function() {
 			queryServer(data, handleServerResponses);
 		}
 		$(this).parent().fadeOut('fast');
-		matchNumber = null;
-		teamNumber = null;
-		autonomous = true;
-		$('a#teleop-ended').fadeOut('fast');
-		$('a#autonomous-ended').fadeIn('fast');
-		$('span#matchNumberDisplay span').html('');
-		$('span#teamNumberDisplay span').html('');
-		$('form#readyForNextMatch').fadeIn('fast');
+		reset();
 	});
 
 
@@ -505,6 +457,9 @@ function handleClientServerResponses(data) {
 					$('span#teamNumberDisplay span').html(teamNumber);
 					$('div#overlay, div#loading').fadeOut('fast');
 					setTimeout(wazUp, updateSpeed);
+					setTimeout(function() {
+						$('a#autonomous-ended').addClass('blinking');
+					}, 15000);
 				}
 				break;
 			case 'status':
@@ -519,19 +474,7 @@ function handleClientServerResponses(data) {
 					setTimeout(wazUp, updateSpeed);
 				}
 				else if (message.status == 'matchReset') {
-					$('div.stack, div.spacer').not('.initial').fadeOut('fast', function() {
-						$(this).remove();
-					});
-					$('a#trash').removeClass('active');
-					$('a#trash').fadeOut('fast');
-					matchNumber = null;
-					teamNumber = null;
-					autonomous = true;
-					$('a#teleop-ended').fadeOut('fast');
-					$('a#autonomous-ended').fadeIn('fast');
-					$('span#matchNumberDisplay span').html('');
-					$('span#teamNumberDisplay span').html('');
-					$('div#overlay, form#readyForNextMatch').fadeIn('fast');
+					reset();
 				}
 				handleServerResponses([message]);
 				break;
