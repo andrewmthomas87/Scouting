@@ -25,12 +25,12 @@ public class SCInitMatchData
             while (line != null && !line.isEmpty())
             {
                 String[] splitLine = line.split( " " );
-                int redTeam1 = Integer.parseInt( splitLine[3] );
-                int redTeam2 = Integer.parseInt( splitLine[4] );
-                int redTeam3 = Integer.parseInt( splitLine[5] );
-                int blueTeam1 = Integer.parseInt( splitLine[0] );
-                int blueTeam2 = Integer.parseInt( splitLine[1] );
-                int blueTeam3 = Integer.parseInt( splitLine[2] );
+                int redTeam1 = Integer.parseInt( splitLine[0] );
+                int redTeam2 = Integer.parseInt( splitLine[1] );
+                int redTeam3 = Integer.parseInt( splitLine[2] );
+                int blueTeam1 = Integer.parseInt( splitLine[3] );
+                int blueTeam2 = Integer.parseInt( splitLine[4] );
+                int blueTeam3 = Integer.parseInt( splitLine[5] );
                 db.addMatchData( eventCode, matchNumber, redTeam1, redTeam2, redTeam3, blueTeam1, blueTeam2, blueTeam3);
                 System.out.format( "added: %d %d %d %d %d %d %d \n", matchNumber, redTeam1, redTeam2, redTeam3, blueTeam1, blueTeam2, blueTeam3 );
                 line = file.readLine();

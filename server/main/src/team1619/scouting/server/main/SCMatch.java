@@ -120,6 +120,8 @@ public class SCMatch
     {
         if ( sCurrentMatch == null )
         {
+            SCLogger.getLogger().info( "Trying to get team number when no current match" );
+
             // called before first match has been set up
             return -1;
         }
@@ -128,6 +130,8 @@ public class SCMatch
 
         if ( data == null )
         {
+            SCLogger.getLogger().info( "Client %d does not have match data when getting team number" );
+
             return -1;
         }
         else
