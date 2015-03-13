@@ -330,4 +330,18 @@ public class MySQL
 
         stmt.close();
     }
+
+    public void disconnectClient( String eventCode, int matchNumber, int teamNumber ) throws SQLException
+    {
+        PreparedStatement stmt =
+                fConnection.prepareStatement( "delete from matchScouts where eventCode=? and matchNumber=? and teamNumber=?" );
+
+        stmt.setString( 1, eventCode );
+        stmt.setInt( 2, matchNumber );
+        stmt.setInt( 3, teamNumber );
+
+        stmt.execute();
+
+        stmt.close();
+    }
 }
