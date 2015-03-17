@@ -45,6 +45,8 @@ public class SCPrepareNextMatch extends SCMessage
 
         }
 
+        clientQueue.clearQueue();
+
         clientQueue.writeToClient( outboundMessage );
     }
 }

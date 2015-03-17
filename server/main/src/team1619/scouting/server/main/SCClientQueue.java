@@ -73,6 +73,12 @@ public class SCClientQueue
         fQueue.add( message );
     }
 
+    public synchronized void clearQueue()
+    {
+        // just empty the messages
+        fQueue.clear();
+    }
+
     /**
      * Serializes each JSON message into a string and wraps all the
      * messages into a JSON array of such message.

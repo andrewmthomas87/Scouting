@@ -130,7 +130,7 @@ public class SCMatch
 
         if ( data == null )
         {
-            SCLogger.getLogger().info( "Client %d does not have match data when getting team number" );
+            SCLogger.getLogger().info( "Client %d does not have match data when getting team number", clientID );
 
             return -1;
         }
