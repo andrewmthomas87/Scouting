@@ -168,3 +168,38 @@ Server to Supervisor
     'status': "ok"
 }
 '''
+
+---
+
+#### Bin Rake ####
+Client to Server
+'''javascript
+{
+    'type': "binRake"
+    'binNumber': int
+}
+'''
+Server to Client
+'''javascript
+{
+    'type': "status"
+    'status': "ok"
+}
+'''
+---
+
+#### Moved in Auton ####
+Client to Server
+'''javascript
+{
+    'type': "autonMoved"
+    'autonMoved': true
+}
+'''
+Server to Client
+'''javascript
+{
+    'type': "status"
+    'status': "ok"
+}
+'''

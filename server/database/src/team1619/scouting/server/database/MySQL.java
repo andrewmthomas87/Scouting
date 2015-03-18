@@ -18,8 +18,8 @@ public class MySQL
 
     private static String[] tables = new String[]
             {
-                    // eventType: D = disabled, E = enabled (after disabled), F = fell over, C = comments, R = rake bin
-                    "create table robotEvents (eventCode varchar(12), teamNumber int, matchNumber int, eventType char(1), matchTime int, comments varchar(1024))",
+                    // eventType: D = disabled, E = enabled (after disabled), F = fell over, C = comments, R = rake bin, A = moved in auton
+                    "create table robotEvents (eventCode varchar(12), teamNumber int, matchNumber int, eventType char(1), binRakeNumber int, matchTime int, comments varchar(1024))",
 
 
                     // not used for now:
