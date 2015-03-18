@@ -291,7 +291,7 @@ public class MySQL
         matchDeleteStmt.close();
     }
 
-    public void addRobotEvent( String eventCode, int matchNumber, int teamNumber, String eventType, int matchTime, String comments ) throws SQLException
+    public void addRobotEvent( String eventCode, int matchNumber, int teamNumber, String eventType, int binRakedNumber,  int matchTime, String comments ) throws SQLException
     {
         PreparedStatement stmt =
                 fConnection.prepareStatement( "insert into robotEvents(eventCode, matchNumber, teamNumber, eventType, matchTime, comments) values (?,?,?,?,?,?)" );
