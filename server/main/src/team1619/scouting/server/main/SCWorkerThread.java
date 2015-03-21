@@ -39,7 +39,7 @@ public class SCWorkerThread extends Thread
         sMessageTable.put( "getClients", SCGetClientsMessage.class );
         sMessageTable.put( "getNextMatch", SCGetNextMatchMessage.class );
         sMessageTable.put( "resetMatch", SCResetMatchMessage.class );
-        sMessageTable.put( "wazUp", SCWazUp.class);
+        sMessageTable.put( "wazUp", SCWazUp.class );
         sMessageTable.put( "robotEvent", SCRobotEventMessage.class );
         sMessageTable.put( "matchEnded", SCMatchEnded.class );
         sMessageTable.put( "matchReset", SCResetMatchMessage.class );

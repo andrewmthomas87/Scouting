@@ -23,6 +23,7 @@ public class SCRobotEventMessage extends SCMessage
                 message.getInteger( "matchNumber" ),
                 message.getInteger( "teamNumber" ),
                 message.getString( "eventType" ),
+                message.getInteger( "rakeNumber" ),
                 message.getInteger( "matchTime" ),
                 message.getString( "comments" ) );
 
