@@ -237,6 +237,8 @@ public class SCWorkerThread extends Thread
 
             // System.out.println( "=== Finished processing inbound message ===" );
 
+            in.close();
+
             requestStream.close();
 
             fInboundSocket.close();

@@ -22,10 +22,13 @@ public class SCDisconnectClientMessage extends SCMessage
 
         if ( disconnected != null )
         {
-            // delete from database the scouting information
-            conn.disconnectClient( SCProperties.getProperty( "event.code" ),
-                                   SCMatch.getMatchNumber(),
-                                   SCMatch.getTeamNumber( disconnected.getClientId() ) );
+            if ( SCMatch.isMatchActive() )
+            {
+                // delete from database the scouting information
+                conn.disconnectClient( SCProperties.getProperty( "event.code" ),
+                                       SCMatch.getMatchNumber(),
+                                       SCMatch.getTeamNumber( disconnected.getClientId() ) );
+            }
 
             SCJSON clientResponse = new SCJSON();
             clientResponse.put( "type", "status" );
