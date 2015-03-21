@@ -60,6 +60,30 @@
 	}
 }
 
+@keyframes flashing {
+	0% {
+		background-color: #fff;
+	}
+	50% {
+		background-color: #e74c3c;
+	}
+	100% {
+		background-color: #fff;
+	}
+}
+
+@-webkit-keyframes flashing {
+	0% {
+		background-color: #fff;
+	}
+	50% {
+		background-color: #e74c3c;
+	}
+	100% {
+		background-color: #fff;
+	}
+}
+
 
 html, body {
 	width: 100%;
@@ -71,6 +95,11 @@ body {
 	font-family: 'Source Sans Pro', sans-serif;
 	overflow: hidden;
 	white-space: nowrap;
+}
+
+body.blinking {
+	-webkit-animation: flashing 1s ease infinite;
+	        animation: flashing 1s ease infinite;
 }
 
 nav {
@@ -185,6 +214,25 @@ a#robot-orientation.fell-over {
 	        transform: rotate(90deg);
 }
 
+a#rake {
+	position: fixed;
+	top: 3.4em;
+	right: 0.66em;
+	color: #3498db;
+	width: 2em;
+	height: 2em;
+	font-size: 2.5em;
+	font-weight: 300;
+	background-image: url('rake.png');
+	background-position: right center;
+	background-size: 60%;
+	background-repeat: no-repeat;
+	text-align: left;
+	line-height: 2em;
+	z-index: 100;
+	cursor: pointer;
+}
+
 span#matchNumberDisplay, span#teamNumberDisplay {
 	position: fixed;
 	left: 1.5em;
@@ -236,8 +284,8 @@ div.F:after {
 	position: absolute;
 	top: 0;
 	left: 0.5em;
-	color: #222;
-	font-size: 0.3em;
+	color: #333;
+	font-size: 0.5em;
 	font-weight: 400;
 	z-index: 100;
 }
@@ -247,8 +295,8 @@ div.F:before {
 	position: absolute;
 	top: 0;
 	right: 0.6em;
-	color: #444;
-	font-size: 0.25em;
+	color: #ecf0f1;
+	font-size: 0.5em;
 	font-weight: 400;
 	z-index: 100;
 }
@@ -267,8 +315,8 @@ div.H:after {
 	position: absolute;
 	top: 0;
 	left: 0.5em;
-	color: #222;
-	font-size: 0.3em;
+	color: #333;
+	font-size: 0.5em;
 	font-weight: 400;
 	z-index: 100;
 }
@@ -278,8 +326,8 @@ div.H:before {
 	position: absolute;
 	top: 0;
 	right: 0.6em;
-	color: #444;
-	font-size: 0.25em;
+	color: #ecf0f1;
+	font-size: 0.5em;
 	font-weight: 400;
 	z-index: 100;
 }

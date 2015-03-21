@@ -203,8 +203,8 @@ div.F:after {
 	position: absolute;
 	top: 0;
 	left: 0.5em;
-	color: #222;
-	font-size: 0.3em;
+	color: #333;
+	font-size: 0.5em;
 	font-weight: 400;
 	z-index: 100;
 }
@@ -214,8 +214,8 @@ div.F:before {
 	position: absolute;
 	top: 0;
 	right: 0.6em;
-	color: #444;
-	font-size: 0.25em;
+	color: #ecf0f1;
+	font-size: 0.5em;
 	font-weight: 400;
 	z-index: 100;
 }
@@ -234,8 +234,8 @@ div.H:after {
 	position: absolute;
 	top: 0;
 	left: 0.5em;
-	color: #222;
-	font-size: 0.3em;
+	color: #333;
+	font-size: 0.5em;
 	font-weight: 400;
 	z-index: 100;
 }
@@ -245,8 +245,8 @@ div.H:before {
 	position: absolute;
 	top: 0;
 	right: 0.6em;
-	color: #444;
-	font-size: 0.25em;
+	color: #ecf0f1;
+	font-size: 0.5em;
 	font-weight: 400;
 	z-index: 100;
 }
