@@ -404,6 +404,9 @@ public class MySQL
                                             "where teamNumber=? and eventCode=? and object=? group by matchNumber) t" );
 
         // for each team, get report data and write to file
+        out.format(  "Scouting report for match %d\n", matchNumber );
+        out.println( "----------------------------" );
+
         for ( int team : teams )
         {
             // questions:
@@ -425,19 +428,26 @@ public class MySQL
             {
                 // we have a row
                 double avgCoopTotes = isCoopSet.getDouble( 1 );
-                if ( avgCoopTotes > 0 )
+                if ( isCoopSet.wasNull() )
                 {
-                    // this team stacks coop totes
-                    out.format( "Stacks coopertition totes.  Average number stacked per match: %.1f\n", avgCoopTotes );
+                    out.println( "No data on coopertition totes.");
                 }
                 else
                 {
-                    out.println( "Team does NOT stack coopertition totes.");
+                    if ( avgCoopTotes > 0 )
+                    {
+                        // this team stacks coop totes
+                        out.format( "Stacks coopertition totes.  Average number stacked per match: %.1f\n", avgCoopTotes );
+                    }
+                    else
+                    {
+                        out.println( "Team does NOT stack coopertition totes." );
+                    }
                 }
             }
             else
             {
-                out.println( "Team does NOT stack coopertition totes." );
+                out.println( "No data on coopertition totes." );
             }
             isCoopSet.close();
 
@@ -454,35 +464,51 @@ public class MySQL
             {
                 // we have a row
                 double avgRake = isRakinateSet.getDouble( 1 );
+                boolean rakeNull = isRakinateSet.wasNull();
                 String rakeTime = isRakinateSet.getString( 2 );
 
                 if ( "r".equalsIgnoreCase( rakeTime ) )
                 {
-                    // this is in auto mode
-                    if ( avgRake > 0 )
+                    if ( rakeNull )
                     {
-                        out.format( "Team rakes an average of %.1f bins in AUTO mode.\n", avgRake );
+                        out.println( "Team does not rake in AUTO mode." );
                     }
                     else
                     {
-                        out.println( "Team does NOT rake in AUTO mode." );
+                        // this is in auto mode
+                        if ( avgRake > 0 )
+                        {
+                            out.format( "Team rakes an average of %.1f bins in AUTO mode.\n", avgRake );
+                        }
+                        else
+                        {
+                            out.println( "Team does NOT rake in AUTO mode." );
+                        }
                     }
                     autoRakeOut = true;
                 }
                 else if ( "s".equalsIgnoreCase( rakeTime ) )
                 {
                     // this is teleop mode
-                    if ( avgRake > 0 )
+                    if ( rakeNull )
                     {
-                        out.format( "Team rakes an average of %.1f bins in TELEOP mode.\n", avgRake );
+                        out.println( "Team does not rake in TELEOP mode.");
                     }
                     else
                     {
-                        out.println( "Team does NOT rake in TELEOP mode." );
+                        if ( avgRake > 0 )
+                        {
+                            out.format( "Team rakes an average of %.1f bins in TELEOP mode.\n", avgRake );
+                        }
+                        else
+                        {
+                            out.println( "Team does NOT rake in TELEOP mode." );
+                        }
                     }
                     teleopRakeOut = true;
                 }
             }
+
             isRakinateSet.close();
 
             if ( !autoRakeOut )
