@@ -4,6 +4,7 @@ import team1619.scouting.server.main.SCMatch;
 import team1619.scouting.server.utils.SCLogger;
 import team1619.scouting.server.utils.SCProperties;
 
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -85,9 +86,16 @@ public class MySQL
         }
     }
 
-    public void close() throws SQLException
+    public void close()
     {
-        fConnection.close();
+        try
+        {
+            fConnection.close();
+        }
+        catch ( SQLException ex )
+        {
+            // swallow exception
+        }
     }
 
     public void initialize() throws SQLException
@@ -291,7 +299,7 @@ public class MySQL
         matchDeleteStmt.close();
     }
 
-    public void addRobotEvent( String eventCode, int matchNumber, int teamNumber, String eventType, int binRakedNumber,  int matchTime, String comments ) throws SQLException
+    public void addRobotEvent( String eventCode, int matchNumber, int teamNumber, String eventType, int binRakedNumber, int matchTime, String comments ) throws SQLException
     {
         PreparedStatement stmt =
                 fConnection.prepareStatement( "insert into robotEvents(eventCode, matchNumber, teamNumber, eventType, matchTime, comments) values (?,?,?,?,?,?)" );
@@ -311,7 +319,12 @@ public class MySQL
             stmt.setString( 6, comments );
         }
 
-        stmt.executeUpdate();
+        while ( binRakedNumber > 0 )
+        {
+            // insert an event for each bin raked
+            stmt.executeUpdate();
+            binRakedNumber--;
+        }
 
         stmt.close();
     }
@@ -343,5 +356,213 @@ public class MySQL
         stmt.execute();
 
         stmt.close();
+    }
+
+    public void generateReport( PrintWriter out, String eventCode, int matchNumber )
+            throws SQLException, IllegalArgumentException
+    {
+        // get a cursor for each team in the match
+        PreparedStatement teamList =
+                fConnection.prepareStatement( "select redTeam1, redTeam2, redTeam3, blueTeam1, blueTeam2, blueTeam3 from eventMatches where matchNumber=? and eventCode=?" );
+
+        teamList.setInt( 1, matchNumber );
+        teamList.setString( 2, eventCode );
+
+        ResultSet teamListSet = teamList.executeQuery();
+
+        int[] teams = new int[ 6 ];
+
+        if ( teamListSet.next() )
+        {
+            // should be one row
+            for ( int i = 0; i < 6; i++ )
+            {
+                teams[ i ] = teamListSet.getInt( i + 1 );
+            }
+        }
+        else
+        {
+            // no match number
+            teamListSet.close();
+            throw new IllegalArgumentException( "No such match number: " + matchNumber );
+        }
+
+        PreparedStatement isCoop =
+                fConnection.prepareStatement( "select avg(coop) from " +
+                        "(select count(*) coop from contributions " +
+                        "where teamNumber=? and eventCode=? and object='Y' and mode='A' group by matchNumber) c" );
+
+        PreparedStatement isRakinate =
+                fConnection.prepareStatement( "select avg(rake), eventType from " +
+                        " (select count(*) rake, eventType from robotEvents " +
+                        "where teamNumber=? and eventCode=? and eventType in ('R', 'S') group by matchNumber, eventType) r" +
+                                                      " group by eventType");
+
+        PreparedStatement stackedObjects =
+                fConnection.prepareStatement( "select avg(totes) from " +
+                                                      "(select count(*) totes from contributions "+
+                                            "where teamNumber=? and eventCode=? and object=? group by matchNumber) t" );
+
+        // for each team, get report data and write to file
+        for ( int team : teams )
+        {
+            // questions:
+            // does team participate in coopertition (can they stack yellow totes on step?)
+            // does team rakinate (do they pull bins in auto or teleop mode?)
+            // how many totes are scored from chute?
+            // how many totes are scored from floor?
+            // how many bins are scored?
+
+            out.format( "Team %d\n", team );
+            out.println();
+
+            isCoop.setInt( 1, team );
+            isCoop.setString( 2, eventCode );
+
+            ResultSet isCoopSet = isCoop.executeQuery();
+
+            if ( isCoopSet.next() )
+            {
+                // we have a row
+                double avgCoopTotes = isCoopSet.getDouble( 1 );
+                if ( avgCoopTotes > 0 )
+                {
+                    // this team stacks coop totes
+                    out.format( "Stacks coopertition totes.  Average number stacked per match: %.1f\n", avgCoopTotes );
+                }
+                else
+                {
+                    out.println( "Team does NOT stack coopertition totes.");
+                }
+            }
+            else
+            {
+                out.println( "Team does NOT stack coopertition totes." );
+            }
+            isCoopSet.close();
+
+            // find rakinate data
+            isRakinate.setInt( 1, team );
+            isRakinate.setString( 2, eventCode );
+
+            ResultSet isRakinateSet = isRakinate.executeQuery();
+
+            boolean autoRakeOut = false;
+            boolean teleopRakeOut = false;
+
+            while ( isRakinateSet.next() )
+            {
+                // we have a row
+                double avgRake = isRakinateSet.getDouble( 1 );
+                String rakeTime = isRakinateSet.getString( 2 );
+
+                if ( "r".equalsIgnoreCase( rakeTime ) )
+                {
+                    // this is in auto mode
+                    if ( avgRake > 0 )
+                    {
+                        out.format( "Team rakes an average of %.1f bins in AUTO mode.\n", avgRake );
+                    }
+                    else
+                    {
+                        out.println( "Team does NOT rake in AUTO mode." );
+                    }
+                    autoRakeOut = true;
+                }
+                else if ( "s".equalsIgnoreCase( rakeTime ) )
+                {
+                    // this is teleop mode
+                    if ( avgRake > 0 )
+                    {
+                        out.format( "Team rakes an average of %.1f bins in TELEOP mode.\n", avgRake );
+                    }
+                    else
+                    {
+                        out.println( "Team does NOT rake in TELEOP mode." );
+                    }
+                    teleopRakeOut = true;
+                }
+            }
+            isRakinateSet.close();
+
+            if ( !autoRakeOut )
+            {
+                out.println( "Team does NOT rake in AUTO mode." );
+            }
+            if ( !teleopRakeOut )
+            {
+                out.println( "Team does NOT rake in TELEOP mode." );
+            }
+
+            // compute number of totes gotten from chute
+            stackedObjects.setInt( 1, team );
+            stackedObjects.setString( 2, eventCode );
+            stackedObjects.setString( 3, "H" );
+
+            ResultSet chuteTotesSet = stackedObjects.executeQuery();
+            if ( chuteTotesSet.next() )
+            {
+                double avgTote = chuteTotesSet.getDouble( 1 );
+                if ( avgTote > 0 )
+                {
+                    out.format( "Team loads an average of %.1f totes from CHUTE.\n", avgTote );
+                }
+                else
+                {
+                    out.println( "Team does NOT load totes from CHUTE." );
+                }
+            }
+            else
+            {
+                out.println( "Team does NOT load totes from CHUTE." );
+            }
+            chuteTotesSet.close();
+
+            // compute number of totes gotten from floor
+            stackedObjects.setString( 3, "F" );
+
+            ResultSet floorTotesSet = stackedObjects.executeQuery();
+            if ( floorTotesSet.next() )
+            {
+                double avgTote = floorTotesSet.getDouble( 1 );
+                if ( avgTote > 0 )
+                {
+                    out.format( "Team loads an average of %.1f totes from FLOOR.\n", avgTote );
+                }
+                else
+                {
+                    out.println( "Team does NOT load totes from FLOOR." );
+                }
+            }
+            else
+            {
+                out.println( "Team does NOT load totes from FLOOR." );
+            }
+            floorTotesSet.close();
+
+            // compute number of bins scored
+            stackedObjects.setString( 3, "B" );
+
+            ResultSet binSet = stackedObjects.executeQuery();
+            if ( binSet.next() )
+            {
+                double avgTote = binSet.getDouble( 1 );
+                if ( avgTote > 0 )
+                {
+                    out.format( "Team scores an average of %.1f bins.\n", avgTote );
+                }
+                else
+                {
+                    out.println( "Team does NOT use bins." );
+                }
+            }
+            else
+            {
+                out.println( "Team does NOT use bins." );
+            }
+            binSet.close();
+
+            out.println("====================\n");
+        }
     }
 }

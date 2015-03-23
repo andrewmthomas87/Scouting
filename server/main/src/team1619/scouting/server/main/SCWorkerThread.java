@@ -92,14 +92,7 @@ public class SCWorkerThread extends Thread
         }
         finally
         {
-            try
-            {
-                fdbConnection.close();
-            }
-            catch ( SQLException e )
-            {
-                SCLogger.getLogger().warning( "unable to close" );
-            }
+            fdbConnection.close();
         }
     }
 
