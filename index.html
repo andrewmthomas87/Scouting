@@ -12,7 +12,7 @@
 		<a id='trash'></a>
 		<a id='autonomous-ended'>End autonomous</a>
 		<a id='teleop-ended'>End teleop</a>
-		<a class='enabled' id='robot-state'></a>
+		<a class='disabled' id='robot-state'></a>
 		<a id='robot-orientation'></a>
 		<a id='rake'>0</a>
 		<span id='matchNumberDisplay'>Match Number: <span></span></span>
@@ -22,22 +22,22 @@
 			--><section id='local'><div class='stack initial' id='-1'><div draggable='true'></div></div></section>
 		</div><!--
 		--><div id='palette'>
-			<div draggable='true'>
+			<div draggable='true' style='display: none'>
 				<div class='B'></div>
 			</div><!--
-			--><div draggable='true'>
+			--><div draggable='true' style='display: none'>
 				<div class='F'></div>
 			</div><!--
-			--><div draggable='true'>
+			--><div draggable='true' style='display: none'>
 				<div class='H'></div>
 			</div><!--
-			--><div draggable='true'>
+			--><div draggable='true' style='display: none'>
 				<div class='L'></div>
 			</div><!--
-			--><div draggable='true'>
+			--><div draggable='true' style='display: none'>
 				<div class='P'></div>
 			</div><!--
-			--><div draggable='true'>
+			--><div draggable='true' style='display: none'>
 				<div class='Y'></div>
 			</div>
 		</div>
@@ -48,11 +48,11 @@
 			<a>Connect</a>
 		</form>
 		<form id='readyForNextMatch'>
-			<a>Ready for match</a>
+			<a>Get team</a>
 		</form>
 		<form id='ready'>
 			<h3>Match <span id='matchNumber'></span> - <span id='alliance'></span><br>You have been assigned team <span id='teamNumber'></span></h3>
-			<a>Continue</a>
+			<a>Wait for match to start</a>
 		</form>
 		<form id='comments'>
 			<input type='text' placeholder='Comments'>
