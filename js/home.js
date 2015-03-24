@@ -30,11 +30,11 @@ function reset() {
 	$('a#teleop-ended').fadeOut('fast');
 	$('body, a#autonomous-ended').removeClass('blinking');
 	$('a#autonomous-ended').fadeIn('fast');
-	$('a#robot-state').removeClass('disabled');
-	$('a#robot-state').addClass('enabled');
+	$('a#robot-state').removeClass('enabled');
+	$('a#robot-state').addClass('disabled');
 	$('a#robot-orientation').removeClass('fell-over');
 	$('a#rake').html(0);
-	$('div#palette>div').fadeIn('fast');
+	$('div#palette>div').fadeOut('fast');
 	$('div#palette div.F, div#palette div.H').attr('teamNumber', '');
 	$('span#matchNumberDisplay span').html('');
 	$('span#teamNumberDisplay span').html('');
@@ -115,6 +115,11 @@ $(document).ready(function() {
 		autonomous = false;
 		$('body').removeClass('blinking');
 		$(this).fadeOut('fast');
+		if ($('a#robot-state').hasClass('disabled')) {
+			$('a#robot-state').removeClass('disabled');
+			$('a#robot-state').addClass('enabled');
+			$('div#palette>div').fadeIn('fast');
+		}
 		setTimeout(function() {
 			$('a#teleop-ended').fadeIn('fast');
 		}, 2500);
@@ -145,7 +150,7 @@ $(document).ready(function() {
 			$('div#palette>div').fadeOut('fast');
 		}
 		else {
-			data.eventType = 'E';
+			data.eventType = autonomous && $('a#robot-state').hasClass('disabled') ? 'M' : 'E';
 			$(this).removeClass('disabled');
 			$(this).addClass('enabled');
 			$('div#palette>div').fadeIn('fast');
@@ -470,7 +475,11 @@ function handleClientServerResponses(data) {
 				if (message.matchNumber == matchNumber) {
 					matchStarted = true;
 					date = new Date();
-					startTime = date.getTime();
+					var offset = 0;
+					if (message.matchTime) {
+						offset = message.matchTime;
+					}
+					startTime = date.getTime() - offset;
 					$('div#palette div.F, div#palette div.H').attr('teamNumber', teamNumber);
 					$('span#matchNumberDisplay span').html(matchNumber);
 					$('span#teamNumberDisplay span').html(teamNumber);
@@ -480,11 +489,11 @@ function handleClientServerResponses(data) {
 						if (autonomous) {
 							$('body, a#autonomous-ended').addClass('blinking');
 						}
-					}, 15000);
+					}, 15000 - Math.min(offset, 15000));
 				}
 				break;
 			case 'status':
-				if (message.status == 'no-match-available') {
+				if (message.status == 'noTeamAvailable') {
 					$('div#loading').fadeOut('fast');
 					$('form#readyForNextMatch').fadeIn('fast');
 				}
