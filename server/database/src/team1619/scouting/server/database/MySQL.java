@@ -19,7 +19,7 @@ public class MySQL
 
     private static String[] tables = new String[]
             {
-                    // eventType: D = disabled, E = enabled (after disabled), F = fell over, C = comments, R = rake bin (A), S = rake bin (Teleop)
+                    // eventType: D = disabled, E = enabled (after disabled), F = fell over, C = comments, R = rake bin (A), S = rake bin (Teleop), M = moved in auto
                     "create table robotEvents (eventCode varchar(12), teamNumber int, matchNumber int, eventType char(1), matchTime int, comments varchar(1024))",
 
 
@@ -299,7 +299,7 @@ public class MySQL
         matchDeleteStmt.close();
     }
 
-    public void addRobotEvent( String eventCode, int matchNumber, int teamNumber, String eventType, int binRakedNumber, int matchTime, String comments ) throws SQLException
+    public void addRobotEvent( String eventCode, int matchNumber, int teamNumber, String eventType, int matchTime, String comments ) throws SQLException
     {
         PreparedStatement stmt =
                 fConnection.prepareStatement( "insert into robotEvents(eventCode, matchNumber, teamNumber, eventType, matchTime, comments) values (?,?,?,?,?,?)" );
@@ -319,12 +319,7 @@ public class MySQL
             stmt.setString( 6, comments );
         }
 
-        while ( binRakedNumber > 0 )
-        {
-            // insert an event for each bin raked
-            stmt.executeUpdate();
-            binRakedNumber--;
-        }
+        stmt.executeUpdate();
 
         stmt.close();
     }

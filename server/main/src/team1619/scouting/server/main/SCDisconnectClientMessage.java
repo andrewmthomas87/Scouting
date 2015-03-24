@@ -28,6 +28,8 @@ public class SCDisconnectClientMessage extends SCMessage
                 conn.disconnectClient( SCProperties.getProperty( "event.code" ),
                                        SCMatch.getMatchNumber(),
                                        SCMatch.getTeamNumber( disconnected.getClientId() ) );
+
+                SCMatch.unassignTeam( disconnected.getClientId() );
             }
 
             SCJSON clientResponse = new SCJSON();

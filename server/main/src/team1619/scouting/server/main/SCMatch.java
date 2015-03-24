@@ -38,6 +38,10 @@ public class SCMatch
 
     private int fMatchNumber;
 
+    private long fMatchStartedTime;
+
+    private boolean fMatchHasStarted;
+
     private Map<Integer, MatchTeamData> fTeamsMap;
 
     private List<MatchTeamData> fTeams;
@@ -62,6 +66,8 @@ public class SCMatch
 
         // initialize empty client to team map
         fTeamsMap = new HashMap<>();
+
+        fMatchHasStarted = false;
     }
 
     public static MatchTeamData getNextTeam(Integer clientId)
@@ -168,5 +174,38 @@ public class SCMatch
     public static boolean isMatchActive()
     {
         return sCurrentMatch != null;
+    }
+
+    public static void unassignTeam( Integer clientId )
+    {
+        if ( sCurrentMatch != null )
+        {
+            SCLogger.getLogger().info( "Disconnect client %d", clientId );
+            MatchTeamData teamData = sCurrentMatch.fTeamsMap.remove( clientId );
+            if ( teamData == null )
+            {
+                SCLogger.getLogger().warning( "Disconnecting client %d had no team assigned", clientId );
+            }
+            else
+            {
+                sCurrentMatch.fTeams.add( teamData );
+            }
+        }
+    }
+
+    public static void matchHasStarted()
+    {
+        sCurrentMatch.fMatchHasStarted = true;
+        sCurrentMatch.fMatchStartedTime = System.currentTimeMillis();
+    }
+
+    public static boolean hasMatchStarted()
+    {
+        return sCurrentMatch.fMatchHasStarted;
+    }
+
+    public static int getMatchDuration()
+    {
+        return (int)( System.currentTimeMillis() - sCurrentMatch.fMatchStartedTime );
     }
 }

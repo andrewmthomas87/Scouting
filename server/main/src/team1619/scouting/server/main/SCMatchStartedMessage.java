@@ -20,6 +20,9 @@ public class SCMatchStartedMessage extends SCMessage
     {
         if ( SCMatch.isMatchActive() )
         {
+            // indicate that match has started (including start time)
+            SCMatch.matchHasStarted();
+
             SCJSON startMessage = new SCJSON();
 
             startMessage.put( "type", "matchStarted" );

@@ -18,8 +18,19 @@ public class SCReadyForStart extends SCMessage {
     {
         SCJSON response = new SCJSON();
 
-        response.put( "type", "status" );
-        response.put( "status", "waiting" );
+        if ( SCMatch.hasMatchStarted() )
+        {
+            // just send a match started message instead
+
+            response.put( "type", "matchStarted" );
+            response.put( "matchNumber", SCMatch.getMatchNumber() );
+            response.put( "matchTime", SCMatch.getMatchDuration() );
+        }
+        else
+        {
+            response.put( "type", "status" );
+            response.put( "status", "waiting" );
+        }
 
         SCOutbound.getClientQueue( getClientID() ).writeToClient( response );
     }

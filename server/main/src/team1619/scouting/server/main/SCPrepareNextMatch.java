@@ -28,7 +28,7 @@ public class SCPrepareNextMatch extends SCMessage
         if ( matchData == null )
         {
             outboundMessage.put( "type", "status" );
-            outboundMessage.put( "status", "no-match-available" );
+            outboundMessage.put( "status", "noTeamAvailable" );
         }
         else
         {
