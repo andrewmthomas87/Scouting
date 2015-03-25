@@ -297,6 +297,13 @@ public class MySQL
         matchDeleteStmt.execute();
 
         matchDeleteStmt.close();
+
+        PreparedStatement eventDeleteStatement = fConnection.prepareStatement( "delete from robotEvents where matchNumber = ?" );
+        eventDeleteStatement.setInt( 1, matchNumber );
+
+        eventDeleteStatement.execute();
+
+        eventDeleteStatement.close();
     }
 
     public void addRobotEvent( String eventCode, int matchNumber, int teamNumber, String eventType, int matchTime, String comments ) throws SQLException
