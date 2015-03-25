@@ -22,6 +22,9 @@ function reset() {
 	$('div.stack, div.spacer').not('.initial').fadeOut('fast', function() {
 		$(this).remove();
 	});
+	$('section#local div div div').fadeOut('fast', function() {
+		$(this).remove();
+	});
 	$('a#trash').removeClass('active');
 	$('a#trash').fadeOut('fast');
 	matchNumber = null;
@@ -47,6 +50,14 @@ $(window).resize(resize);
 $(document).ready(function() {
 	resize();
 	$('div#overlay, form#login').fadeIn('fast');
+
+
+	// Form events
+
+	$('form').submit(function(event) {
+		event.preventDefault();
+		$(this).find('a').click();
+	});
 
 
 	// Login form events
@@ -240,6 +251,7 @@ $(document).ready(function() {
 	$('div#main section').delegate('div.stack', 'dragenter', function(event) {
 		drag++;
 		if (drag > 0) {
+			$('div#main section div.stack.active').not(this).removeClass('active');
 			$(this).addClass('active');
 		}
 		else {
@@ -283,7 +295,7 @@ $(document).ready(function() {
 		var alreadyLittered = objects.indexOf('L') > -1 && $(this).find('div div.L').length > 0;
 		var alreadyScored = objects.indexOf('P') > -1 && $(this).find('div div.P').length > 0;
 		var invalidYellowTotePlacement = objects.indexOf('Y') > -1 && ($(this).find('div div.Y').length < 1 || $(this).find('div div.Y').length > 2);
-		var invalidPlacementUponYellowToteStack = objects.indexOf('Y') < 0 && $(this).find('div div.Y').length > 0;
+		var invalidPlacementUponYellowToteStack = objects.indexOf('Y') < 0 && objects.indexOf('P') < 0 && $(this).find('div div.Y').length > 0;
 		var invalidLitter = !(hasBin || objects.indexOf('B') > -1) && objects.indexOf('L') > -1;
 		invalid = alreadyBinned || alreadyLittered || alreadyScored || invalidYellowTotePlacement || invalidPlacementUponYellowToteStack || invalidLitter;
 		objects = objects.split(',');
@@ -292,6 +304,11 @@ $(document).ready(function() {
 			totes += (objects[i].indexOf('F') > -1 || objects[i].indexOf('H') > -1) ? 1 : 0;
 		}
 		invalid = invalid || (totes + $(this).find('div div.F, div div.H').length > 6 && totes > 0);
+		var yellowTotes = 0;
+		for (i = 0; i < objects.length; i++) {
+			yellowTotes += objects[i].indexOf('Y') > -1 ? 1 : 0;
+		}
+		invalid = invalid || (yellowTotes + $(this).find('div div.Y').length > 3 && yellowTotes > 0);
 		objects = SID > 0 ? 'K' + SID : objects.join();
 		if (!invalid) {
 			event.stopPropagation();
@@ -323,22 +340,28 @@ $(document).ready(function() {
 		var hasBin = $(this).find('div div.B').length > 0;
 		var alreadyBinned = objects.indexOf('B') > -1 && hasBin;
 		var alreadyLittered = objects.indexOf('L') > -1 && $(this).find('div div.L').length > 0;
-		var alreadyScored = objects.indexOf('P') > -1 && $(this).find('div div.P').length > 0;
-		var invalidYellowTotePlacement = objects.indexOf('Y') > -1 && ($(this).find('div div.Y').length < 1 || $(this).find('div div.Y').length > 2);
+		var invalidYellowTotePlacement = objects.indexOf('Y') > -1 && $(this).find('div div.Y').length > 2;
 		var invalidPlacementUponYellowToteStack = objects.indexOf('Y') < 0 && $(this).find('div div.Y').length > 0;
 		var invalidLitter = !(hasBin || objects.indexOf('B') > -1) && objects.indexOf('L') > -1;
-		invalid = isStack || alreadyBinned || alreadyLittered || alreadyScored || invalidYellowTotePlacement || invalidPlacementUponYellowToteStack || invalidLitter;
+		var scoringPlatform = objects.indexOf('P') > -1;
+		invalid = isStack || alreadyBinned || alreadyLittered || invalidYellowTotePlacement || invalidPlacementUponYellowToteStack || invalidLitter || scoringPlatform;
 		objects = objects.split(',');
 		var totes = 0;
 		for (i = 0; i < objects.length; i++) {
 			totes += (objects[i].indexOf('F') > -1 || objects[i].indexOf('H') > -1) ? 1 : 0;
 		}
 		invalid = invalid || (totes + $(this).find('div div.F, div div.H').length > 6 && totes > 0);
+		var yellowTotes = 0;
+		for (i = 0; i < objects.length; i++) {
+			yellowTotes += objects[i].indexOf('Y') > -1 ? 1 : 0;
+		}
+		invalid = invalid || (yellowTotes + $(this).find('div div.Y').length > 3 && yellowTotes > 0);
 		objects = SID > 0 ? 'K' + SID : objects.join();
 		if (!invalid) {
 			event.stopPropagation();
 			var data = {};
 			data.type = 'contribution';
+			data.matchNumber = matchNumber;
 			data.teamNumber = teamNumber;
 			data.SID = -1;
 			data.objects = objects;
@@ -528,7 +551,7 @@ function handleClientServerResponses(data) {
 								var originSID = parseInt(objects[0].substr(1));
 								var objects = [];
 								$('div#' + originSID + ' div div').each(function() {
-									objects.push($(this).attr('class').replace('H', 'F'));
+									objects.push($(this).attr('class'));
 								});
 								$('div#' + originSID).next('div.spacer').remove();
 								$('div#' + originSID).remove();
