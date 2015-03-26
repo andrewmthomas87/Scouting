@@ -47,7 +47,7 @@ public class MatchReport
                 System.exit( 0 );
             }
 
-            String matchFileName = String.format( "match%d.txt", matchNumber );
+            String matchFileName = String.format( "match%d.html", matchNumber );
 
             PrintWriter out = new PrintWriter( new FileWriter( new File( reportDirectory, matchFileName ) ) );
 

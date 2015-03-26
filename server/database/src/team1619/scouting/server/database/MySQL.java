@@ -406,11 +406,24 @@ public class MySQL
                                             "where teamNumber=? and eventCode=? and object=? group by matchNumber) t" );
 
         // for each team, get report data and write to file
-        out.format(  "Scouting report for match %d\n", matchNumber );
-        out.println( "----------------------------" );
+        HTMLReportWriter report = new HTMLReportWriter( out );
 
-        for ( int team : teams )
+        // write prologue and header
+
+        report.writeProlog();
+        report.writeHeader( matchNumber );
+
+        for ( int i = 0; i < 6; i++ )
         {
+            int team = teams[ i ];
+            boolean redAlliance = i < 3;
+
+            if ( i == 3 )
+            {
+                // mid way through, write the divider
+                report.writeDivider();
+            }
+
             // questions:
             // does team participate in coopertition (can they stack yellow totes on step?)
             // does team rakinate (do they pull bins in auto or teleop mode?)
@@ -418,38 +431,21 @@ public class MySQL
             // how many totes are scored from floor?
             // how many bins are scored?
 
-            out.format( "Team %d\n", team );
-            out.println();
-
             isCoop.setInt( 1, team );
             isCoop.setString( 2, eventCode );
 
             ResultSet isCoopSet = isCoop.executeQuery();
 
+            double avgCoopTotes = 0;
+
             if ( isCoopSet.next() )
             {
                 // we have a row
-                double avgCoopTotes = isCoopSet.getDouble( 1 );
+                avgCoopTotes = isCoopSet.getDouble( 1 );
                 if ( isCoopSet.wasNull() )
                 {
-                    out.println( "No data on coopertition totes.");
+                    avgCoopTotes = 0;
                 }
-                else
-                {
-                    if ( avgCoopTotes > 0 )
-                    {
-                        // this team stacks coop totes
-                        out.format( "Stacks coopertition totes.  Average number stacked per match: %.1f\n", avgCoopTotes );
-                    }
-                    else
-                    {
-                        out.println( "Team does NOT stack coopertition totes." );
-                    }
-                }
-            }
-            else
-            {
-                out.println( "No data on coopertition totes." );
             }
             isCoopSet.close();
 
@@ -459,8 +455,8 @@ public class MySQL
 
             ResultSet isRakinateSet = isRakinate.executeQuery();
 
-            boolean autoRakeOut = false;
-            boolean teleopRakeOut = false;
+            double avgAutoRake = Double.NaN;
+            double avgTeleopRake = Double.NaN;
 
             while ( isRakinateSet.next() )
             {
@@ -473,54 +469,28 @@ public class MySQL
                 {
                     if ( rakeNull )
                     {
-                        out.println( "Team does not rake in AUTO mode." );
+                        avgAutoRake = 0;
                     }
                     else
                     {
-                        // this is in auto mode
-                        if ( avgRake > 0 )
-                        {
-                            out.format( "Team rakes an average of %.1f bins in AUTO mode.\n", avgRake );
-                        }
-                        else
-                        {
-                            out.println( "Team does NOT rake in AUTO mode." );
-                        }
+                        avgAutoRake = avgRake;
                     }
-                    autoRakeOut = true;
                 }
                 else if ( "s".equalsIgnoreCase( rakeTime ) )
                 {
                     // this is teleop mode
                     if ( rakeNull )
                     {
-                        out.println( "Team does not rake in TELEOP mode.");
+                        avgTeleopRake = 0;
                     }
                     else
                     {
-                        if ( avgRake > 0 )
-                        {
-                            out.format( "Team rakes an average of %.1f bins in TELEOP mode.\n", avgRake );
-                        }
-                        else
-                        {
-                            out.println( "Team does NOT rake in TELEOP mode." );
-                        }
+                        avgTeleopRake = avgRake;
                     }
-                    teleopRakeOut = true;
                 }
             }
 
             isRakinateSet.close();
-
-            if ( !autoRakeOut )
-            {
-                out.println( "Team does NOT rake in AUTO mode." );
-            }
-            if ( !teleopRakeOut )
-            {
-                out.println( "Team does NOT rake in TELEOP mode." );
-            }
 
             // compute number of totes gotten from chute
             stackedObjects.setInt( 1, team );
@@ -528,21 +498,16 @@ public class MySQL
             stackedObjects.setString( 3, "H" );
 
             ResultSet chuteTotesSet = stackedObjects.executeQuery();
+
+            double avgChuteTotes;
+
             if ( chuteTotesSet.next() )
             {
-                double avgTote = chuteTotesSet.getDouble( 1 );
-                if ( avgTote > 0 )
-                {
-                    out.format( "Team loads an average of %.1f totes from CHUTE.\n", avgTote );
-                }
-                else
-                {
-                    out.println( "Team does NOT load totes from CHUTE." );
-                }
+                avgChuteTotes = chuteTotesSet.getDouble( 1 );
             }
             else
             {
-                out.println( "Team does NOT load totes from CHUTE." );
+                avgChuteTotes = 0;
             }
             chuteTotesSet.close();
 
@@ -550,21 +515,16 @@ public class MySQL
             stackedObjects.setString( 3, "F" );
 
             ResultSet floorTotesSet = stackedObjects.executeQuery();
+
+            double avgFloorTotes;
+
             if ( floorTotesSet.next() )
             {
-                double avgTote = floorTotesSet.getDouble( 1 );
-                if ( avgTote > 0 )
-                {
-                    out.format( "Team loads an average of %.1f totes from FLOOR.\n", avgTote );
-                }
-                else
-                {
-                    out.println( "Team does NOT load totes from FLOOR." );
-                }
+                avgFloorTotes = floorTotesSet.getDouble( 1 );
             }
             else
             {
-                out.println( "Team does NOT load totes from FLOOR." );
+                avgFloorTotes = 0;
             }
             floorTotesSet.close();
 
@@ -572,25 +532,30 @@ public class MySQL
             stackedObjects.setString( 3, "B" );
 
             ResultSet binSet = stackedObjects.executeQuery();
+
+            double avgBins;
+
             if ( binSet.next() )
             {
-                double avgTote = binSet.getDouble( 1 );
-                if ( avgTote > 0 )
-                {
-                    out.format( "Team scores an average of %.1f bins.\n", avgTote );
-                }
-                else
-                {
-                    out.println( "Team does NOT use bins." );
-                }
+                avgBins = binSet.getDouble( 1 );
             }
             else
             {
-                out.println( "Team does NOT use bins." );
+                avgBins = 0;
             }
             binSet.close();
 
-            out.println("====================\n");
+            report.writeTeamData( team,
+                                  redAlliance,
+                                  avgCoopTotes,
+                                  avgAutoRake,
+                                  avgTeleopRake,
+                                  avgChuteTotes,
+                                  avgFloorTotes,
+                                  avgBins );
         }
+
+        // write out epilogue
+        report.writeEpilog();
     }
 }
