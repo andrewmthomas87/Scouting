@@ -2,6 +2,7 @@ package team1619.scouting.server.main;
 
 import team1619.scouting.server.database.MySQL;
 import team1619.scouting.server.utils.SCJSON;
+import team1619.scouting.server.utils.SCLogger;
 import team1619.scouting.server.utils.SCProperties;
 
 import java.sql.SQLException;
@@ -49,20 +50,25 @@ public class SCContribution extends SCMessage
         outboundMessage.put( "teamNumber", teamNumber );
         outboundMessage.put( "matchNumber", matchNumber );
 
-        SCMatch.MatchTeamData clientTeam = SCMatch.getNextTeam( getClientID() );
-
         // add alliance color based on the client
 
-        outboundMessage.put( "alliance", clientTeam.getAlliance() );
+        String contributorTeamAlliance = SCMatch.getTeamAlliance( getClientID() );
+        outboundMessage.put( "alliance", contributorTeamAlliance );
+
+        int numMessagesSent = 0;
 
         for ( SCClientQueue q : SCOutbound.getClientQueues() )
         {
             SCMatch.MatchTeamData myTeamData = SCMatch.getAssociatedTeamData( q.getClientId() );
 
-            if ( myTeamData == null || clientTeam.getAlliance().equals( myTeamData.getAlliance() ) )
+            if ( myTeamData == null || contributorTeamAlliance.equals( myTeamData.getAlliance() ) )
             {
+                SCLogger.getLogger().debug( "Writing contribution message from client %d to client %d", getClientID(), q.getClientId() );
                 q.writeToClient( outboundMessage );
+                numMessagesSent++;
             }
         }
+
+        SCLogger.getLogger().debug( "Contribution message generated %d responses.", numMessagesSent );
     }
 }
