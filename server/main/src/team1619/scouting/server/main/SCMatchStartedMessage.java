@@ -28,12 +28,7 @@ public class SCMatchStartedMessage extends SCMessage
             startMessage.put( "type", "matchStarted" );
             startMessage.put( "matchNumber", SCMatch.getMatchNumber() );
 
-            for ( SCClientQueue queue : SCOutbound.getClientQueues() )
-            {
-                SCLogger.getLogger().debug( "Writing match started message to client %d", queue.getClientId() );
-
-                queue.writeToClient( startMessage );
-            }
+            SCOutbound.getClientQueue( getClientID() ).writeToClient( startMessage );
         }
         else
         {
