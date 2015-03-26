@@ -79,7 +79,7 @@ public class SCMatch
         return sCurrentMatch.lookupTeamData( clientId );
     }
 
-    private MatchTeamData lookupTeamData(Integer clientId)
+    private synchronized MatchTeamData lookupTeamData(Integer clientId)
     {
         MatchTeamData teamData = fTeamsMap.get( clientId );
 
@@ -180,17 +180,23 @@ public class SCMatch
     {
         if ( sCurrentMatch != null )
         {
-            SCLogger.getLogger().info( "Disconnect client %d", clientId );
-            MatchTeamData teamData = sCurrentMatch.fTeamsMap.remove( clientId );
-            if ( teamData == null )
-            {
-                SCLogger.getLogger().warning( "Disconnecting client %d had no team assigned", clientId );
-            }
-            else
-            {
-                sCurrentMatch.fTeams.add( teamData );
-            }
+            sCurrentMatch.resetTeamAssignment( clientId );
         }
+    }
+
+    private synchronized void resetTeamAssignment( Integer clientId )
+    {
+        SCLogger.getLogger().info( "Disconnect client %d", clientId );
+        MatchTeamData teamData = fTeamsMap.remove( clientId );
+        if ( teamData == null )
+        {
+            SCLogger.getLogger().warning( "Disconnecting client %d had no team assigned", clientId );
+        }
+        else
+        {
+            fTeams.add( teamData );
+        }
+
     }
 
     public static void matchHasStarted()
