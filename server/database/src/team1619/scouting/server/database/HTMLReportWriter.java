@@ -33,7 +33,8 @@ public class HTMLReportWriter
             "      text-align: center;\n" +
             "      }\n" +
             "      .noData {\n" +
-            "      background-color: gray\n" +
+            "      background-color: gray;\n" +
+                    "   -webkit-print-color-adjust: exact;" +
             "      }\n" +
             "      .numberData {\n" +
             "      font-family: courier;\n" +
