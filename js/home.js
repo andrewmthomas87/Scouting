@@ -6,6 +6,7 @@ var drag = 0;
 var matchStarted;
 
 var autonomous = true;
+var autonomousTimeout;
 
 var date;
 var startTime;
@@ -32,6 +33,7 @@ function reset() {
 	autonomous = true;
 	$('a#teleop-ended').fadeOut('fast');
 	$('body, a#autonomous-ended').removeClass('blinking');
+	clearTimeout(autonomousTimeout);
 	$('a#autonomous-ended').fadeIn('fast');
 	$('a#robot-state').removeClass('enabled');
 	$('a#robot-state').addClass('disabled');
@@ -509,7 +511,7 @@ function handleClientServerResponses(data) {
 					$('span#teamNumberDisplay span').html(teamNumber);
 					$('div#overlay, div#loading').fadeOut('fast');
 					setTimeout(wazUp, updateSpeed);
-					setTimeout(function() {
+					autonomousTimeout = setTimeout(function() {
 						if (autonomous) {
 							$('body, a#autonomous-ended').addClass('blinking');
 						}
