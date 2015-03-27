@@ -477,6 +477,7 @@ function wazUp() {
 }
 
 function handleClientServerResponses(data) {
+	console.log(JSON.stringify(data));
 	data.forEach(function(message) {
 		switch (message.type) {
 			case 'login':
