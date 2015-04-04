@@ -10,7 +10,7 @@ import java.sql.SQLException;
 /**
  * This message is sent by the supervisor to setup match data.
  */
-public class SCSetMatchData extends SCMessage
+public class SCSSetMatch extends SCMessage
 {
     @Override
     void processMessage(MySQL conn, SCJSON message) throws SQLException
@@ -52,6 +52,7 @@ public class SCSetMatchData extends SCMessage
 
             response.put( "type", "status" );
             response.put( "status", "ok" );
+            response.put( "MID", message.getInteger( "MID" ) );
 
             SCOutbound.getClientQueue( getClientID() ).writeToClient( response );
         }

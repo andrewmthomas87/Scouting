@@ -12,9 +12,9 @@ import java.sql.SQLException;
  * This message assigns a new client id
  */
 
-public class SCLogin extends SCMessage
+public class SCULogin extends SCMessage
 {
-    public SCLogin()
+    public SCULogin()
     {
     }
 

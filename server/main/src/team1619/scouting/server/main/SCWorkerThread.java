@@ -30,14 +30,14 @@ public class SCWorkerThread extends Thread
     {
         sMessageTable = new HashMap<>();
         sMessageTable.put( "ready", SCReadyForStart.class );
-        sMessageTable.put( "prepare", SCPrepareNextMatch.class );
-        sMessageTable.put( "login", SCLogin.class );
+        sMessageTable.put( "getTeam", SCCGetTeam.class );
+        sMessageTable.put( "login", SCULogin.class );
         sMessageTable.put( "contribution", SCContribution.class );   // TODO: check the type name
-        sMessageTable.put( "setMatchData", SCSetMatchData.class );
+        sMessageTable.put( "setMatch", SCSSetMatch.class );
         sMessageTable.put( "matchStarted", SCMatchStartedMessage.class );
-        sMessageTable.put( "disconnectClient", SCDisconnectClientMessage.class );
-        sMessageTable.put( "getClients", SCGetClientsMessage.class );
-        sMessageTable.put( "getNextMatch", SCGetNextMatchMessage.class );
+        sMessageTable.put( "disconnectConnection", SCSDisconnectConnection.class );
+        sMessageTable.put( "getConnections", SCSGetConnections.class );
+        sMessageTable.put( "getMatch", SCSGetMatch.class );
         sMessageTable.put( "resetMatch", SCResetMatchMessage.class );
         sMessageTable.put( "wazUp", SCWazUp.class );
         sMessageTable.put( "robotEvent", SCRobotEventMessage.class );

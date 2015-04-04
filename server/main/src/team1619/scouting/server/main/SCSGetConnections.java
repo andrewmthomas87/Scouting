@@ -10,9 +10,9 @@ import java.util.List;
 /**
  * Message from supervisor to request all currently logged in clients.
  */
-public class SCGetClientsMessage extends SCMessage
+public class SCSGetConnections extends SCMessage
 {
-    public SCGetClientsMessage()
+    public SCSGetConnections()
     {
     }
 
@@ -21,7 +21,7 @@ public class SCGetClientsMessage extends SCMessage
     {
         SCJSON response = new SCJSON();
 
-        response.put( "type", "connectedClients" );
+        response.put( "type", "connections" );
 
         List<SCJSON> clientList = new LinkedList<>();
 
@@ -36,7 +36,7 @@ public class SCGetClientsMessage extends SCMessage
             clientList.add( client );
         }
 
-        response.put( "clients", clientList );
+        response.put( "connections", clientList );
 
         SCOutbound.getClientQueue( getClientID() ).writeToClient( response );
     }

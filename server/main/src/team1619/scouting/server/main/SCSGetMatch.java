@@ -11,9 +11,9 @@ import java.util.List;
  * This message is sent by the supervisor to get the data about the next match
  * that will be played.
  */
-public class SCGetNextMatchMessage extends SCMessage
+public class SCSGetMatch extends SCMessage
 {
-    public SCGetNextMatchMessage()
+    public SCSGetMatch()
     {
     }
 
@@ -30,14 +30,15 @@ public class SCGetNextMatchMessage extends SCMessage
             // no match
 
             response.put( "type", "status" );
-            response.put( "status", "noNextMatch" );
+            response.put( "status", "noMatch" );
             response.put( "description", "There is no next match available for this event" );
+            response.put( "MID", message.getInteger( "MID" ) );
         }
         else
         {
             // we have a next match.  send back all the data
 
-            response.put( "type", "nextMatchData" );
+            response.put( "type", "matchData" );
 
             response.put( "matchNumber", matchNumber );
 

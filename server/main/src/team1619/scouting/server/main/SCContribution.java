@@ -28,7 +28,19 @@ public class SCContribution extends SCMessage
         }
         int time = message.getInteger( "time" );
         String objects = message.getString( "objects" );
-        String[] objectArray = objects.split( "," );
+        String[] objectArray;
+        if ( objects.startsWith( "K" ) )
+        {
+            objectArray = conn.getStackObjectsFromSID( Integer.parseInt( objects.substring( 1 ) ) );
+        }
+        else if ( objects.startsWith( "X" ) )
+        {
+            objectArray = conn.getStackObjectsFromSID( Integer.parseInt( objects.substring( 1 ) ) );
+        }
+        else
+        {
+            objectArray = objects.split( "," );
+        }
         String mode = message.getString( "mode" );
         int teamNumber = message.getInteger( "teamNumber" );
         int matchNumber = message.getInteger( "matchNumber" );

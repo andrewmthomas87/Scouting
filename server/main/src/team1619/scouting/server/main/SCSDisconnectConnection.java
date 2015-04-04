@@ -9,9 +9,9 @@ import java.sql.SQLException;
 /**
  * Sent by supervisor to forcibly remove a client queue
  */
-public class SCDisconnectClientMessage extends SCMessage
+public class SCSDisconnectConnection extends SCMessage
 {
-    public SCDisconnectClientMessage()
+    public SCSDisconnectConnection()
     {
     }
 
@@ -41,6 +41,7 @@ public class SCDisconnectClientMessage extends SCMessage
 
         response.put( "type", "status" );
         response.put( "status", "ok" );
+        response.put( "MID", message.getInteger( "MID" ) );
 
         SCOutbound.getClientQueue( getClientID() ).writeToClient( response );
     }

@@ -13,6 +13,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 
+import java.util.ArrayList;
+
 public class MySQL
 {
     private Connection fConnection;
@@ -139,6 +141,31 @@ public class MySQL
         stmt.executeUpdate();
 
         stmt.close();
+    }
+
+    public String[] getStackObjectsFromSID( int SID ) throws SQLException
+    {
+        Statement stmt = fConnection.createStatement();
+        ResultSet resultSet = stmt.executeQuery( "select object from contributions where SID=" + SID );
+        ArrayList<String> objects = new ArrayList<String>();
+        while (resultSet.next())
+        {
+            String object = resultSet.getString( 4 );
+            if ( object.startsWith( "K" ) )
+            {
+                int movedStackSID = Integer.parseInt( object.substring( 1 ) );
+                String[] movedObjects = getStackObjectsFromSID( movedStackSID );
+                for ( int i = 0; i < movedObjects.length; i++ )
+                {
+                    objects.add( movedObjects[i] );
+                }
+            }
+            else
+            {
+                objects.add( object );
+            }
+        }
+        return (String[]) objects.toArray();
     }
 
     public int getNextSID() throws SQLException

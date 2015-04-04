@@ -9,10 +9,10 @@ import java.sql.SQLException;
 /**
  * Created by avimoskoff on 2/19/15.
  */
-public class SCPrepareNextMatch extends SCMessage
+public class SCCGetTeam extends SCMessage
 {
 
-    public SCPrepareNextMatch()
+    public SCCGetTeam()
     {
     }
 
@@ -29,6 +29,7 @@ public class SCPrepareNextMatch extends SCMessage
         {
             outboundMessage.put( "type", "status" );
             outboundMessage.put( "status", "noTeamAvailable" );
+            outboundMessage.put( "MID", message.getInteger( "MID" ) );
         }
         else
         {
