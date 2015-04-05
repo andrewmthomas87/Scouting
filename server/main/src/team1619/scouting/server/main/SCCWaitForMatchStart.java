@@ -8,9 +8,9 @@ import java.sql.SQLException;
 /**
  * Created by avimoskoff on 2/19/15.
  */
-public class SCReadyForStart extends SCMessage {
+public class SCCWaitForMatchStart extends SCMessage {
 
-    public SCReadyForStart() {
+    public SCCWaitForMatchStart() {
     }
 
     @Override

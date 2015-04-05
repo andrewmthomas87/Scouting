@@ -21,7 +21,14 @@ public class SCSGetMatch extends SCMessage
     {
         // query the database to get the next match data
 
-        int matchNumber = conn.setupNextMatch( SCProperties.getProperty( "event.code" ) );
+        int matchNumber;
+        if ( !SCMatch.isMatchActive() )
+        {
+            matchNumber = conn.setupNextMatch( SCProperties.getProperty( "event.code" ) );
+        }
+        else {
+            matchNumber = SCMatch.getMatchNumber();
+        }
 
         SCJSON response = new SCJSON();
 

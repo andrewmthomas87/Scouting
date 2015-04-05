@@ -21,6 +21,9 @@ import java.util.Queue;
  */
 public class SCWorkerThread extends Thread
 {
+
+    private static final String ignoredMessages = "wazUp, waitForMatchStart, getConnections, getMatch,";
+    //private static final String ignoredMessages = "";
     /**
      * Message mapping table (type to message object)
      */
@@ -29,12 +32,12 @@ public class SCWorkerThread extends Thread
     static
     {
         sMessageTable = new HashMap<>();
-        sMessageTable.put( "ready", SCReadyForStart.class );
+        sMessageTable.put( "waitForMatchStart", SCCWaitForMatchStart.class );
         sMessageTable.put( "getTeam", SCCGetTeam.class );
         sMessageTable.put( "login", SCULogin.class );
-        sMessageTable.put( "contribution", SCContribution.class );   // TODO: check the type name
+        sMessageTable.put( "contribution", SCContribution.class );
         sMessageTable.put( "setMatch", SCSSetMatch.class );
-        sMessageTable.put( "matchStarted", SCMatchStartedMessage.class );
+        sMessageTable.put( "startMatch", SCSStartMatch.class );
         sMessageTable.put( "disconnectConnection", SCSDisconnectConnection.class );
         sMessageTable.put( "getConnections", SCSGetConnections.class );
         sMessageTable.put( "getMatch", SCSGetMatch.class );
@@ -167,7 +170,7 @@ public class SCWorkerThread extends Thread
                     // instance of the message and then execute that message.
                     String messageType = (String) json.get( "type" );
 
-                    if ( !( messageType.equals( "wazUp" ) || messageType.equals( "ready" ) ) )
+                    if ( !( ignoredMessages.contains( messageType + "," ) ) )
                     {
                         String inetAddress = fInboundSocket.getInetAddress().toString();
 

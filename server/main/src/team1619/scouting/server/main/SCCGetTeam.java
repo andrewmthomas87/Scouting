@@ -40,10 +40,9 @@ public class SCCGetTeam extends SCMessage
 
             // assign scout to this match
             conn.assignScoutToTeam( SCProperties.getProperty( "event.code" ),
-                                    outboundMessage.getInteger( "matchNumber" ),
-                                    outboundMessage.getInteger( "teamNumber" ),
-                                    clientQueue.getScoutName() );
-
+                    outboundMessage.getInteger( "matchNumber" ),
+                    outboundMessage.getInteger( "teamNumber" ),
+                    clientQueue.getScoutName() );
         }
 
         clientQueue.clearQueue();

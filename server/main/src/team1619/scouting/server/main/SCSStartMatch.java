@@ -2,16 +2,15 @@ package team1619.scouting.server.main;
 
 import team1619.scouting.server.database.MySQL;
 import team1619.scouting.server.utils.SCJSON;
-import team1619.scouting.server.utils.SCLogger;
 
 import java.sql.SQLException;
 
 /**
  * Created by a on 3/4/15.
  */
-public class SCMatchStartedMessage extends SCMessage
+public class SCSStartMatch extends SCMessage
 {
-    public SCMatchStartedMessage()
+    public SCSStartMatch()
     {
     }
 
@@ -35,7 +34,7 @@ public class SCMatchStartedMessage extends SCMessage
             SCJSON response = new SCJSON();
 
             response.put( "type", "status" );
-            response.put( "status", "no-current-match" );
+            response.put( "status", "noCurrentMatch" );
             response.put( "description", "trying to start a match before setting it up" );
 
             SCOutbound.getClientQueue( getClientID() ).writeToClient( response );
