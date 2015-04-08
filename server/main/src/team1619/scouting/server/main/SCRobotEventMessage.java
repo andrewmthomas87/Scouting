@@ -9,7 +9,7 @@ import java.sql.SQLException;
 /**
  * Created by tolkin on 3/7/2015.
  */
-public class SCRobotEventMessage extends SCMessage
+public class SCRobotEventMessage extends SCAMessage
 {
     public SCRobotEventMessage()
     {
@@ -31,6 +31,6 @@ public class SCRobotEventMessage extends SCMessage
         response.put( "type", "status" );
         response.put( "status", "ok" );
 
-        SCOutbound.getClientQueue( getClientID() ).writeToClient( response );
+        SCAOutbound.getClientQueue( getClientID() ).writeToClient( response );
     }
 }

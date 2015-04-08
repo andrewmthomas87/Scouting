@@ -10,7 +10,7 @@ import java.sql.SQLException;
 /**
  * This message is sent by the supervisor to setup match data.
  */
-public class SCSSetMatch extends SCMessage
+public class SCSSetMatch extends SCAMessage
 {
     @Override
     void processMessage(MySQL conn, SCJSON message) throws SQLException
@@ -40,7 +40,7 @@ public class SCSSetMatch extends SCMessage
             error.put( "status", "badMessage" );
             error.put( "description", "missing required values in setMatchData message" );
 
-            SCOutbound.getClientQueue( getClientID() ).writeToClient( error );
+            SCAOutbound.getClientQueue( getClientID() ).writeToClient( error );
         }
         else
         {
@@ -54,7 +54,7 @@ public class SCSSetMatch extends SCMessage
             response.put( "status", "ok" );
             response.put( "MID", message.getInteger( "MID" ) );
 
-            SCOutbound.getClientQueue( getClientID() ).writeToClient( response );
+            SCAOutbound.getClientQueue( getClientID() ).writeToClient( response );
         }
     }
 }

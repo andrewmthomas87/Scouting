@@ -11,10 +11,10 @@ import java.sql.SQLException;
  * Created by avimoskoff on 2/16/15.
  */
 
-public class SCContribution extends SCMessage
+public class SCCContribution extends SCAMessage
 {
 
-    public SCContribution()
+    public SCCContribution()
     {
 
     }
@@ -64,14 +64,14 @@ public class SCContribution extends SCMessage
 
         // add alliance color based on the client
 
-        String contributorTeamAlliance = SCMatch.getTeamAlliance( getClientID() );
+        String contributorTeamAlliance = SCAMatch.getTeamAlliance( getClientID() );
         outboundMessage.put( "alliance", contributorTeamAlliance );
 
         int numMessagesSent = 0;
 
-        for ( SCClientQueue q : SCOutbound.getClientQueues() )
+        for ( SCAClientQueue q : SCAOutbound.getClientQueues() )
         {
-            SCMatch.MatchTeamData myTeamData = SCMatch.getAssociatedTeamData( q.getClientId() );
+            SCAMatch.MatchTeamData myTeamData = SCAMatch.getAssociatedTeamData( q.getClientId() );
 
             if ( myTeamData == null || contributorTeamAlliance.equals( myTeamData.getAlliance() ) )
             {

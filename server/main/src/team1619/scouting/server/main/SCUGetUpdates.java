@@ -8,9 +8,10 @@ import java.sql.SQLException;
 /**
  * Created by avimoskoff on 2/19/15.
  */
-public class SCWazUp extends SCMessage{
+public class SCUGetUpdates extends SCAMessage
+{
 
-    public SCWazUp() {
+    public SCUGetUpdates() {
     }
 
     @Override
@@ -21,6 +22,6 @@ public class SCWazUp extends SCMessage{
         response.put( "type", "status" );
         response.put( "status", "wazUp" );
 
-        SCOutbound.getClientQueue( getClientID() ).writeToClient( response );
+        SCAOutbound.getClientQueue( getClientID() ).writeToClient( response );
     }
 }

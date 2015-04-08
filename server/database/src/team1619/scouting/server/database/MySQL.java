@@ -1,6 +1,6 @@
 package team1619.scouting.server.database;
 
-import team1619.scouting.server.main.SCMatch;
+import team1619.scouting.server.main.SCAMatch;
 import team1619.scouting.server.utils.SCLogger;
 import team1619.scouting.server.utils.SCProperties;
 
@@ -240,7 +240,7 @@ public class MySQL
     }
 
     /**
-     * Gets the next match (by number) that has yet to be played.  We set up the SCMatch
+     * Gets the next match (by number) that has yet to be played.  We set up the SCAMatch
      * object so that the next match data is available.
      *
      * @return the next match number or -1 if no next match is available
@@ -272,7 +272,7 @@ public class MySQL
 
             // set up the next match
 
-            SCMatch.setCurrentMatch( matchNumber, redTeam1, redTeam2, redTeam3, blueTeam1, blueTeam2, blueTeam3 );
+            SCAMatch.setCurrentMatch( matchNumber, redTeam1, redTeam2, redTeam3, blueTeam1, blueTeam2, blueTeam3 );
         }
         else
         {

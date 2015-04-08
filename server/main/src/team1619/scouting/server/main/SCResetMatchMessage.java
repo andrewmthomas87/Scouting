@@ -8,7 +8,7 @@ import java.sql.SQLException;
 /**
  * Created by avimoskoff on 3/7/15.
  */
-public class SCResetMatchMessage extends SCMessage
+public class SCResetMatchMessage extends SCAMessage
 {
     public SCResetMatchMessage() {
 
@@ -25,7 +25,7 @@ public class SCResetMatchMessage extends SCMessage
         outMessage.put( "status", "matchReset" );
         outMessage.put( "description", "Match was reset by supervisor" );
 
-        for ( SCClientQueue q : SCOutbound.getClientQueues() )
+        for ( SCAClientQueue q : SCAOutbound.getClientQueues() )
         {
             q.writeToClient( outMessage );
         }

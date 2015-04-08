@@ -9,28 +9,28 @@ import java.sql.SQLException;
 /**
  * Created by avimoskoff on 3/7/15.
  */
-public class SCMatchEnded extends SCMessage
+public class SCAMatchEnded extends SCAMessage
 {
 
-    public SCMatchEnded()
+    public SCAMatchEnded()
     {
     }
 
     @Override
     void processMessage(MySQL conn, SCJSON message) throws SQLException
     {
-        if ( SCMatch.isMatchActive() )
+        if ( SCAMatch.isMatchActive() )
         {
-            int thisMatchNumber = SCMatch.getMatchNumber();
+            int thisMatchNumber = SCAMatch.getMatchNumber();
 
-            SCMatch.closeMatch();
+            SCAMatch.closeMatch();
 
             SCJSON outMessage = new SCJSON();
 
             outMessage.put( "type", "status" );
             outMessage.put( "status", "matchEnded" );
 
-            SCOutbound.getClientQueue( getClientID() ).writeToClient( outMessage );
+            SCAOutbound.getClientQueue( getClientID() ).writeToClient( outMessage );
 
             // update the database for this match
 
@@ -44,7 +44,7 @@ public class SCMatchEnded extends SCMessage
             response.put( "status", "no-current-match" );
             response.put( "description", "trying to end a match when none is currently active" );
 
-            SCOutbound.getClientQueue( getClientID() ).writeToClient( response );
+            SCAOutbound.getClientQueue( getClientID() ).writeToClient( response );
         }
     }
 }

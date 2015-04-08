@@ -9,7 +9,7 @@ import java.sql.SQLException;
 /**
  * Created by avimoskoff on 2/19/15.
  */
-public class SCCGetTeam extends SCMessage
+public class SCCGetTeam extends SCAMessage
 {
 
     public SCCGetTeam()
@@ -21,9 +21,9 @@ public class SCCGetTeam extends SCMessage
     {
         SCJSON outboundMessage = new SCJSON();
 
-        SCClientQueue clientQueue = SCOutbound.getClientQueue( getClientID() );
+        SCAClientQueue clientQueue = SCAOutbound.getClientQueue( getClientID() );
 
-        SCMatch.MatchTeamData matchData = SCMatch.getNextTeam( getClientID() );
+        SCAMatch.MatchTeamData matchData = SCAMatch.getNextTeam( getClientID() );
 
         if ( matchData == null )
         {
@@ -34,7 +34,7 @@ public class SCCGetTeam extends SCMessage
         else
         {
             outboundMessage.put( "type", "assignedTeam" );
-            outboundMessage.put( "matchNumber", SCMatch.getMatchNumber() );
+            outboundMessage.put( "matchNumber", SCAMatch.getMatchNumber() );
             outboundMessage.put( "teamNumber", matchData.getTeamNumber() );
             outboundMessage.put( "alliance", matchData.getAlliance() );
 

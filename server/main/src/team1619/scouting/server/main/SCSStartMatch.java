@@ -8,7 +8,7 @@ import java.sql.SQLException;
 /**
  * Created by a on 3/4/15.
  */
-public class SCSStartMatch extends SCMessage
+public class SCSStartMatch extends SCAMessage
 {
     public SCSStartMatch()
     {
@@ -17,17 +17,17 @@ public class SCSStartMatch extends SCMessage
     @Override
     void processMessage(MySQL conn, SCJSON message) throws SQLException
     {
-        if ( SCMatch.isMatchActive() )
+        if ( SCAMatch.isMatchActive() )
         {
             // indicate that match has started (including start time)
-            SCMatch.matchHasStarted();
+            SCAMatch.matchHasStarted();
 
             SCJSON startMessage = new SCJSON();
 
             startMessage.put( "type", "matchStarted" );
-            startMessage.put( "matchNumber", SCMatch.getMatchNumber() );
+            startMessage.put( "matchNumber", SCAMatch.getMatchNumber() );
 
-            SCOutbound.getClientQueue( getClientID() ).writeToClient( startMessage );
+            SCAOutbound.getClientQueue( getClientID() ).writeToClient( startMessage );
         }
         else
         {
@@ -37,7 +37,7 @@ public class SCSStartMatch extends SCMessage
             response.put( "status", "noCurrentMatch" );
             response.put( "description", "trying to start a match before setting it up" );
 
-            SCOutbound.getClientQueue( getClientID() ).writeToClient( response );
+            SCAOutbound.getClientQueue( getClientID() ).writeToClient( response );
         }
 
     }

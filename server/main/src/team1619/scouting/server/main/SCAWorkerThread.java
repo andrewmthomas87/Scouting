@@ -19,15 +19,15 @@ import java.util.Queue;
 /**
  * A worker thread processes an inbound connection.
  */
-public class SCWorkerThread extends Thread
+public class SCAWorkerThread extends Thread
 {
 
-    private static final String ignoredMessages = "wazUp, waitForMatchStart, getConnections, getMatch,";
+    private static final String ignoredMessages = "getUpdates, waitForMatchStart, getConnections, getMatch,";
     //private static final String ignoredMessages = "";
     /**
      * Message mapping table (type to message object)
      */
-    private static Map<String, Class<? extends SCMessage>> sMessageTable;
+    private static Map<String, Class<? extends SCAMessage>> sMessageTable;
 
     static
     {
@@ -35,27 +35,27 @@ public class SCWorkerThread extends Thread
         sMessageTable.put( "waitForMatchStart", SCCWaitForMatchStart.class );
         sMessageTable.put( "getTeam", SCCGetTeam.class );
         sMessageTable.put( "login", SCULogin.class );
-        sMessageTable.put( "contribution", SCContribution.class );
+        sMessageTable.put( "contribution", SCCContribution.class );
         sMessageTable.put( "setMatch", SCSSetMatch.class );
         sMessageTable.put( "startMatch", SCSStartMatch.class );
         sMessageTable.put( "disconnectConnection", SCSDisconnectConnection.class );
         sMessageTable.put( "getConnections", SCSGetConnections.class );
         sMessageTable.put( "getMatch", SCSGetMatch.class );
         sMessageTable.put( "resetMatch", SCResetMatchMessage.class );
-        sMessageTable.put( "wazUp", SCWazUp.class );
+        sMessageTable.put( "getUpdates", SCUGetUpdates.class );
         sMessageTable.put( "robotEvent", SCRobotEventMessage.class );
-        sMessageTable.put( "matchEnded", SCMatchEnded.class );
+        sMessageTable.put( "matchEnded", SCAMatchEnded.class );
         sMessageTable.put( "matchReset", SCResetMatchMessage.class );
     }
 
     private final Object fWaitFlag;
 
     private Socket fInboundSocket;
-    private SCListener fListener;
-    private SCThreadPool fPool;
+    private SCAListener fListener;
+    private SCAThreadPool fPool;
     private MySQL fdbConnection;
 
-    public SCWorkerThread()
+    public SCAWorkerThread()
     {
         // all workers are daemons
         setDaemon( true );
@@ -105,7 +105,7 @@ public class SCWorkerThread extends Thread
      * @param request the socket with the inbound request
      * @param listener the listener object
      */
-    public void assignWork( Socket request, SCListener listener, SCThreadPool pool )
+    public void assignWork( Socket request, SCAListener listener, SCAThreadPool pool )
     {
         fInboundSocket = request;
         fListener = listener;
@@ -184,7 +184,7 @@ public class SCWorkerThread extends Thread
                     }
                     else
                     {
-                        Class<? extends SCMessage> processorClass = sMessageTable.get( messageType );
+                        Class<? extends SCAMessage> processorClass = sMessageTable.get( messageType );
 
                         if ( processorClass == null )
                         {
@@ -192,7 +192,7 @@ public class SCWorkerThread extends Thread
                             throw new IllegalArgumentException( "message type " + messageType );
                         }
 
-                        SCMessage messageProcessor = processorClass.newInstance();
+                        SCAMessage messageProcessor = processorClass.newInstance();
 
                         // set the client id for every message
                         messageProcessor.setClientID( (Integer) json.get( "CID" ) );
@@ -212,14 +212,14 @@ public class SCWorkerThread extends Thread
                             msg.put( "type", "status" );
                             msg.put( "status", "disconnected" );
                             logoutMessage.add( msg );
-                            SCClientQueue.writeJSONToClient( fInboundSocket.getOutputStream(), logoutMessage, 0 );
+                            SCAClientQueue.writeJSONToClient( fInboundSocket.getOutputStream(), logoutMessage, 0 );
                             normalResponse = false;
                         }
 
                         if ( normalResponse )
                         {
                             // flush this client's queue to client
-                            SCClientQueue clientQueue = SCOutbound.getClientQueue( messageProcessor.getClientID() );
+                            SCAClientQueue clientQueue = SCAOutbound.getClientQueue( messageProcessor.getClientID() );
 
                             clientQueue.flushQueueToClient( fInboundSocket.getOutputStream() );
                         }

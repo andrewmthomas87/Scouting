@@ -8,9 +8,9 @@ import java.util.Map;
 /**
  * Holds a queue for each
  */
-public class SCOutbound
+public class SCAOutbound
 {
-    private static Map<Integer, SCClientQueue> fQueueMap;
+    private static Map<Integer, SCAClientQueue> fQueueMap;
 
     static
     {
@@ -25,9 +25,9 @@ public class SCOutbound
      *
      * @return a new client queue for this client
      */
-    public static SCClientQueue setupClient()
+    public static SCAClientQueue setupClient()
     {
-        SCClientQueue newQueue = new SCClientQueue( sNextClientId++ );
+        SCAClientQueue newQueue = new SCAClientQueue( sNextClientId++ );
 
         fQueueMap.put( newQueue.getClientId(), newQueue );
 
@@ -42,9 +42,9 @@ public class SCOutbound
      *
      * @return the associated client queue
      */
-    public static SCClientQueue getClientQueue( Integer clientId )
+    public static SCAClientQueue getClientQueue( Integer clientId )
     {
-        SCClientQueue clientQueue = fQueueMap.get( clientId );
+        SCAClientQueue clientQueue = fQueueMap.get( clientId );
 
         if ( clientQueue == null )
         {
@@ -60,7 +60,7 @@ public class SCOutbound
      *
      * @return the client queues
      */
-    public static Iterable<SCClientQueue> getClientQueues()
+    public static Iterable<SCAClientQueue> getClientQueues()
     {
         return fQueueMap.values();
     }
@@ -70,7 +70,7 @@ public class SCOutbound
      *
      * @param clientId the id of the client to remove
      */
-    public static SCClientQueue removeClientQueue( Integer clientId )
+    public static SCAClientQueue removeClientQueue( Integer clientId )
     {
         SCLogger.getLogger().info( "Removing queue for client id: %d", clientId );
 

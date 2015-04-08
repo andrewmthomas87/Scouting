@@ -18,7 +18,7 @@ import team1619.scouting.server.utils.SCProperties;
  * 
  * Created by tolkin on 2/15/2015.
  */
-public class SCServer
+public class SCAServer
 {
     /**
      * Starts the scouting server.  The server will look in the local directory
@@ -80,7 +80,7 @@ public class SCServer
             }
 
             // start the main listener on its own thread
-            Thread listener = new SCListener( SCThreadPool.getPool() );
+            Thread listener = new SCAListener( SCAThreadPool.getPool() );
             listener.start();
 
             listener.join();
@@ -105,7 +105,7 @@ public class SCServer
             SCLogger.startup();
 
             // after this, logger can be used
-            SCThreadPool.startup();
+            SCAThreadPool.startup();
         }
         catch ( Throwable t )
         {

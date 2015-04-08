@@ -11,7 +11,7 @@ import java.util.List;
  * This message is sent by the supervisor to get the data about the next match
  * that will be played.
  */
-public class SCSGetMatch extends SCMessage
+public class SCSGetMatch extends SCAMessage
 {
     public SCSGetMatch()
     {
@@ -22,12 +22,12 @@ public class SCSGetMatch extends SCMessage
         // query the database to get the next match data
 
         int matchNumber;
-        if ( !SCMatch.isMatchActive() )
+        if ( !SCAMatch.isMatchActive() )
         {
             matchNumber = conn.setupNextMatch( SCProperties.getProperty( "event.code" ) );
         }
         else {
-            matchNumber = SCMatch.getMatchNumber();
+            matchNumber = SCAMatch.getMatchNumber();
         }
 
         SCJSON response = new SCJSON();
@@ -49,12 +49,12 @@ public class SCSGetMatch extends SCMessage
 
             response.put( "matchNumber", matchNumber );
 
-            List<SCMatch.MatchTeamData> teamData = SCMatch.getAllTeamData();
+            List<SCAMatch.MatchTeamData> teamData = SCAMatch.getAllTeamData();
 
             int redNo = 1;
             int blueNo = 1;
 
-            for ( SCMatch.MatchTeamData data : teamData )
+            for ( SCAMatch.MatchTeamData data : teamData )
             {
                 if ( "red".equals( data.getAlliance() ) )
                 {
@@ -69,6 +69,6 @@ public class SCSGetMatch extends SCMessage
             }
         }
 
-        SCOutbound.getClientQueue( getClientID() ).writeToClient( response );
+        SCAOutbound.getClientQueue( getClientID() ).writeToClient( response );
     }
 }

@@ -4,7 +4,6 @@ import team1619.scouting.server.utils.SCLogger;
 import team1619.scouting.server.utils.SCProperties;
 
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,21 +14,21 @@ import java.util.Set;
  * * 
  * Created by tolkin on 2/15/2015.
  */
-public class SCThreadPool
+public class SCAThreadPool
 {
     private int fPoolSize;
     
-    private final List<SCWorkerThread> fAvailablePool;
-    private final Set<SCWorkerThread> fInUsePool;
+    private final List<SCAWorkerThread> fAvailablePool;
+    private final Set<SCAWorkerThread> fInUsePool;
     
-    private static SCThreadPool sPool;
+    private static SCAThreadPool sPool;
     
     public static void startup()
     {
-        sPool = new SCThreadPool();
+        sPool = new SCAThreadPool();
     }
     
-    private SCThreadPool()
+    private SCAThreadPool()
     {
         fPoolSize = Integer.parseInt( SCProperties.getProperty( "network.threads.pool.size" ) );
         
@@ -40,13 +39,13 @@ public class SCThreadPool
         
         for ( int i = 0; i < fPoolSize; i++ )
         {
-            SCWorkerThread worker = new SCWorkerThread();
+            SCAWorkerThread worker = new SCAWorkerThread();
             fAvailablePool.add( worker );
             worker.start();
         }
     }
     
-    public static SCThreadPool getPool()
+    public static SCAThreadPool getPool()
     {
         return sPool;
     }
@@ -57,7 +56,7 @@ public class SCThreadPool
      * @param request the socket with the inbound request
      * @param listener the listener object (used when the message is to exit the server)
      */
-    public void assignThread( Socket request, SCListener listener )
+    public void assignThread( Socket request, SCAListener listener )
     {
         // find an available thread
         while ( fAvailablePool.isEmpty() )
@@ -79,7 +78,7 @@ public class SCThreadPool
         }
 
         // ok, we have at least one available thread
-        SCWorkerThread worker;
+        SCAWorkerThread worker;
         synchronized ( fAvailablePool )
         {
             worker = fAvailablePool.remove( 0 );
@@ -95,7 +94,7 @@ public class SCThreadPool
      *  
      * @param worker the worker thread that is done
      */
-    public void signalDone( SCWorkerThread worker )
+    public void signalDone( SCAWorkerThread worker )
     {
         synchronized ( fAvailablePool )
         {
