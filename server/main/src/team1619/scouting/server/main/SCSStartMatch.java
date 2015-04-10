@@ -2,6 +2,7 @@ package team1619.scouting.server.main;
 
 import team1619.scouting.server.database.MySQL;
 import team1619.scouting.server.utils.SCJSON;
+import team1619.scouting.server.utils.SCProperties;
 
 import java.sql.SQLException;
 
@@ -10,6 +11,8 @@ import java.sql.SQLException;
  */
 public class SCSStartMatch extends SCAMessage
 {
+    //int[] reportMatchNumbers = MySQL.getReportMatchNumbers( SCProperties.getProperty( "event.code" ) );
+
     public SCSStartMatch()
     {
     }
@@ -19,6 +22,7 @@ public class SCSStartMatch extends SCAMessage
     {
         if ( SCAMatch.isMatchActive() )
         {
+
             // indicate that match has started (including start time)
             SCAMatch.matchHasStarted();
 
@@ -27,7 +31,11 @@ public class SCSStartMatch extends SCAMessage
             startMessage.put( "type", "matchStarted" );
             startMessage.put( "matchNumber", SCAMatch.getMatchNumber() );
 
-            SCAOutbound.getClientQueue( getClientID() ).writeToClient( startMessage );
+           // for ( int i = 0; i < reportMatchNumbers.length; i++ ) {
+
+            //}
+
+           // SCAOutbound.getClientQueue( getClientID() ).writeToClient( startMessage );
         }
         else
         {

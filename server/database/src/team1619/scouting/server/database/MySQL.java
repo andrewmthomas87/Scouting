@@ -19,6 +19,9 @@ public class MySQL
 {
     private Connection fConnection;
 
+    private int fRunningTime = 5;
+    private int fNumberOfMatches = 10;
+
     private static String[] tables = new String[]
             {
                     // eventType: D = disabled, E = enabled (after disabled), F = fell over, C = comments, R = rake bin (A), S = rake bin (Teleop), M = moved in auto
@@ -171,7 +174,7 @@ public class MySQL
     public int getNextSID() throws SQLException
     {
         Statement stmt = fConnection.createStatement();
-        ResultSet resultSet = stmt.executeQuery( "select UUID_SHORT()");
+        ResultSet resultSet = stmt.executeQuery( "select UUID_SHORT()" );
         resultSet.next();
         int SID = (int)(0x7fffffffL & resultSet.getLong( 1 ));
         stmt.close();
@@ -386,6 +389,48 @@ public class MySQL
 
         stmt.close();
     }
+
+    /*
+    public int[] getReportMatchNumbers( String eventCode ) throws SQLException
+    {
+
+        PreparedStatement matchList =
+                fConnection.prepareStatement( "select matchNumber from eventMatches where " +
+                        "redTeam1=1619 " +
+                        "|| redTeam2=1619 " +
+                        "|| redTeam3=1619 " +
+                        "|| blueTeam1=1619 " +
+                        "|| blueTeam2=1619 " +
+                        "|| blueTeam3=1619 " +
+                        "and played=0" +
+                        "and eventCode=?" );
+
+        matchList.setString( 1, eventCode );
+
+        ResultSet matchListSet = matchList.executeQuery();
+
+        int[] matches = new int[fNumberOfMatches];
+        int i = 0;
+
+        while ( matchListSet.next() )
+        {
+            matches[i] = matchListSet.getInt( i + 1 );
+            i++;
+        }
+
+        for ( int index = 0; index < matches.length; i++ )
+        {
+            if ( matches[index] < fRunningTime )
+            {
+                matches[index] = 0;
+            } else
+            {
+                matches[index] -= fRunningTime;
+            }
+        }
+        return matches;
+    }
+    */
 
     public void generateReport( PrintWriter out, String eventCode, int matchNumber )
             throws SQLException, IllegalArgumentException

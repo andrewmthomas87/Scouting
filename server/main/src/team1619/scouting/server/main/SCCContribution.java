@@ -29,11 +29,7 @@ public class SCCContribution extends SCAMessage
         int time = message.getInteger( "time" );
         String objects = message.getString( "objects" );
         String[] objectArray;
-        if ( objects.startsWith( "K" ) )
-        {
-            objectArray = conn.getStackObjectsFromSID( Integer.parseInt( objects.substring( 1 ) ) );
-        }
-        else if ( objects.startsWith( "X" ) )
+        if ( objects.startsWith( "K" ) || objects.startsWith( "X" ) )               //TODO: figure out why we're doing this for X
         {
             objectArray = conn.getStackObjectsFromSID( Integer.parseInt( objects.substring( 1 ) ) );
         }
