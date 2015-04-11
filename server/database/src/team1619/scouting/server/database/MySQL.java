@@ -28,7 +28,7 @@ public class MySQL
                     K = stack (K<int>)
                     */
 
-                    "create table contributions (eventCode varchar(12), teamNumber int, matchNumber int, mode char(1), object char(1), SID int, otherSID int, matchTime int)",
+                    "create table contributions (eventCode varchar(12), teamNumber int, matchNumber int, mode char(1), object char(1), SID int, removed tinyint(1), matchTime int)",
 
                     "create table eventMatches (eventCode varchar(12), matchNumber int, played boolean default false, redTeam1 int, redTeam2 int, redTeam3 int, blueTeam1 int, blueTeam2 int, blueTeam3 int)",
 
@@ -115,51 +115,31 @@ public class MySQL
             object = "K";
         }
         PreparedStatement stmt = fConnection
-                .prepareStatement( "insert into contributions (teamNumber, matchNumber, mode, object, SID, matchTime, otherSID, eventCode) " +
-                                           "values (?,?,?,?,?,?,?,?)" );
+                .prepareStatement( "insert into contributions (teamNumber, matchNumber, mode, object, SID, matchTime, eventCode) " +
+                        "values (?,?,?,?,?,?,?)" );
         stmt.setInt( 1, teamNumber );
         stmt.setInt( 2, matchNumber );
         stmt.setString( 3, mode );
         stmt.setString( 4, object );
         stmt.setInt( 5, SID );
         stmt.setInt( 6, matchTime );
-        if ( otherSID == null )
-        {
-            stmt.setNull( 7, Types.INTEGER );
-        }
-        else
-        {
-            stmt.setInt( 7, otherSID );
-        }
-        stmt.setString( 8, eventCode );
+        stmt.setString( 7, eventCode );
 
         stmt.executeUpdate();
 
         stmt.close();
     }
 
-    public String[] getStackObjectsFromSID( int SID ) throws SQLException
+    public String[] removeStackObjectsFromSID(int SID) throws SQLException
     {
         Statement stmt = fConnection.createStatement();
         ResultSet resultSet = stmt.executeQuery( "select object from contributions where SID=" + SID );
         ArrayList<String> objects = new ArrayList<String>();
         while (resultSet.next())
         {
-            String object = resultSet.getString( 4 );
-            if ( object.startsWith( "K" ) )
-            {
-                int movedStackSID = Integer.parseInt( object.substring( 1 ) );
-                String[] movedObjects = getStackObjectsFromSID( movedStackSID );
-                for ( int i = 0; i < movedObjects.length; i++ )
-                {
-                    objects.add( movedObjects[i] );
-                }
-            }
-            else
-            {
-                objects.add( object );
-            }
+            objects.add( resultSet.getString( 4 ) );
         }
+        stmt.execute( "update contributions set removed=1 where SID=" + SID );
         return (String[]) objects.toArray();
     }
 

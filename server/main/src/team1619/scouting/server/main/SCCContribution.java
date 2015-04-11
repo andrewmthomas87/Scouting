@@ -29,9 +29,9 @@ public class SCCContribution extends SCAMessage
         int time = message.getInteger( "time" );
         String objects = message.getString( "objects" );
         String[] objectArray;
-        if ( objects.startsWith( "K" ) || objects.startsWith( "X" ) )               //TODO: figure out why we're doing this for X
+        if ( objects.startsWith( "K" ) || objects.startsWith( "X" ) )
         {
-            objectArray = conn.getStackObjectsFromSID( Integer.parseInt( objects.substring( 1 ) ) );
+            objectArray = conn.removeStackObjectsFromSID( Integer.parseInt( objects.substring( 1 ) ) );
         }
         else
         {
@@ -41,11 +41,17 @@ public class SCCContribution extends SCAMessage
         int teamNumber = message.getInteger( "teamNumber" );
         int matchNumber = message.getInteger( "matchNumber" );
 
-        for ( String object : objectArray )
+        if ( objects.startsWith( "X" ) )
         {
-            if ( !object.isEmpty() )
+            conn.addContribution( SCProperties.getProperty( "event.code" ), teamNumber, matchNumber, mode, "X", SID, time );
+        } else
+        {
+            for ( String object : objectArray )
             {
-                conn.addContribution( SCProperties.getProperty( "event.code" ), teamNumber, matchNumber, mode, object, SID, time );
+                if ( !object.isEmpty() )
+                {
+                    conn.addContribution( SCProperties.getProperty( "event.code" ), teamNumber, matchNumber, mode, object, SID, time );
+                }
             }
         }
 
@@ -57,7 +63,6 @@ public class SCCContribution extends SCAMessage
         outboundMessage.put( "mode", mode );
         outboundMessage.put( "teamNumber", teamNumber );
         outboundMessage.put( "matchNumber", matchNumber );
-        outboundMessage.put( "position", message.getInteger( "position" ) );
 
         // add alliance color based on the client
 
