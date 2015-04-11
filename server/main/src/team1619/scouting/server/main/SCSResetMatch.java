@@ -8,9 +8,10 @@ import java.sql.SQLException;
 /**
  * Created by avimoskoff on 3/7/15.
  */
-public class SCResetMatchMessage extends SCAMessage
+public class SCSResetMatch extends SCAMessage
 {
-    public SCResetMatchMessage() {
+    public SCSResetMatch()
+    {
 
     }
 
@@ -19,11 +20,12 @@ public class SCResetMatchMessage extends SCAMessage
     {
         conn.deleteMatch( message.getInteger( "matchNumber" ) );
 
+        SCAMatch.closeMatch();
+
         SCJSON outMessage = new SCJSON();
 
         outMessage.put( "type", "status" );
         outMessage.put( "status", "matchReset" );
-        outMessage.put( "description", "Match was reset by supervisor" );
 
         for ( SCAClientQueue q : SCAOutbound.getClientQueues() )
         {

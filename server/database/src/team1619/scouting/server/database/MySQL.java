@@ -5,33 +5,23 @@ import team1619.scouting.server.utils.SCLogger;
 import team1619.scouting.server.utils.SCProperties;
 
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
-
+import java.sql.*;
 import java.util.ArrayList;
 
 public class MySQL
 {
-    private Connection fConnection;
-
-    private int fRunningTime = 5;
-    private int fNumberOfMatches = 10;
-
     private static String[] tables = new String[]
             {
-                    // eventType: D = disabled, E = enabled (after disabled), F = fell over, C = comments, R = rake bin (A), S = rake bin (Teleop), M = moved in auto
+                    // eventType: D = disabled, E = enabled (after disabled), F = fell over, U = upright,
+                    // C = comments, R = rake bin (A), S = rake bin (Teleop), M = moved in auto
+
                     "create table robotEvents (eventCode varchar(12), teamNumber int, matchNumber int, eventType char(1), matchTime int, comments varchar(1024))",
 
 
                     // not used for now:
                     "create table stacks (matchNumber int, SID int, totalHeight int, bin tinyint(1), litter tinyint(1), auton tinyint(1), scoringTeam int, platformType char(1), knockedBy int, matchTime int)",
 
-            
+
                     /*
                     mode: A = autonomous, T = teleop
                     object: Y = yellow tote, F = floor tote, H = chute tote, B = bin, L = litter, S = step, P = platform,
@@ -44,7 +34,6 @@ public class MySQL
 
                     "create table matchScouts(eventCode varchar(12), matchNumber int, teamNumber int, scoutName varchar(64))"
             };
-
     private static String[] killTables = new String[]
             {
                     "drop table if exists robotEvents",
@@ -53,6 +42,18 @@ public class MySQL
                     "drop table if exists eventMatches",
                     "drop table if exists matchScouts"
             };
+    private Connection fConnection;
+    private int fRunningTime = 5;
+    private int fNumberOfMatches = 10;
+
+    public static MySQL connect() throws SQLException
+    {
+        MySQL connection = new MySQL();
+
+        connection.establishConnection();
+
+        return connection;
+    }
 
     public void deleteTables() throws SQLException
     {
@@ -63,15 +64,6 @@ public class MySQL
             stmt.execute( kill );
         }
         stmt.close();
-    }
-
-    public static MySQL connect() throws SQLException
-    {
-        MySQL connection = new MySQL();
-
-        connection.establishConnection();
-
-        return connection;
     }
 
     private void establishConnection() throws SQLException
@@ -334,6 +326,7 @@ public class MySQL
         eventDeleteStatement.execute();
 
         eventDeleteStatement.close();
+
     }
 
     public void addRobotEvent( String eventCode, int matchNumber, int teamNumber, String eventType, int matchTime, String comments ) throws SQLException
@@ -389,48 +382,6 @@ public class MySQL
 
         stmt.close();
     }
-
-    /*
-    public int[] getReportMatchNumbers( String eventCode ) throws SQLException
-    {
-
-        PreparedStatement matchList =
-                fConnection.prepareStatement( "select matchNumber from eventMatches where " +
-                        "redTeam1=1619 " +
-                        "|| redTeam2=1619 " +
-                        "|| redTeam3=1619 " +
-                        "|| blueTeam1=1619 " +
-                        "|| blueTeam2=1619 " +
-                        "|| blueTeam3=1619 " +
-                        "and played=0" +
-                        "and eventCode=?" );
-
-        matchList.setString( 1, eventCode );
-
-        ResultSet matchListSet = matchList.executeQuery();
-
-        int[] matches = new int[fNumberOfMatches];
-        int i = 0;
-
-        while ( matchListSet.next() )
-        {
-            matches[i] = matchListSet.getInt( i + 1 );
-            i++;
-        }
-
-        for ( int index = 0; index < matches.length; i++ )
-        {
-            if ( matches[index] < fRunningTime )
-            {
-                matches[index] = 0;
-            } else
-            {
-                matches[index] -= fRunningTime;
-            }
-        }
-        return matches;
-    }
-    */
 
     public void generateReport( PrintWriter out, String eventCode, int matchNumber )
             throws SQLException, IllegalArgumentException

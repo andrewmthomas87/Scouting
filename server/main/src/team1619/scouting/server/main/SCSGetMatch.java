@@ -38,7 +38,6 @@ public class SCSGetMatch extends SCAMessage
 
             response.put( "type", "status" );
             response.put( "status", "noMatch" );
-            response.put( "description", "There is no next match available for this event" );
             response.put( "MID", message.getInteger( "MID" ) );
         }
         else

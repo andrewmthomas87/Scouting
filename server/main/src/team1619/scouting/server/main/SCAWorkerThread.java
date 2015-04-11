@@ -41,11 +41,10 @@ public class SCAWorkerThread extends Thread
         sMessageTable.put( "disconnectConnection", SCSDisconnectConnection.class );
         sMessageTable.put( "getConnections", SCSGetConnections.class );
         sMessageTable.put( "getMatch", SCSGetMatch.class );
-        sMessageTable.put( "resetMatch", SCResetMatchMessage.class );
+        sMessageTable.put( "resetMatch", SCSResetMatch.class );
         sMessageTable.put( "getUpdates", SCUGetUpdates.class );
-        sMessageTable.put( "robotEvent", SCRobotEventMessage.class );
-        sMessageTable.put( "matchEnded", SCAMatchEnded.class );
-        sMessageTable.put( "matchReset", SCResetMatchMessage.class );
+        sMessageTable.put( "robotEvent", SCCRobotEvent.class );
+        sMessageTable.put( "matchEnded", SCSMatchEnded.class );
     }
 
     private final Object fWaitFlag;

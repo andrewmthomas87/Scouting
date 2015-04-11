@@ -9,10 +9,10 @@ import java.sql.SQLException;
 /**
  * Created by avimoskoff on 3/7/15.
  */
-public class SCAMatchEnded extends SCAMessage
+public class SCSMatchEnded extends SCAMessage
 {
 
-    public SCAMatchEnded()
+    public SCSMatchEnded()
     {
     }
 
@@ -42,7 +42,6 @@ public class SCAMatchEnded extends SCAMessage
 
             response.put( "type", "status" );
             response.put( "status", "no-current-match" );
-            response.put( "description", "trying to end a match when none is currently active" );
 
             SCAOutbound.getClientQueue( getClientID() ).writeToClient( response );
         }

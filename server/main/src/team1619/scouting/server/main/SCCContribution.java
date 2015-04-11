@@ -57,6 +57,7 @@ public class SCCContribution extends SCAMessage
         outboundMessage.put( "mode", mode );
         outboundMessage.put( "teamNumber", teamNumber );
         outboundMessage.put( "matchNumber", matchNumber );
+        outboundMessage.put( "position", message.getInteger( "position" ) );
 
         // add alliance color based on the client
 
