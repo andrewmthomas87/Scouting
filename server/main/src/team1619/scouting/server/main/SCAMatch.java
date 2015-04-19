@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Created by avimoskoff on 3/3/15.
  */
-public class SCMatch
+public class SCAMatch
 {
     public static class MatchTeamData
     {
@@ -34,7 +34,7 @@ public class SCMatch
         }
     }
 
-    private static SCMatch sCurrentMatch;
+    private static SCAMatch sCurrentMatch;
 
     private int fMatchNumber;
 
@@ -48,10 +48,10 @@ public class SCMatch
 
     public static void setCurrentMatch(int matchNumber, int redTeam1, int redTeam2, int redTeam3, int blueTeam1, int blueTeam2, int blueTeam3)
     {
-        sCurrentMatch = new SCMatch( matchNumber, redTeam1, redTeam2, redTeam3, blueTeam1, blueTeam2, blueTeam3 );
+        sCurrentMatch = new SCAMatch( matchNumber, redTeam1, redTeam2, redTeam3, blueTeam1, blueTeam2, blueTeam3 );
     }
 
-    private SCMatch(int matchNumber, int redTeam1, int redTeam2, int redTeam3, int blueTeam1, int blueTeam2, int blueTeam3)
+    private SCAMatch(int matchNumber, int redTeam1, int redTeam2, int redTeam3, int blueTeam1, int blueTeam2, int blueTeam3)
     {
         fMatchNumber = matchNumber;
 

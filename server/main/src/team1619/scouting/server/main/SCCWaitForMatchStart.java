@@ -8,9 +8,10 @@ import java.sql.SQLException;
 /**
  * Created by avimoskoff on 2/19/15.
  */
-public class SCReadyForStart extends SCMessage {
+public class SCCWaitForMatchStart extends SCAMessage
+{
 
-    public SCReadyForStart() {
+    public SCCWaitForMatchStart() {
     }
 
     @Override
@@ -18,13 +19,13 @@ public class SCReadyForStart extends SCMessage {
     {
         SCJSON response = new SCJSON();
 
-        if ( SCMatch.hasMatchStarted() )
+        if ( SCAMatch.hasMatchStarted() )
         {
             // just send a match started message instead
 
             response.put( "type", "matchStarted" );
-            response.put( "matchNumber", SCMatch.getMatchNumber() );
-            response.put( "matchTime", SCMatch.getMatchDuration() );
+            response.put( "matchNumber", SCAMatch.getMatchNumber() );
+            response.put( "matchTime", SCAMatch.getMatchDuration() );
         }
         else
         {
@@ -32,7 +33,7 @@ public class SCReadyForStart extends SCMessage {
             response.put( "status", "waiting" );
         }
 
-        SCOutbound.getClientQueue( getClientID() ).writeToClient( response );
+        SCAOutbound.getClientQueue( getClientID() ).writeToClient( response );
     }
 
 }

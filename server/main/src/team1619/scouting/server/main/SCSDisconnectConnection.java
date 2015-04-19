@@ -9,27 +9,27 @@ import java.sql.SQLException;
 /**
  * Sent by supervisor to forcibly remove a client queue
  */
-public class SCDisconnectClientMessage extends SCMessage
+public class SCSDisconnectConnection extends SCAMessage
 {
-    public SCDisconnectClientMessage()
+    public SCSDisconnectConnection()
     {
     }
 
     public void processMessage( MySQL conn, SCJSON message )
             throws SQLException
     {
-        SCClientQueue disconnected = SCOutbound.removeClientQueue( message.getInteger( "disconnectCID" ) );
+        SCAClientQueue disconnected = SCAOutbound.removeClientQueue( message.getInteger( "disconnectCID" ) );
 
         if ( disconnected != null )
         {
-            if ( SCMatch.isMatchActive() )
+            if ( SCAMatch.isMatchActive() )
             {
                 // delete from database the scouting information
                 conn.disconnectClient( SCProperties.getProperty( "event.code" ),
-                                       SCMatch.getMatchNumber(),
-                                       SCMatch.getTeamNumber( disconnected.getClientId() ) );
+                                       SCAMatch.getMatchNumber(),
+                                       SCAMatch.getTeamNumber( disconnected.getClientId() ) );
 
-                SCMatch.unassignTeam( disconnected.getClientId() );
+                SCAMatch.unassignTeam( disconnected.getClientId() );
             }
 
             SCJSON clientResponse = new SCJSON();
@@ -41,7 +41,8 @@ public class SCDisconnectClientMessage extends SCMessage
 
         response.put( "type", "status" );
         response.put( "status", "ok" );
+        response.put( "MID", message.getInteger( "MID" ) );
 
-        SCOutbound.getClientQueue( getClientID() ).writeToClient( response );
+        SCAOutbound.getClientQueue( getClientID() ).writeToClient( response );
     }
 }

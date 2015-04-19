@@ -12,9 +12,9 @@ import java.sql.SQLException;
  * This message assigns a new client id
  */
 
-public class SCLogin extends SCMessage
+public class SCULogin extends SCAMessage
 {
-    public SCLogin()
+    public SCULogin()
     {
     }
 
@@ -22,7 +22,7 @@ public class SCLogin extends SCMessage
     void processMessage( MySQL connection, SCJSON message ) throws SQLException
     {
         // assign a client id and create a queue for this client
-        SCClientQueue clientQueue = SCOutbound.setupClient();
+        SCAClientQueue clientQueue = SCAOutbound.setupClient();
 
         clientQueue.setScoutName( (String)message.get( "scoutName" ) );
 

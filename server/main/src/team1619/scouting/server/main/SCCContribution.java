@@ -11,10 +11,10 @@ import java.sql.SQLException;
  * Created by avimoskoff on 2/16/15.
  */
 
-public class SCContribution extends SCMessage
+public class SCCContribution extends SCAMessage
 {
 
-    public SCContribution()
+    public SCCContribution()
     {
 
     }
@@ -28,16 +28,30 @@ public class SCContribution extends SCMessage
         }
         int time = message.getInteger( "time" );
         String objects = message.getString( "objects" );
-        String[] objectArray = objects.split( "," );
+        String[] objectArray;
+        if ( objects.startsWith( "K" ) || objects.startsWith( "X" ) )
+        {
+            objectArray = conn.removeStackObjectsFromSID( Integer.parseInt( objects.substring( 1 ) ) );
+        }
+        else
+        {
+            objectArray = objects.split( "," );
+        }
         String mode = message.getString( "mode" );
         int teamNumber = message.getInteger( "teamNumber" );
         int matchNumber = message.getInteger( "matchNumber" );
 
-        for ( String object : objectArray )
+        if ( objects.startsWith( "X" ) )
         {
-            if ( !object.isEmpty() )
+            conn.addContribution( SCProperties.getProperty( "event.code" ), teamNumber, matchNumber, mode, "X", SID, time );
+        } else
+        {
+            for ( String object : objectArray )
             {
-                conn.addContribution( SCProperties.getProperty( "event.code" ), teamNumber, matchNumber, mode, object, SID, time );
+                if ( !object.isEmpty() )
+                {
+                    conn.addContribution( SCProperties.getProperty( "event.code" ), teamNumber, matchNumber, mode, object, SID, time );
+                }
             }
         }
 
@@ -52,14 +66,14 @@ public class SCContribution extends SCMessage
 
         // add alliance color based on the client
 
-        String contributorTeamAlliance = SCMatch.getTeamAlliance( getClientID() );
+        String contributorTeamAlliance = SCAMatch.getTeamAlliance( getClientID() );
         outboundMessage.put( "alliance", contributorTeamAlliance );
 
         int numMessagesSent = 0;
 
-        for ( SCClientQueue q : SCOutbound.getClientQueues() )
+        for ( SCAClientQueue q : SCAOutbound.getClientQueues() )
         {
-            SCMatch.MatchTeamData myTeamData = SCMatch.getAssociatedTeamData( q.getClientId() );
+            SCAMatch.MatchTeamData myTeamData = SCAMatch.getAssociatedTeamData( q.getClientId() );
 
             if ( myTeamData == null || contributorTeamAlliance.equals( myTeamData.getAlliance() ) )
             {

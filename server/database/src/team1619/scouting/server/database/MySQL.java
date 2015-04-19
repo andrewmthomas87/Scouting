@@ -1,45 +1,39 @@
 package team1619.scouting.server.database;
 
-import team1619.scouting.server.main.SCMatch;
+import team1619.scouting.server.main.SCAMatch;
 import team1619.scouting.server.utils.SCLogger;
 import team1619.scouting.server.utils.SCProperties;
 
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
+import java.sql.*;
+import java.util.ArrayList;
 
 public class MySQL
 {
-    private Connection fConnection;
-
     private static String[] tables = new String[]
             {
-                    // eventType: D = disabled, E = enabled (after disabled), F = fell over, C = comments, R = rake bin (A), S = rake bin (Teleop), M = moved in auto
+                    // eventType: D = disabled, E = enabled (after disabled), F = fell over, U = upright,
+                    // C = comments, R = rake bin (A), S = rake bin (Teleop), M = moved in auto
+
                     "create table robotEvents (eventCode varchar(12), teamNumber int, matchNumber int, eventType char(1), matchTime int, comments varchar(1024))",
 
 
                     // not used for now:
                     "create table stacks (matchNumber int, SID int, totalHeight int, bin tinyint(1), litter tinyint(1), auton tinyint(1), scoringTeam int, platformType char(1), knockedBy int, matchTime int)",
 
-            
+
                     /*
                     mode: A = autonomous, T = teleop
                     object: Y = yellow tote, F = floor tote, H = chute tote, B = bin, L = litter, S = step, P = platform,
                     K = stack (K<int>)
                     */
 
-                    "create table contributions (eventCode varchar(12), teamNumber int, matchNumber int, mode char(1), object char(1), SID int, otherSID int, matchTime int)",
+                    "create table contributions (eventCode varchar(12), teamNumber int, matchNumber int, mode char(1), object char(1), SID int, removed tinyint(1), matchTime int)",
 
                     "create table eventMatches (eventCode varchar(12), matchNumber int, played boolean default false, redTeam1 int, redTeam2 int, redTeam3 int, blueTeam1 int, blueTeam2 int, blueTeam3 int)",
 
                     "create table matchScouts(eventCode varchar(12), matchNumber int, teamNumber int, scoutName varchar(64))"
             };
-
     private static String[] killTables = new String[]
             {
                     "drop table if exists robotEvents",
@@ -48,6 +42,18 @@ public class MySQL
                     "drop table if exists eventMatches",
                     "drop table if exists matchScouts"
             };
+    private Connection fConnection;
+    private int fRunningTime = 5;
+    private int fNumberOfMatches = 10;
+
+    public static MySQL connect() throws SQLException
+    {
+        MySQL connection = new MySQL();
+
+        connection.establishConnection();
+
+        return connection;
+    }
 
     public void deleteTables() throws SQLException
     {
@@ -58,15 +64,6 @@ public class MySQL
             stmt.execute( kill );
         }
         stmt.close();
-    }
-
-    public static MySQL connect() throws SQLException
-    {
-        MySQL connection = new MySQL();
-
-        connection.establishConnection();
-
-        return connection;
     }
 
     private void establishConnection() throws SQLException
@@ -118,33 +115,38 @@ public class MySQL
             object = "K";
         }
         PreparedStatement stmt = fConnection
-                .prepareStatement( "insert into contributions (teamNumber, matchNumber, mode, object, SID, matchTime, otherSID, eventCode) " +
-                                           "values (?,?,?,?,?,?,?,?)" );
+                .prepareStatement( "insert into contributions (teamNumber, matchNumber, mode, object, SID, matchTime, eventCode) " +
+                        "values (?,?,?,?,?,?,?)" );
         stmt.setInt( 1, teamNumber );
         stmt.setInt( 2, matchNumber );
         stmt.setString( 3, mode );
         stmt.setString( 4, object );
         stmt.setInt( 5, SID );
         stmt.setInt( 6, matchTime );
-        if ( otherSID == null )
-        {
-            stmt.setNull( 7, Types.INTEGER );
-        }
-        else
-        {
-            stmt.setInt( 7, otherSID );
-        }
-        stmt.setString( 8, eventCode );
+        stmt.setString( 7, eventCode );
 
         stmt.executeUpdate();
 
         stmt.close();
     }
 
+    public String[] removeStackObjectsFromSID(int SID) throws SQLException
+    {
+        Statement stmt = fConnection.createStatement();
+        ResultSet resultSet = stmt.executeQuery( "select object from contributions where SID=" + SID );
+        ArrayList<String> objects = new ArrayList<String>();
+        while (resultSet.next())
+        {
+            objects.add( resultSet.getString( 4 ) );
+        }
+        stmt.execute( "update contributions set removed=1 where SID=" + SID );
+        return (String[]) objects.toArray();
+    }
+
     public int getNextSID() throws SQLException
     {
         Statement stmt = fConnection.createStatement();
-        ResultSet resultSet = stmt.executeQuery( "select UUID_SHORT()");
+        ResultSet resultSet = stmt.executeQuery( "select UUID_SHORT()" );
         resultSet.next();
         int SID = (int)(0x7fffffffL & resultSet.getLong( 1 ));
         stmt.close();
@@ -213,7 +215,7 @@ public class MySQL
     }
 
     /**
-     * Gets the next match (by number) that has yet to be played.  We set up the SCMatch
+     * Gets the next match (by number) that has yet to be played.  We set up the SCAMatch
      * object so that the next match data is available.
      *
      * @return the next match number or -1 if no next match is available
@@ -245,7 +247,7 @@ public class MySQL
 
             // set up the next match
 
-            SCMatch.setCurrentMatch( matchNumber, redTeam1, redTeam2, redTeam3, blueTeam1, blueTeam2, blueTeam3 );
+            SCAMatch.setCurrentMatch( matchNumber, redTeam1, redTeam2, redTeam3, blueTeam1, blueTeam2, blueTeam3 );
         }
         else
         {
@@ -304,6 +306,7 @@ public class MySQL
         eventDeleteStatement.execute();
 
         eventDeleteStatement.close();
+
     }
 
     public void addRobotEvent( String eventCode, int matchNumber, int teamNumber, String eventType, int matchTime, String comments ) throws SQLException

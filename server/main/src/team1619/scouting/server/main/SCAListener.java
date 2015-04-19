@@ -14,14 +14,14 @@ import java.net.SocketException;
  * 
  * Created by tolkin on 2/15/2015.
  */
-public class SCListener extends Thread
+public class SCAListener extends Thread
 {
     private int fPort;
-    private SCThreadPool fPool;
+    private SCAThreadPool fPool;
     private Boolean fExit;
     private ServerSocket fServerSocket;
     
-    public SCListener( SCThreadPool pool )
+    public SCAListener(SCAThreadPool pool)
     {
         fPort = Integer.parseInt( SCProperties.getProperty( "network.listener.port" ) );
         fPool = pool;

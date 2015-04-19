@@ -10,9 +10,9 @@ import java.util.List;
 /**
  * Message from supervisor to request all currently logged in clients.
  */
-public class SCGetClientsMessage extends SCMessage
+public class SCSGetConnections extends SCAMessage
 {
-    public SCGetClientsMessage()
+    public SCSGetConnections()
     {
     }
 
@@ -21,23 +21,23 @@ public class SCGetClientsMessage extends SCMessage
     {
         SCJSON response = new SCJSON();
 
-        response.put( "type", "connectedClients" );
+        response.put( "type", "connections" );
 
         List<SCJSON> clientList = new LinkedList<>();
 
-        for ( SCClientQueue queue : SCOutbound.getClientQueues() )
+        for ( SCAClientQueue queue : SCAOutbound.getClientQueues() )
         {
             SCJSON client = new SCJSON();
 
             client.put( "CID", queue.getClientId() );
             client.put( "scoutName", queue.getScoutName() );
-            client.put( "teamNumber", SCMatch.getTeamNumber( queue.getClientId() ) );
-            client.put( "alliance" , SCMatch.getTeamAlliance( queue.getClientId() ));
+            client.put( "teamNumber", SCAMatch.getTeamNumber( queue.getClientId() ) );
+            client.put( "alliance" , SCAMatch.getTeamAlliance( queue.getClientId() ));
             clientList.add( client );
         }
 
-        response.put( "clients", clientList );
+        response.put( "connections", clientList );
 
-        SCOutbound.getClientQueue( getClientID() ).writeToClient( response );
+        SCAOutbound.getClientQueue( getClientID() ).writeToClient( response );
     }
 }

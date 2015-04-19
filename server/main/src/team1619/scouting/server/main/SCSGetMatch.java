@@ -11,9 +11,9 @@ import java.util.List;
  * This message is sent by the supervisor to get the data about the next match
  * that will be played.
  */
-public class SCGetNextMatchMessage extends SCMessage
+public class SCSGetMatch extends SCAMessage
 {
-    public SCGetNextMatchMessage()
+    public SCSGetMatch()
     {
     }
 
@@ -21,7 +21,14 @@ public class SCGetNextMatchMessage extends SCMessage
     {
         // query the database to get the next match data
 
-        int matchNumber = conn.setupNextMatch( SCProperties.getProperty( "event.code" ) );
+        int matchNumber;
+        if ( !SCAMatch.isMatchActive() )
+        {
+            matchNumber = conn.setupNextMatch( SCProperties.getProperty( "event.code" ) );
+        }
+        else {
+            matchNumber = SCAMatch.getMatchNumber();
+        }
 
         SCJSON response = new SCJSON();
 
@@ -30,23 +37,23 @@ public class SCGetNextMatchMessage extends SCMessage
             // no match
 
             response.put( "type", "status" );
-            response.put( "status", "noNextMatch" );
-            response.put( "description", "There is no next match available for this event" );
+            response.put( "status", "noMatch" );
+            response.put( "MID", message.getInteger( "MID" ) );
         }
         else
         {
             // we have a next match.  send back all the data
 
-            response.put( "type", "nextMatchData" );
+            response.put( "type", "matchData" );
 
             response.put( "matchNumber", matchNumber );
 
-            List<SCMatch.MatchTeamData> teamData = SCMatch.getAllTeamData();
+            List<SCAMatch.MatchTeamData> teamData = SCAMatch.getAllTeamData();
 
             int redNo = 1;
             int blueNo = 1;
 
-            for ( SCMatch.MatchTeamData data : teamData )
+            for ( SCAMatch.MatchTeamData data : teamData )
             {
                 if ( "red".equals( data.getAlliance() ) )
                 {
@@ -61,6 +68,6 @@ public class SCGetNextMatchMessage extends SCMessage
             }
         }
 
-        SCOutbound.getClientQueue( getClientID() ).writeToClient( response );
+        SCAOutbound.getClientQueue( getClientID() ).writeToClient( response );
     }
 }

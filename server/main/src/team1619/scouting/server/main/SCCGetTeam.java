@@ -9,10 +9,10 @@ import java.sql.SQLException;
 /**
  * Created by avimoskoff on 2/19/15.
  */
-public class SCPrepareNextMatch extends SCMessage
+public class SCCGetTeam extends SCAMessage
 {
 
-    public SCPrepareNextMatch()
+    public SCCGetTeam()
     {
     }
 
@@ -21,28 +21,28 @@ public class SCPrepareNextMatch extends SCMessage
     {
         SCJSON outboundMessage = new SCJSON();
 
-        SCClientQueue clientQueue = SCOutbound.getClientQueue( getClientID() );
+        SCAClientQueue clientQueue = SCAOutbound.getClientQueue( getClientID() );
 
-        SCMatch.MatchTeamData matchData = SCMatch.getNextTeam( getClientID() );
+        SCAMatch.MatchTeamData matchData = SCAMatch.getNextTeam( getClientID() );
 
         if ( matchData == null )
         {
             outboundMessage.put( "type", "status" );
             outboundMessage.put( "status", "noTeamAvailable" );
+            outboundMessage.put( "MID", message.getInteger( "MID" ) );
         }
         else
         {
             outboundMessage.put( "type", "assignedTeam" );
-            outboundMessage.put( "matchNumber", SCMatch.getMatchNumber() );
+            outboundMessage.put( "matchNumber", SCAMatch.getMatchNumber() );
             outboundMessage.put( "teamNumber", matchData.getTeamNumber() );
             outboundMessage.put( "alliance", matchData.getAlliance() );
 
             // assign scout to this match
             conn.assignScoutToTeam( SCProperties.getProperty( "event.code" ),
-                                    outboundMessage.getInteger( "matchNumber" ),
-                                    outboundMessage.getInteger( "teamNumber" ),
-                                    clientQueue.getScoutName() );
-
+                    outboundMessage.getInteger( "matchNumber" ),
+                    outboundMessage.getInteger( "teamNumber" ),
+                    clientQueue.getScoutName() );
         }
 
         clientQueue.clearQueue();

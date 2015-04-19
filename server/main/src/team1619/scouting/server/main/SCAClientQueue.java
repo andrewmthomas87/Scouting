@@ -17,7 +17,7 @@ import java.util.Queue;
 /**
  * This is the outbound message queue for a client.
  */
-public class SCClientQueue
+public class SCAClientQueue
 {
     private int fClientId;
     private String fScoutName;
@@ -26,7 +26,7 @@ public class SCClientQueue
 
     private static SimpleDateFormat sDateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss zzz" );
 
-    public SCClientQueue( int clientId )
+    public SCAClientQueue(int clientId)
     {
         fClientId = clientId;
 
