@@ -390,9 +390,10 @@ public class MySQL
         }
 
         PreparedStatement isCoop =
-                fConnection.prepareStatement( "select avg(coop) from " +
+                fConnection.prepareStatement( "select coop/count(distinct(matchNumber)) from " +
                         "(select count(*) coop from contributions " +
-                        "where teamNumber=? and eventCode=? and object='Y' and mode='A' group by matchNumber) c" );
+                        "where teamNumber=? and eventCode=? and object='Y' and mode='A' group by matchNumber) c, contributions" +
+                                            " where eventCode=? and teamNumber=?");
 
         PreparedStatement isRakinate =
                 fConnection.prepareStatement( "select avg(rake), eventType from " +
@@ -401,9 +402,10 @@ public class MySQL
                                                       " group by eventType");
 
         PreparedStatement stackedObjects =
-                fConnection.prepareStatement( "select avg(totes) from " +
+                fConnection.prepareStatement( "select totes/count(distinct(matchNumber)) from " +
                                                       "(select count(*) totes from contributions "+
-                                            "where teamNumber=? and eventCode=? and object=? group by matchNumber) t" );
+                                            "where teamNumber=? and eventCode=? and object=?) t, contributions" +
+                                            " where eventCode=? and teamNumber=?");
 
         // for each team, get report data and write to file
         HTMLReportWriter report = new HTMLReportWriter( out );
@@ -433,6 +435,8 @@ public class MySQL
 
             isCoop.setInt( 1, team );
             isCoop.setString( 2, eventCode );
+            isCoop.setString( 3, eventCode );
+            isCoop.setInt( 4, team );
 
             ResultSet isCoopSet = isCoop.executeQuery();
 
@@ -496,6 +500,8 @@ public class MySQL
             stackedObjects.setInt( 1, team );
             stackedObjects.setString( 2, eventCode );
             stackedObjects.setString( 3, "H" );
+            stackedObjects.setString( 4, eventCode );
+            stackedObjects.setInt( 5, team );
 
             ResultSet chuteTotesSet = stackedObjects.executeQuery();
 
