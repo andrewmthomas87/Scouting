@@ -2,6 +2,7 @@ package team1619.scouting.server.main;
 
 import team1619.scouting.server.database.MySQL;
 import team1619.scouting.server.utils.SCJSON;
+import team1619.scouting.server.utils.SCLogger;
 import team1619.scouting.server.utils.SCProperties;
 
 import java.sql.SQLException;
@@ -28,10 +29,24 @@ public class SCCRobotEvent extends SCAMessage
 
         SCJSON response = new SCJSON();
 
-        response.put( "type", "status" );
-        response.put( "status", "ok" );
-        response.put( "MID", message.getInteger( "MID" ) );
+        if ( "RS".contains( message.getString( "eventType" ) ) )
+        {
+            response.put( "type", "robotEvent" );
+            response.put( "eventType", "R" );
+            response.put( "comments", message.getString( "comments" ) );
 
-        SCAOutbound.getClientQueue( getClientID() ).writeToClient( response );
+            for ( SCAClientQueue q : SCAOutbound.getClientQueues() )
+            {
+                q.writeToClient( response );
+            }
+        }
+        else
+        {
+            response.put( "type", "status" );
+            response.put( "status", "ok" );
+            response.put( "MID", message.getInteger( "MID" ) );
+
+            SCAOutbound.getClientQueue( getClientID() ).writeToClient( response );
+        }
     }
 }

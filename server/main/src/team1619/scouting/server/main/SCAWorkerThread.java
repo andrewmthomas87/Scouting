@@ -44,7 +44,7 @@ public class SCAWorkerThread extends Thread
         sMessageTable.put( "resetMatch", SCSResetMatch.class );
         sMessageTable.put( "getUpdates", SCUGetUpdates.class );
         sMessageTable.put( "robotEvent", SCCRobotEvent.class );
-        sMessageTable.put( "matchEnded", SCSMatchEnded.class );
+        sMessageTable.put( "endMatch", SCSEndMatch.class );
     }
 
     private final Object fWaitFlag;

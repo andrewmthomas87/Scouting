@@ -9,10 +9,10 @@ import java.sql.SQLException;
 /**
  * Created by avimoskoff on 3/7/15.
  */
-public class SCSMatchEnded extends SCAMessage
+public class SCSEndMatch extends SCAMessage
 {
 
-    public SCSMatchEnded()
+    public SCSEndMatch()
     {
     }
 

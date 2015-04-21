@@ -19,7 +19,7 @@ public class MySQL
 
 
                     // not used for now:
-                    "create table stacks (matchNumber int, SID int, totalHeight int, bin tinyint(1), litter tinyint(1), auton tinyint(1), scoringTeam int, platformType char(1), knockedBy int, matchTime int)",
+                    // "create table stacks (matchNumber int, SID int, totalHeight int, bin tinyint(1), litter tinyint(1), auton tinyint(1), scoringTeam int, platformType char(1), knockedBy int, matchTime int)",
 
 
                     /*
@@ -28,11 +28,11 @@ public class MySQL
                     K = stack (K<int>)
                     */
 
-                    "create table contributions (eventCode varchar(12), teamNumber int, matchNumber int, mode char(1), object char(1), SID int, removed tinyint(1), matchTime int)",
+                    "create table contributions (eventCode varchar(12), teamNumber int, matchNumber int, mode char(1), object char(1), SID int, removed tinyint(1) default 0, matchTime int)",
 
                     "create table eventMatches (eventCode varchar(12), matchNumber int, played boolean default false, redTeam1 int, redTeam2 int, redTeam3 int, blueTeam1 int, blueTeam2 int, blueTeam3 int)",
 
-                    "create table matchScouts(eventCode varchar(12), matchNumber int, teamNumber int, scoutName varchar(64))"
+                    "create table matchScouts (eventCode varchar(12), matchNumber int, teamNumber int, scoutName varchar(64))"
             };
     private static String[] killTables = new String[]
             {
@@ -107,13 +107,6 @@ public class MySQL
 
     public void addContribution( String eventCode, int teamNumber, int matchNumber, String mode, String object, int SID, int matchTime ) throws SQLException
     {
-        Integer otherSID = null;
-
-        if ( object.charAt( 0 ) == 'K' )
-        {
-            otherSID = Integer.valueOf( object.substring( 1 ) );
-            object = "K";
-        }
         PreparedStatement stmt = fConnection
                 .prepareStatement( "insert into contributions (teamNumber, matchNumber, mode, object, SID, matchTime, eventCode) " +
                         "values (?,?,?,?,?,?,?)" );
@@ -130,17 +123,18 @@ public class MySQL
         stmt.close();
     }
 
-    public String[] removeStackObjectsFromSID(int SID) throws SQLException
+    public String[] removeStackObjectsFromSID(int SID, boolean toLocal) throws SQLException
     {
         Statement stmt = fConnection.createStatement();
         ResultSet resultSet = stmt.executeQuery( "select object from contributions where SID=" + SID );
-        ArrayList<String> objects = new ArrayList<String>();
+        String objects = "";
         while (resultSet.next())
         {
-            objects.add( resultSet.getString( 4 ) );
+            objects += resultSet.getString( 1 ) + ",";
         }
-        stmt.execute( "update contributions set removed=1 where SID=" + SID );
-        return (String[]) objects.toArray();
+        objects = objects.substring( 0, objects.length() - 1 );
+        stmt.execute( "update contributions set removed=" + (toLocal ? 2 : 1) + " where SID=" + SID );
+        return objects.split( "," );
     }
 
     public int getNextSID() throws SQLException

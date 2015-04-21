@@ -207,7 +207,7 @@ public class SCAMatch
 
     public static boolean hasMatchStarted()
     {
-        return sCurrentMatch.fMatchHasStarted;
+        return sCurrentMatch == null ? false : sCurrentMatch.fMatchHasStarted;
     }
 
     public static int getMatchDuration()

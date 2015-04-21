@@ -47,6 +47,8 @@ public class SCSSetMatch extends SCAMessage
             // update the database
             conn.addMatchData( eventCode, matchNumber, redTeam1, redTeam2, redTeam3, blueTeam1, blueTeam2, blueTeam3 );
 
+            SCAMatch.closeMatch();
+
             // write back a happy response
             SCJSON response = new SCJSON();
 
@@ -55,6 +57,7 @@ public class SCSSetMatch extends SCAMessage
             response.put( "MID", message.getInteger( "MID" ) );
 
             SCAOutbound.getClientQueue( getClientID() ).writeToClient( response );
+
         }
     }
 }

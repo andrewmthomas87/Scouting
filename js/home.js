@@ -452,7 +452,7 @@ $(document).ready(function() {
 			data.SID = parseInt(objects.substr(1));
 			date = new Date();
 			data.time = date.getTime() - startTime;
-			data.objects = 'X';
+			data.objects = 'X' + objects.substr(1);
 			queryServer(data, handleClientServerResponses);
 		}
 		else {

@@ -29,9 +29,16 @@ public class SCCContribution extends SCAMessage
         int time = message.getInteger( "time" );
         String objects = message.getString( "objects" );
         String[] objectArray;
-        if ( objects.startsWith( "K" ) || objects.startsWith( "X" ) )
+        if ( objects.startsWith( "K" ) )
         {
-            objectArray = conn.removeStackObjectsFromSID( Integer.parseInt( objects.substring( 1 ) ) );
+            objectArray = conn.removeStackObjectsFromSID( Integer.parseInt( objects.substring( 1 ) ), SID == 0 );
+        }
+        else if ( objects.startsWith( "X" ) ) {
+            objectArray = new String[] { "X" };
+            conn.removeStackObjectsFromSID( SID, false );
+        }
+        else if ( objects.startsWith( "S" ) ) {
+            objectArray = new String[] { "S" };
         }
         else
         {
@@ -41,10 +48,7 @@ public class SCCContribution extends SCAMessage
         int teamNumber = message.getInteger( "teamNumber" );
         int matchNumber = message.getInteger( "matchNumber" );
 
-        if ( objects.startsWith( "X" ) )
-        {
-            conn.addContribution( SCProperties.getProperty( "event.code" ), teamNumber, matchNumber, mode, "X", SID, time );
-        } else
+        if ( SID > 0 )
         {
             for ( String object : objectArray )
             {
@@ -75,7 +79,7 @@ public class SCCContribution extends SCAMessage
         {
             SCAMatch.MatchTeamData myTeamData = SCAMatch.getAssociatedTeamData( q.getClientId() );
 
-            if ( myTeamData == null || contributorTeamAlliance.equals( myTeamData.getAlliance() ) )
+            if ( myTeamData == null || contributorTeamAlliance.equals( myTeamData.getAlliance() ) || message.getInteger( "global" ) == 1 )
             {
                 SCLogger.getLogger().debug( "Writing contribution message from client %d to client %d", getClientID(), q.getClientId() );
                 q.writeToClient( outboundMessage );
