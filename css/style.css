@@ -1,0 +1,458 @@
+
+@keyframes blinking {
+	0% {
+		-webkit-transform: scale3d(1.0, 1.0, 1.0);
+		        transform: scale3d(1.0, 1.0, 1.0);
+	}
+	50% {
+		-webkit-transform: scale3d(1.5, 1.5, 1.5);
+		        transform: scale3d(1.5, 1.5, 1.5);
+	}
+	100% {
+		-webkit-transform: scale3d(1.0, 1.0, 1.0);
+		        transform: scale3d(1.0, 1.0, 1.0);
+	}
+}
+
+@-webkit-keyframes blinking {
+	0% {
+		-webkit-transform: scale3d(1.0, 1.0, 1.0);
+		        transform: scale3d(1.0, 1.0, 1.0);
+	}
+	50% {
+		-webkit-transform: scale3d(1.5, 1.5, 1.5);
+		        transform: scale3d(1.5, 1.5, 1.5);
+	}
+	100% {
+		-webkit-transform: scale3d(1.0, 1.0, 1.0);
+		        transform: scale3d(1.0, 1.0, 1.0);
+	}
+}
+
+
+@font-face {
+	font-family: 'Open Sans';
+	src: url('/fonts/OpenSans-Light.ttf');
+	font-weight: 300;
+}
+
+
+html, body {
+	width: 100%;
+	margin: 0;
+}
+
+html {
+	font-size: 18px;
+}
+
+body {
+	background-color: #222;
+	font-family: 'Open Sans', sans-serif;
+}
+
+div#loading span {
+	position: absolute;
+	display: block;
+	color: #fff;
+	width: 7.5em;
+	padding: 0.5em 1em;
+	background-color: #1abc9c;
+	border-radius: 0.5em;
+	font-size: 1.5em;
+	font-weight: 300;
+	z-index: 101;
+}
+
+div#loading span:first-child {
+	top: calc(50% - 3.5em);
+	right: calc(50% - 1.5em);
+	border-bottom-left-radius: 0;
+	text-align: left;
+}
+
+div#loading span:last-child {
+	top: calc(50% + 0.5em);
+	left: calc(50% - 1.5em);
+	border-bottom-right-radius: 0;
+	text-align: right;
+}
+
+section#forms {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 100%;
+	height: 100%;
+	background-color: #222;
+	z-index: 100;
+	-webkit-transform: translate(-50%, -50%) translateZ(0);
+	        transform: translate(-50%, -50%) translateZ(0);
+}
+
+section#forms form, section#forms div {
+	display: none;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	-webkit-transform: translate(-50%, -50%) translateZ(0);
+	        transform: translate(-50%, -50%) translateZ(0);
+}
+
+section#forms form input {
+	display: block;
+	color: #222;
+	width: 15em;
+	padding: 1em 0;
+	margin: 0;
+	border: none;
+	border-radius: 0;
+	outline: none;
+	background-color: #fff;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 1.5em;
+	font-weight: 300;
+	text-align: center;
+}
+
+section#forms form a {
+	display: block;
+	color: #fff;
+	width: 15em;
+	padding: 1em 0;
+	background-color: #1abc9c;
+	font-size: 1.5em;
+	font-weight: 300;
+	text-decoration: none;
+	text-align: center;
+	cursor: pointer;
+	-webkit-transition: transform 0.125s ease;
+	        transition: transform 0.125s ease;
+}
+
+section#forms form a.error {
+	-webkit-transform: scale3d(1.1, 1.1, 1.1);
+	        transform: scale3d(1.1, 1.1, 1.1);
+}
+
+section#forms div>span {
+	display: block;
+	color: #222;
+	width: 15em;
+	padding: 0.375em 0;
+	background-color: #fff;
+	font-size: 1.5em;
+	font-weight: 300;
+	text-align: center;
+}
+
+section#forms div span#matchNumber {
+	padding-top: 1.25em;
+}
+
+section#forms div span#alliance {
+	padding-bottom: 1.25em;
+}
+
+section#forms div span#matchNumber span, section#forms div span#teamNumber span {
+	color: #16a085;
+}
+
+section#forms div span#alliance span.red {
+	color: #c0392b;
+}
+
+section#forms div span#alliance span.blue {
+	color: #2980b9;
+}
+
+section#main {
+	display: none;
+	width: 100%;
+	height: 100%;
+}
+
+div.B, div.L, div.F, div.H, div.Y {
+	background-position: center;
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+div.B {
+	height: 5.46875em;
+	background-image: url('../images/bin.png');
+}
+
+div.L {
+	height: 2.7375em;
+	background-image: url('../images/binned-litter.png');
+}
+
+div.F, div.H {
+	height: 3.1em;
+	background-image: url('../images/grey-tote.png');
+}
+
+div.Y {
+	height: 3.1em;
+	background-image: url('../images/yellow-tote.png');
+}
+
+div.B:after {
+	content: attr(teamNumber);
+	position: absolute;
+	bottom: 0.25em;
+	left: 0;
+	right: 0;
+	color: #fff;
+	font-size: 1.25em;
+	font-weight: 300;
+	text-align: center;
+}
+
+div.F:before, div.H:before {
+	position: absolute;
+	top: 0.25em;
+	left: 0.33em;
+	color: #fff;
+	font-size: 1.5em;
+	font-weight: 300;
+}
+
+div.F:before {
+	content: 'F';
+}
+
+div.H:before {
+	content: 'C';
+}
+
+div.F:after, div.H:after, div.Y:after {
+	content: attr(teamNumber);
+	position: absolute;
+	bottom: 0.0625em;
+	right: 0.33em;
+	color: #fff;
+	font-size: 1.25em;
+	font-weight: 300;
+}
+
+div#buttons {
+	width: 100%;
+	text-align: right;
+}
+
+div#buttons a {
+	display: inline-block;
+	color: #fff;
+	padding: 1em 1.5em;
+	margin: 0.75em;
+	font-size: 1.25em;
+	font-weight: 300;
+	line-height: 1em;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+div#buttons a#moved {
+	background-color: #3498db;
+}
+
+div#buttons a#gameState {
+	background-color: #1abc9c;
+	text-align: right;
+}
+
+div#buttons a#gameState.blinking {
+	-webkit-animation: blinking 1s linear infinite;
+	        animation: blinking 1s linear infinite;
+}
+
+div#buttons a#state {
+	background-color: #e74c3c;
+}
+
+div#buttons a#state.enabled {
+	background-color: #2ecc71;
+}
+
+div#buttons a#orientation {
+	background-color: #e74c3c;
+}
+
+div#buttons a#orientation.upright {
+	background-color: #3498db;
+}
+
+div#buttons a#trash {
+	display: none;
+	background-color: #e74c3c;
+}
+
+div#buttons a#trash.active {
+	background-color: #c0392b;
+}
+
+div#local, div#global, div#step {
+	display: inline-block;
+	height: calc(100% - 13.5em);
+	margin-bottom: 1em;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: top;
+}
+
+div#local {
+	width: 12.5em;
+}
+
+div#step {
+	position: relative;
+	width: 7.5em;
+	text-align: center;
+}
+
+div#step>div {
+	position: absolute;
+	top: calc(50% + 2.8125em);
+	z-index: 100;
+	-webkit-transform: translate(0, -50%);
+	        transform: translate(0, -50%);
+}
+
+div#step div.bin {
+	width: 5em;
+	height: 5em;
+	margin: 0 1.25em;
+	margin-bottom: 0.75em;
+	background-image: url('../images/bin-top.png');
+	background-size: 100%;
+	background-position: center;
+	opacity: 1;
+	-webkit-transition: opacity 0.125s linear;
+	        transition: opacity 0.125s linear;
+}
+
+div#step div.bin.raked {
+	opacity: 0;
+}
+
+div#step div#cooperitition {
+	position: relative;
+	height: 7.5em;
+	width: 4.53em;
+	margin: 0 1.485em;
+	margin-bottom: 0.75em;
+	background-image: url('../images/yellow-tote-top.png');
+	background-size: 100%;
+	background-position: center;
+}
+
+div#step div#cooperitition[number='0'] {
+	background-image: none;
+	background-color: #fff;
+}
+
+div#step div#cooperitition:after {
+	content: attr(number);
+	position: absolute;
+	top: calc(50% - 0.5em);
+	left: 0;
+	right: 0;
+	color: #fff;
+	width: 100%;
+	font-size: 2em;
+	font-weight: 300;
+	text-align: center;
+}
+
+div#global {
+	width: calc(100% - 20em);
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+
+div#global>div, div#local>div {
+	display: inline-block;
+	position: relative;
+	height: calc(100% - 10px);
+	border-bottom: 10px solid #555;
+}
+
+div#global>div.scored {
+	height: calc(100% - 25px);
+	margin: 0 0.5em;
+	border-bottom: 25px solid #fff;
+}
+
+div#global>div>div, div#local>div>div {
+	position: absolute;
+	bottom: 0;
+}
+
+div#global div div div, div#local div div div {
+	position: relative;
+	width: 6.25em;
+}
+
+div#local div.F, div#global div.F, div#local div.H, div#global div.H, div#local div.Y, div#global div.Y {
+	background-position: center bottom;
+	background-size: 100%;
+}
+
+div#local div+div.F, div#global div+div.F, div#local div+div.H, div#global div+div.H, div#local div+div.Y, div#global div+div.Y {
+	height: 2.8em;
+}
+
+div.stack {
+	width: 6.25em;
+	-webkit-transition: background-color 0.125s linear, border-bottom 0.125s linear;
+	        transition: background-color 0.125s linear, border-bottom 0.125s linear;
+}
+
+div.spacer {
+	width: 2em;
+	-webkit-transition: width 0.125s linear, background-color 0.125s linear, border-bottom 0.125s linear;
+	        transition: width 0.125s linear, background-color 0.125s linear, border-bottom 0.125s linear;
+}
+
+div.stack.active, div.spacer.active {
+	background-color: #333;
+	border-bottom: 10px solid #16a085 !important;
+}
+
+div.spacer.active {
+	width: 6.25em;
+}
+
+div#palette {
+	position: relative;
+	top: 0;
+	width: 100%;
+	text-align: center;
+	-webkit-transition: top 0.125s linear;
+	        transition: top 0.125s linear;
+}
+
+div#palette.hidden {
+	top: 6.944em;
+}
+
+div#palette>div {
+	display: inline-block;
+	position: relative;
+	padding: 0 1em;
+	background-color: #333;
+}
+
+div#palette div div {
+	display: inline-block;
+	position: relative;
+	width: 6.25em;
+	margin: 0.75em 1.5em;
+	vertical-align: middle;
+}
+
+div#palette div div:first-child {
+	margin: 0.75em 0;
+}

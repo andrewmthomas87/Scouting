@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<title>Supervisor</title>
+		<link href='css/supervisor.css' rel='stylesheet'>
+		<meta name='viewport' content='width=device-width, height=device-height, initial-scale=1'>
+	</head>
+
+	<body>
+		<section id='matchManager'>
+			<div id='setUpMatch'>
+				<input type='text' disabled id='matchNumber'>
+				<input type='text' disabled class='first inline red' id='redTeam1'><input type='text' disabled class='inline blue' id='blueTeam1'><br>
+				<input type='text' disabled class='first inline red' id='redTeam2'><input type='text' disabled class='inline blue' id='blueTeam2'><br>
+				<input type='text' disabled class='first inline red' id='redTeam3'><input type='text' disabled class='inline blue' id='blueTeam3'><br>
+				<a class='inline' id='edit'><span>Edit</span></a><a class='inline' id='startMatch'>Start Match</a>
+			</div>
+			<div id='buttons'>
+				<a id='reset'>Reset Match</a><!--
+				--><a id='end'>End Match</a>
+			</div>
+			<div id='step' style='display: none'>
+				<div>
+					<div class='bin'></div><!--
+					--><div class='bin'></div><!--
+					--><div id='cooperitition' number='0'></div><!--
+					--><div class='bin'></div><!--
+					--><div class='bin'></div>
+				</div>
+			</div><!--
+			--><div id='field' style='display: none'>
+				<div id='red'>
+				</div>
+				<div id='blue'>
+				</div>
+			</div>
+		</section><!--
+		--><section id='connectionsManager'>
+		</section>
+		<script src='js/jquery-1.11.2.min.js'></script>
+		<script src='js/config.js'></script>
+		<script src='js/utils.js'></script>
+		<script src='js/supervisor.js'></script>
+	</body>
+
+</html>

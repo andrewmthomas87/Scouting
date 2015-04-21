@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<title>Scouting</title>
+		<link href='css/style.css' rel='stylesheet'>
+		<meta name='viewport' content='width=device-width, initial-scale=1'>
+	</head>
+
+	<body>
+		<div id='loading'>
+			<span style='display: none'>Chute door?</span>
+			<span style='display: none'>Yes, chute door.</span>
+		</div>
+		<section id='forms'>
+			<form id='login'>
+				<input type='text' placeholder='First name'>
+				<a>Login</a>
+			</form>
+			<form id='getTeam'>
+				<a>Get team</a>
+			</form>
+			<div id='details'>
+				<span id='matchNumber'>Match <span></span></span>
+				<span id='teamNumber'>Team <span></span></span>
+				<span id='alliance'><span></span></span>
+			</div>
+			<form id='comments'>
+				<input type='text' placeholder='Comments'>
+				<a>Continue</a>
+			</form>
+		</section>
+		<section id='main'>
+			<div id='buttons'>
+				<a id='moved'>Moved</a><!--
+				--><a id='gameState' class='autonomous'>End Autonomous</a><!--
+				--><a id='state' class='enabled'>Enabled</a><!--
+				--><a id='orientation' class='upright'>Upright</a><!--
+				--><a id='trash'>Remove</a>
+			</div>
+			<div id='local'>
+				<div class='initial stack' id='0'><div draggable='true'></div></div>
+			</div><!--
+			--><div id='global'><div class='initial stack scored'><div></div></div><div class='initial spacer'></div></div><!--
+			--><div id='step'>
+				<div>
+					<div class='bin' id='B1'></div>
+					<div class='bin' id='B2'></div>
+					<div id='cooperitition' number='0'></div>
+					<div class='bin' id='B3'></div>
+					<div class='bin' id='B4'></div>
+				</div>
+			</div>
+			<div id='palette'>
+				<div>
+					<div class='L' draggable='true'></div><!--
+					--><div class='B' draggable='true'></div><!--
+					--><div class='F' draggable='true'></div><!--
+					--><div class='H' draggable='true'></div><!--
+					--><div class='Y' draggable='true'></div>
+				</div>
+			</div>
+		</section>
+		<script src='js/jquery-1.11.2.min.js'></script>
+		<script>
+			var iosDragDropShim = {
+				enableEnterLeave: true
+			}
+		</script>
+		<script src='js/ios-drag-drop.js'></script>
+		<script src='js/config.js'></script>
+		<script src='js/utils.js'></script>
+		<script src='js/app.js'></script>
+	</body>
+
+</html>

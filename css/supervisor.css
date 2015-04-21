@@ -1,0 +1,378 @@
+
+@font-face {
+	font-family: 'Open Sans';
+	src: url('/fonts/OpenSans-Light.ttf');
+	font-weight: 300;
+}
+
+
+html, body {
+	width: 100%;
+	margin: 0;
+}
+
+html {
+	font-size: 18px;
+}
+
+body {
+	height: 100vh;
+	background-color: #222;
+	font-family: 'Open Sans', sans-serif;
+}
+
+section {
+	display: inline-block;
+	height: 100%;
+	vertical-align: top;
+	overflow-y: auto;
+}
+
+section#matchManager {
+	position: relative;
+	width: 75%;
+}
+
+section#matchManager div#setUpMatch {
+	display: none;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	        transform: translate(-50%, -50%);
+}
+
+section#matchManager div#buttons {
+	display: none;
+	width: 100%;
+	text-align: right;
+}
+
+section#matchManager div#buttons a {
+	display: inline-block;
+	color: #fff;
+	padding: 1em 1.5em;
+	margin: 0.75em;
+	font-size: 1.25em;
+	font-weight: 300;
+	line-height: 1em;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+section#matchManager div#buttons a#reset {
+	background-color: #1abc9c;
+}
+
+section#matchManager div#buttons a#end {
+	background-color: #3498db;
+}
+
+section#matchManager div#setUpMatch input {
+	display: block;
+	color: #222;
+	width: 25em;
+	padding: 1em 0;
+	margin: 0;
+	background-color: #fff;
+	border: none;
+	outline: none;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 1.125em;
+	font-weight: 300;
+	text-align: center;
+	box-sizing: content-box;
+}
+
+section#matchManager div#setUpMatch input.inline {
+	display: inline-block;
+	width: 12.5em;
+}
+
+section#matchManager div#setUpMatch input.first {
+	width: calc(12.5em - 1px);
+	border-right: 1px solid #ccc;
+}
+
+section#matchManager div#setUpMatch input.red {
+	color: #c0392b;
+}
+
+section#matchManager div#setUpMatch input.blue {
+	color: #2980b9;
+}
+
+section#matchManager div#setUpMatch a {
+	display: block;
+	color: #fff;
+	width: 25em;
+	padding: 1em 0;
+	margin: 0;
+	background-color: #1abc9c;
+	font-size: 1.125em;
+	font-weight: 300;
+	text-align: center;
+	cursor: pointer;
+}
+
+section#matchManager div#setUpMatch a.inline {
+	display: inline-block;
+	width: 12.5em;
+}
+
+section#connectionsManager {
+	width: 25%;
+	background-color: #272727;
+}
+
+section#connectionsManager>div {
+	width: calc(100% - 2.25em);
+	margin: 1.125em;
+	cursor: pointer;
+}
+
+section#connectionsManager div div {
+	display: inline-block;
+}
+
+section#connectionsManager div.connection {
+	width: calc(100% - 3em);
+	height: 1em;
+	padding: 1em 1.5em;
+	margin-right: 0;
+	font-size: 1.125em;
+	font-weight: 300;
+	background-color: #fff;
+	-webkit-transition: width 0.125s linear;
+	        transition: width 0.125s linear;
+}
+
+section#connectionsManager div.remove {
+	width: 0;
+	height: 3em;
+	font-size: 1.125em;
+	background-image: url('../images/x-mark.png');
+	background-position: center;
+	background-size: 25%;
+	background-repeat: no-repeat;
+	background-color: #e74c3c;
+	-webkit-transition: width 0.125s linear;
+	        transition: width 0.125s linear;
+}
+
+section#connectionsManager div:hover div.connection {
+	width: calc(100% - 6em);
+}
+
+section#connectionsManager div:hover div.remove {
+	width: 3em;
+}
+
+section#connectionsManager span {
+	font-weight: 300;
+	line-height: 1em;
+}
+
+section#connectionsManager span:first-child {
+	float: left;
+	color: #222;
+}
+
+section#connectionsManager span:last-child {
+	float: right;
+	color: #16a085;
+}
+
+div#step {
+	display: inline-block;
+	position: relative;
+	width: 7.5em;
+	height: calc(100% - 5.625em);
+	text-align: center;
+	vertical-align: top;
+}
+
+div#step>div {
+	position: absolute;
+	top: 50%;
+	-webkit-transform: translate(0, -50%);
+	        transform: translate(0, -50%);
+}
+
+div#step div.bin {
+	width: 5em;
+	height: 5em;
+	margin: 0 1.25em;
+	margin-bottom: 1.25em;
+	background-image: url('../images/bin-top.png');
+	background-size: 100%;
+	background-position: center;
+	opacity: 1;
+	-webkit-transition: opacity 0.125s linear;
+	        transition: opacity 0.125s linear;
+}
+
+div#step div.bin.raked {
+	opacity: 0;
+}
+
+div#step div#cooperitition {
+	position: relative;
+	height: 7.5em;
+	width: 4.53em;
+	margin: 0 1.485em;
+	margin-bottom: 1.25em;
+	background-image: url('../images/yellow-tote-top.png');
+	background-size: 100%;
+	background-position: center;
+}
+
+div#step div#cooperitition[number='0'] {
+	background-image: none;
+	background-color: #fff;
+}
+
+div#step div#cooperitition:after {
+	content: attr(number);
+	position: absolute;
+	top: calc(50% - 0.5em);
+	left: 0;
+	right: 0;
+	color: #fff;
+	width: 100%;
+	font-size: 2em;
+	font-weight: 300;
+	text-align: center;
+}
+
+div#field {
+	display: inline-block;
+	width: calc(100% - 7.5em);
+	height: calc(100% - 5.625em);
+	vertical-align: top;
+}
+
+div#red, div#blue {
+	width: 100%;
+	height: 50%;
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+
+div#field>div>div {
+	display: inline-block;
+	position: relative;
+	height: calc(100% - 10px);
+	border-bottom: 10px solid #555;
+}
+
+div#field>div>div.scored {
+	height: calc(100% - 25px);
+	margin: 0 0.5em;
+	border-bottom: 25px solid #fff;
+}
+
+div#field>div>div>div {
+	position: absolute;
+	bottom: 0;
+}
+
+div#field div div div div {
+	position: relative;
+	width: 6.25em;
+}
+
+div#field div.F, div#field div.H, div#field div.Y {
+	background-position: center bottom;
+	background-size: 100%;
+}
+
+div#global div+div.F, div#global div+div.H, div#global div+div.Y {
+	height: 2.8em;
+}
+
+div.stack {
+	width: 6.25em;
+	-webkit-transition: background-color 0.125s linear, border-bottom 0.125s linear;
+	        transition: background-color 0.125s linear, border-bottom 0.125s linear;
+}
+
+div.spacer {
+	width: 2em;
+	-webkit-transition: width 0.125s linear, background-color 0.125s linear, border-bottom 0.125s linear;
+	        transition: width 0.125s linear, background-color 0.125s linear, border-bottom 0.125s linear;
+}
+
+div.stack.active, div.spacer.active {
+	background-color: #333;
+	border-bottom: 10px solid #16a085 !important;
+}
+
+div.spacer.active {
+	width: 6.25em;
+}
+
+div.B, div.L, div.F, div.H, div.Y {
+	background-position: center;
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+div.B {
+	height: 5.46875em;
+	background-image: url('../images/bin.png');
+}
+
+div.L {
+	height: 2.7375em;
+	background-image: url('../images/binned-litter.png');
+}
+
+div.F, div.H {
+	height: 3.1em;
+	background-image: url('../images/grey-tote.png');
+}
+
+div.Y {
+	height: 3.1em;
+	background-image: url('../images/yellow-tote.png');
+}
+
+div.B:after {
+	content: attr(teamNumber);
+	position: absolute;
+	bottom: 0.25em;
+	left: 0;
+	right: 0;
+	color: #fff;
+	font-size: 1.25em;
+	font-weight: 300;
+	text-align: center;
+}
+
+div.F:before, div.H:before {
+	position: absolute;
+	top: 0.25em;
+	left: 0.33em;
+	color: #fff;
+	font-size: 1.5em;
+	font-weight: 300;
+}
+
+div.F:before {
+	content: 'F';
+}
+
+div.H:before {
+	content: 'C';
+}
+
+div.F:after, div.H:after, div.Y:after {
+	content: attr(teamNumber);
+	position: absolute;
+	bottom: 0.0625em;
+	right: 0.33em;
+	color: #fff;
+	font-size: 1.25em;
+	font-weight: 300;
+}
